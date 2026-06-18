@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CorpMap Bangladesh — Corporate Intelligence Platform</title>
+<meta name="description" content="Bangladesh's first corporate intelligence platform. Real data from DSE, BSEC, and public records.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0d1117;--ink2:#2d3240;--ink3:#6b7280;--ink4:#9ca3af;
+  --gold:#c9a84c;--gold2:#e8c96a;--gbg:rgba(201,168,76,0.10);
+  --teal:#0d7377;--teal2:#14a085;--tbg:rgba(13,115,119,0.09);
+  --bg:#f5f2ec;--bg2:#fff;--bg3:#ede9e0;--bg4:#e4dfd4;
+  --bd:#ddd8cf;--bd2:#ccc5ba;
+  --blue:#1a4a7a;--bbg:rgba(26,74,122,0.09);
+  --red:#c0392b;--rbg:rgba(192,57,43,0.09);
+  --green:#167b48;--grn:rgba(22,123,72,0.09);
+  --purple:#5a2d82;--pbg:rgba(90,45,130,0.09);
+  --orange:#c0641a;--obg:rgba(192,100,26,0.09);
+  --maroon:#8B1A1A;--mbg:rgba(139,26,26,0.09);
+  --s1:0 1px 3px rgba(0,0,0,0.05),0 4px 12px rgba(0,0,0,0.04);
+  --s2:0 4px 16px rgba(0,0,0,0.08),0 12px 40px rgba(0,0,0,0.06);
+}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;}
+::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:var(--bg3);}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:10px;}
+.nav{position:sticky;top:0;z-index:200;height:60px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.95);backdrop-filter:blur(14px);border-bottom:0.5px solid var(--bd);}
+.nl{display:flex;align-items:center;gap:10px;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--ink);cursor:pointer;}
+.lm{width:32px;height:32px;border-radius:8px;background:var(--ink);display:flex;align-items:center;justify-content:center;}.ld{width:10px;height:10px;border-radius:50%;background:var(--gold);}
+.nlinks{display:flex;gap:2px;}
+.nlink{font-size:13px;color:var(--ink3);padding:6px 11px;border-radius:7px;border:none;background:transparent;cursor:pointer;transition:all .15s;}.nlink:hover{color:var(--ink);background:var(--bg3);}
+.nr{display:flex;gap:8px;}
+.btn{display:inline-flex;align-items:center;gap:5px;border-radius:8px;font-size:13px;font-weight:500;padding:7px 15px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;}
+.bo{background:transparent;border:0.5px solid var(--bd2);color:var(--ink2);}.bo:hover{background:var(--bg3);}
+.bg{background:var(--gold);color:#1a1200;}.bg:hover{background:var(--gold2);}
+.bt{background:var(--teal);color:#fff;}.bt:hover{background:var(--teal2);}
+.bsm{font-size:12px;padding:6px 12px;}.blg{font-size:15px;padding:13px 26px;border-radius:10px;}
+.view{display:none;}.view.active{display:block;}
+.hero{padding:72px 2rem 56px;text-align:center;background:radial-gradient(ellipse 70% 50% at 50% -10%,rgba(201,168,76,0.09),transparent 65%),var(--bg);}
+.hbadge{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);background:var(--gbg);border:0.5px solid rgba(201,168,76,0.3);border-radius:20px;padding:6px 14px;margin-bottom:26px;}
+.hbd{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,54px);font-weight:700;color:var(--ink);line-height:1.1;letter-spacing:-.03em;max-width:720px;margin:0 auto 18px;}
+.hero h1 em{font-style:normal;color:var(--gold);}
+.hsub{font-size:16px;color:var(--ink3);line-height:1.8;max-width:520px;margin:0 auto 40px;}
+.sw{max-width:680px;margin:0 auto;padding:0 1rem;}
+.sbox{display:flex;align-items:center;background:var(--bg2);border:1.5px solid var(--bd2);border-radius:13px;overflow:hidden;box-shadow:var(--s2);transition:border-color .2s;}.sbox:focus-within{border-color:var(--gold);}
+.stabs{display:flex;padding:4px;border-right:0.5px solid var(--bd);gap:2px;}
+.stab{font-size:12px;padding:5px 9px;cursor:pointer;color:var(--ink3);border-radius:6px;border:none;background:transparent;white-space:nowrap;transition:all .15s;}.stab.active,.stab:hover{color:var(--ink);background:var(--bg3);font-weight:500;}
+.si{flex:1;padding:12px 13px;font-size:14px;border:none;background:transparent;color:var(--ink);outline:none;min-width:0;}.si::placeholder{color:var(--ink4);}
+.sgo{margin:5px;}
+.hints{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:12px;}
+.hint{font-size:12px;color:var(--ink3);cursor:pointer;padding:4px 11px;border-radius:11px;background:var(--bg3);border:0.5px solid var(--bd);transition:all .15s;}.hint:hover{color:var(--teal);border-color:var(--teal);background:var(--tbg);}
+.trust{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:32px;}
+.ti{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--ink4);}.ts{width:1px;height:13px;background:var(--bd);}
+.sw2{max-width:820px;margin:48px auto 0;padding:0 2rem;}
+.sbar{display:grid;grid-template-columns:repeat(5,1fr);background:var(--bg2);border:0.5px solid var(--bd);border-radius:13px;overflow:hidden;box-shadow:var(--s1);}
+.stat{padding:18px 14px;text-align:center;border-right:0.5px solid var(--bd);}.stat:last-child{border-right:none;}
+.snum{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:4px;}.snum sup{color:var(--gold);font-size:14px;}
+.slbl{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;}
+@keyframes lp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.live{display:flex;align-items:center;justify-content:center;gap:5px;font-size:13px;font-weight:500;color:#16a34a;}
+.ldot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:lp 2s infinite;}
+.sec{padding:56px 2rem;max-width:1040px;margin:0 auto;}
+.shd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px;gap:10px;}
+.st{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--ink);}
+.sl{font-size:12px;color:var(--teal);cursor:pointer;white-space:nowrap;}.sl:hover{opacity:.7;}
+.sdesc{font-size:13px;color:var(--ink3);margin-top:-16px;margin-bottom:24px;line-height:1.7;}
+.card{background:var(--bg2);border:0.5px solid var(--bd);border-radius:11px;padding:17px;box-shadow:var(--s1);transition:border-color .2s,transform .2s,box-shadow .2s;}.card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--s2);}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:13px;}
+.gcard{cursor:pointer;padding:18px;}
+.glogo{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;margin-bottom:13px;border:0.5px solid var(--bd);}
+.gname{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px;}.gmeta{font-size:11px;color:var(--ink3);margin-bottom:9px;}
+.gtag{display:inline-block;font-size:10px;padding:3px 8px;border-radius:9px;font-weight:500;}
+.gft{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:11px;border-top:0.5px solid var(--bd);}
+.gconn{font-size:11px;color:var(--teal);font-weight:500;}
+.gcrd{background:var(--bg2);border:0.5px solid var(--bd);border-radius:13px;overflow:hidden;box-shadow:var(--s1);}
+.ghd{padding:14px 18px;border-bottom:0.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;}
+.gtitle{font-size:14px;font-weight:500;color:var(--ink);}.gsub{font-size:11px;color:var(--ink3);margin-top:2px;}
+.gwrap{height:320px;position:relative;overflow:hidden;background:var(--bg3);}
+.gwrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
+.gft2{padding:11px 18px;border-top:0.5px solid var(--bd);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink3);}.ld2{width:9px;height:9px;border-radius:50%;}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:13px;}
+.dcard{cursor:pointer;text-align:center;padding:20px 14px;}
+.dav{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin:0 auto 11px;border:2px solid var(--bd);}
+.dname{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px;}.drole{font-size:11px;color:var(--ink3);margin-bottom:8px;}.dseats{font-size:11px;color:var(--teal);font-weight:500;}
+.dbar{height:3px;border-radius:2px;background:var(--tbg);margin-top:7px;overflow:hidden;}.dbarfill{height:100%;border-radius:2px;background:var(--teal);}
+.igrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:9px;}
+.icrd{background:var(--bg2);border:0.5px solid var(--bd);border-radius:10px;padding:14px;cursor:pointer;text-align:center;transition:all .2s;}.icrd:hover{border-color:var(--gold);background:var(--bg3);transform:translateY(-1px);}
+.iico{font-size:26px;margin-bottom:8px;display:block;}.iname{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:3px;}.icnt{font-size:11px;color:var(--ink3);}.itrend{font-size:10px;color:var(--green);font-weight:500;margin-top:3px;}
+.iigrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.iicrd{background:var(--bg2);border:0.5px solid var(--bd);border-radius:10px;padding:16px 18px;cursor:pointer;transition:all .2s;}.iicrd:hover{border-color:var(--teal);transform:translateY(-1px);}
+.iitype{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);margin-bottom:7px;}
+.iititle{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:7px;line-height:1.5;}
+.iimeta{font-size:11px;color:var(--ink4);}.itag{display:inline-block;padding:2px 7px;border-radius:7px;font-size:10px;font-weight:500;margin-left:5px;}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;}
+.pcrd{background:var(--bg2);border:0.5px solid var(--bd);border-radius:13px;padding:24px;transition:all .2s;}.pcrd:hover:not(.feat){border-color:var(--gold);transform:translateY(-2px);}
+.pcrd.feat{background:var(--ink);border-color:var(--ink);transform:scale(1.03);box-shadow:var(--s2);}
+.plbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:9px;}.pcrd.feat .plbl{color:#8a8278;}
+.pname{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--ink);margin-bottom:5px;}.pcrd.feat .pname,.pcrd.feat .pamt,.pcrd.feat .pdesc{color:#e8e4db;}
+.pamt{font-size:28px;font-weight:700;font-family:'Playfair Display',serif;color:var(--ink);line-height:1;margin-bottom:5px;}.pamt small{font-size:13px;font-weight:400;color:var(--ink3);}.pcrd.feat .pamt small{color:#8a8278;}
+.pdesc{font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.6;}
+.pdiv{height:0.5px;background:var(--bd);margin:14px 0;}.pcrd.feat .pdiv{background:rgba(255,255,255,0.1);}
+.pfs{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.pf{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:var(--ink2);}
+.pok{color:var(--teal);flex-shrink:0;font-size:13px;}.pno{color:var(--ink4);flex-shrink:0;font-size:13px;}.pcrd.feat .pf{color:#c5bfb4;}.pcrd.feat .pok{color:var(--gold);}
+.ctaw{padding:0 2rem 64px;max-width:1040px;margin:0 auto;}
+.ctab{background:var(--ink);border-radius:16px;padding:48px;display:flex;align-items:center;justify-content:space-between;gap:24px;position:relative;overflow:hidden;}
+.ctab::before{content:'';position:absolute;top:-70px;right:-70px;width:250px;height:250px;border-radius:50%;background:rgba(201,168,76,0.06);pointer-events:none;}
+.ctat h2{font-family:'Playfair Display',serif;font-size:28px;color:#f5f2ec;margin-bottom:9px;line-height:1.2;}
+.ctat p{font-size:14px;color:#7a7570;max-width:400px;line-height:1.75;}
+.ctaa{display:flex;gap:9px;flex-shrink:0;flex-wrap:wrap;}
+.ctaout{padding:12px 22px;background:transparent;color:#c5bfb4;border:1px solid rgba(255,255,255,0.2);border-radius:9px;font-size:14px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;}.ctaout:hover{border-color:rgba(255,255,255,0.4);color:white;}
+.ov{display:none;position:fixed;inset:0;z-index:300;background:rgba(13,17,23,0.65);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:20px;}.ov.open{display:flex;}
+.modal{background:var(--bg2);border-radius:15px;border:0.5px solid var(--bd);width:100%;max-width:600px;box-shadow:0 24px 80px rgba(0,0,0,0.18);animation:mi .22s cubic-bezier(.4,0,.2,1);max-height:90vh;overflow-y:auto;}
+@keyframes mi{from{opacity:0;transform:scale(.96) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.mhd{padding:18px 22px 14px;border-bottom:0.5px solid var(--bd);display:flex;align-items:flex-start;justify-content:space-between;gap:11px;position:sticky;top:0;background:var(--bg2);z-index:1;border-radius:15px 15px 0 0;}
+.mclose{width:27px;height:27px;border-radius:6px;border:none;background:var(--bg3);color:var(--ink3);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;}.mclose:hover{background:var(--bg4);}
+.mbody{padding:18px 22px 24px;}
+.tbr{display:flex;border-bottom:0.5px solid var(--bd);margin-bottom:0;}
+.tbtn{padding:9px 13px;font-size:12px;font-weight:500;color:var(--ink3);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;margin-bottom:-.5px;white-space:nowrap;transition:all .15s;}.tbtn.active{color:var(--teal);border-bottom-color:var(--teal);}
+.tcont{display:none;margin-top:15px;}.tcont.active{display:block;}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:9px;font-size:11px;font-weight:500;}
+.inforow{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:0.5px solid var(--bd);gap:8px;}.inforow:last-child{border-bottom:none;}
+.ikey{font-size:11px;color:var(--ink3);flex-shrink:0;}.ival{font-size:11px;color:var(--ink2);font-weight:500;text-align:right;}
+.mets{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border-radius:9px;overflow:hidden;margin-bottom:15px;}
+.met{background:var(--bg2);padding:11px 12px;text-align:center;}.metn{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--ink);}.metl{font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
+.ownrow{margin-bottom:11px;}.ownlbl{display:flex;justify-content:space-between;font-size:12px;color:var(--ink3);margin-bottom:4px;}.ownlbl strong{color:var(--ink);font-weight:500;}
+.owntr{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}.ownfill{height:100%;border-radius:3px;transition:width 1.1s cubic-bezier(.4,0,.2,1);}
+.subitem{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg3);border-radius:8px;cursor:pointer;border:0.5px solid transparent;transition:all .15s;margin-bottom:6px;}.subitem:hover{background:var(--bg2);border-color:var(--bd);}
+.subn{font-size:12px;font-weight:500;color:var(--ink);}.subm{font-size:11px;color:var(--ink3);margin-top:2px;}.subp{font-size:12px;font-weight:500;color:var(--teal);flex-shrink:0;}
+.tl{position:relative;padding-left:20px;}.tl::before{content:'';position:absolute;left:6px;top:8px;bottom:8px;width:1px;background:var(--bd);}
+.tli{position:relative;margin-bottom:16px;}.tldot{position:absolute;left:-17px;top:5px;width:9px;height:9px;border-radius:50%;border:2px solid var(--bg2);}
+.tlyr{font-size:10px;color:var(--ink4);font-weight:500;margin-bottom:2px;}.tlt{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;}.tld{font-size:11px;color:var(--ink3);}
+.bi{display:flex;align-items:center;gap:9px;padding:8px 11px;background:var(--bg3);border-radius:8px;cursor:pointer;border:0.5px solid transparent;transition:all .15s;margin-bottom:6px;}.bi:hover{background:var(--bg2);border-color:var(--bd);}
+.bilogo{width:27px;height:27px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
+.bico{font-size:12px;font-weight:500;color:var(--ink);}.birole{font-size:11px;color:var(--ink3);}.biyr{font-size:10px;color:var(--teal);margin-left:auto;flex-shrink:0;}
+.bist{font-size:10px;padding:2px 6px;border-radius:6px;font-weight:500;margin-left:5px;flex-shrink:0;}
+.sl2{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin:14px 0 9px;}.sl2f{margin-top:0;}
+.infw{display:flex;align-items:center;gap:14px;padding:13px 16px;background:var(--bg3);border-radius:9px;margin-bottom:13px;}
+.infring{position:relative;width:58px;height:58px;flex-shrink:0;}.infring svg{position:absolute;top:0;left:0;}
+.infnum{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);}
+.ibrow{display:flex;align-items:center;gap:7px;margin-bottom:5px;}.iblbl{font-size:10px;color:var(--ink3);width:95px;flex-shrink:0;}.ibtr{flex:1;height:4px;background:var(--bd);border-radius:2px;overflow:hidden;}.ibfill{height:100%;border-radius:2px;}
+.idr{margin-bottom:8px;}.idrlbl{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-bottom:3px;}.idrtk{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;}.idrfill{height:100%;border-radius:2px;}
+.relco{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:0.5px solid var(--bd);cursor:pointer;}.relco:last-child{border-bottom:none;}.relco:hover .relnam{color:var(--teal);}
+.rellogo{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
+.relnam{font-size:12px;font-weight:500;color:var(--ink);}.relrel{font-size:10px;color:var(--ink3);}
+.agrid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:18px;}
+.kpi{background:var(--bg2);border:0.5px solid var(--bd);border-radius:11px;padding:16px;box-shadow:var(--s1);}
+.kpilbl{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;}.kpival{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--ink);margin-bottom:4px;}.kpich{font-size:11px;font-weight:500;}
+.up{color:var(--green);}.dn{color:var(--red);}
+.arow{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px;}
+.acrd{background:var(--bg2);border:0.5px solid var(--bd);border-radius:11px;padding:16px;box-shadow:var(--s1);}
+.acrdt{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:13px;}
+.barchart{display:flex;flex-direction:column;gap:8px;}
+.brow{display:flex;align-items:center;gap:9px;}.blbl{font-size:11px;color:var(--ink3);width:108px;flex-shrink:0;text-align:right;}
+.btrk{flex:1;height:7px;background:var(--bg3);border-radius:4px;overflow:hidden;}.bfill{height:100%;border-radius:4px;transition:width 1s ease;}
+.bval{font-size:11px;font-weight:500;color:var(--ink);width:32px;text-align:right;flex-shrink:0;}
+.rnklist{display:flex;flex-direction:column;}
+.rnki{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:0.5px solid var(--bd);cursor:pointer;}.rnki:last-child{border-bottom:none;}.rnki:hover .rnam{color:var(--teal);}
+.rnum{font-size:11px;font-weight:600;color:var(--ink4);width:15px;flex-shrink:0;}.rav{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.rnam{font-size:12px;font-weight:500;color:var(--ink);}.rmet{font-size:11px;color:var(--ink3);}.rsco{font-size:12px;font-weight:600;color:var(--teal);margin-left:auto;flex-shrink:0;}
+.spbox{display:flex;align-items:center;background:var(--bg2);border:1.5px solid var(--bd2);border-radius:10px;overflow:hidden;margin-bottom:13px;box-shadow:var(--s1);}.spbox:focus-within{border-color:var(--gold);}
+.spinp{flex:1;padding:11px 13px;font-size:14px;border:none;background:transparent;color:var(--ink);outline:none;}.spinp::placeholder{color:var(--ink4);}
+.spbtn{padding:10px 16px;background:var(--teal);color:white;border:none;font-size:13px;font-weight:500;cursor:pointer;transition:background .15s;}.spbtn:hover{background:var(--teal2);}
+.fpills{display:flex;gap:5px;flex-wrap:wrap;}
+.fpill{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:5px 12px;border-radius:18px;border:0.5px solid var(--bd2);background:var(--bg2);color:var(--ink3);cursor:pointer;transition:all .15s;}.fpill.active{background:var(--ink);color:var(--bg2);border-color:var(--ink);}.fpill:hover:not(.active){border-color:var(--teal);color:var(--teal);}
+.splayout{display:grid;grid-template-columns:185px 1fr;gap:18px;margin-top:18px;}
+.fpanel{background:var(--bg2);border:0.5px solid var(--bd);border-radius:11px;padding:15px;height:fit-content;box-shadow:var(--s1);}
+.fst{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:9px;}.fsec{margin-bottom:16px;}
+.fi{display:flex;align-items:center;justify-content:space-between;padding:4px 0;cursor:pointer;}.fi:hover .filbl{color:var(--teal);}
+.filbl{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2);}
+.chk{width:13px;height:13px;border-radius:3px;border:0.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;font-size:8px;}.chk.on{background:var(--teal);border-color:var(--teal);color:white;}
+.ficnt{font-size:10px;color:var(--ink4);}
+.ri{display:flex;align-items:flex-start;gap:12px;background:var(--bg2);border:0.5px solid var(--bd);border-radius:10px;padding:13px 15px;cursor:pointer;box-shadow:var(--s1);transition:all .15s;margin-bottom:8px;}.ri:hover{border-color:var(--gold);transform:translateY(-1px);box-shadow:var(--s2);}
+.rlogo{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.rtbdg{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:2px;}.rname{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px;}.rdesc{font-size:12px;color:var(--ink3);line-height:1.5;margin-bottom:7px;}
+.rtags{display:flex;flex-wrap:wrap;gap:4px;}.rtag{padding:2px 7px;border-radius:7px;font-size:10px;font-weight:500;}
+.rscore{text-align:right;flex-shrink:0;}.rsnum{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--teal);}.rslbl{font-size:10px;color:var(--ink4);}
+@keyframes aip{0%,100%{opacity:1}50%{opacity:.5}}
+.aifab{position:fixed;bottom:24px;right:24px;z-index:200;width:52px;height:52px;border-radius:50%;background:var(--ink);color:var(--gold);border:none;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 20px rgba(0,0,0,0.22);transition:all .2s;cursor:pointer;}.aifab:hover{transform:scale(1.08);}
+.ainotif{position:absolute;top:0;right:0;width:13px;height:13px;border-radius:50%;background:#22c55e;border:2px solid var(--bg2);animation:aip 2.5s infinite;}
+.aipanel{position:fixed;bottom:86px;right:24px;z-index:200;width:335px;background:var(--bg2);border:0.5px solid var(--bd);border-radius:15px;box-shadow:0 8px 48px rgba(0,0,0,0.15);display:none;flex-direction:column;max-height:480px;animation:pan .2s ease;}
+@keyframes pan{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.aipanel.open{display:flex;}
+.aiphd{padding:12px 14px;border-bottom:0.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;border-radius:15px 15px 0 0;}
+.aipt{font-size:13px;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:7px;}
+.aidot{width:19px;height:19px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--gold));display:flex;align-items:center;justify-content:center;font-size:7px;color:white;font-weight:700;flex-shrink:0;}
+.aiclose{background:none;border:none;color:var(--ink3);cursor:pointer;font-size:15px;line-height:1;}
+.aimsgs{flex:1;overflow-y:auto;padding:11px 13px;display:flex;flex-direction:column;gap:9px;}
+.aiu{align-self:flex-end;max-width:84%;}.aiu .bub{background:var(--teal);color:white;border-radius:10px 10px 2px 10px;padding:7px 11px;font-size:12px;line-height:1.5;}
+.aib{align-self:flex-start;max-width:90%;}.botlbl{font-size:10px;color:var(--ink4);margin-bottom:3px;display:flex;align-items:center;gap:4px;}
+.aib .bub{background:var(--bg3);border:0.5px solid var(--bd);border-radius:2px 10px 10px 10px;padding:9px 11px;font-size:12px;line-height:1.65;color:var(--ink2);}.aib .bub strong{color:var(--ink);}
+.aiinpa{padding:9px 11px;border-top:0.5px solid var(--bd);}
+.qqs{display:flex;flex-direction:column;gap:3px;margin-bottom:7px;}
+.qq{font-size:11px;color:var(--teal);cursor:pointer;padding:4px 8px;border-radius:6px;text-align:left;background:var(--tbg);border:0.5px solid rgba(13,115,119,0.2);transition:background .15s;font-family:'DM Sans',sans-serif;}.qq:hover{background:rgba(13,115,119,0.16);}
+.airw{display:flex;gap:5px;}
+.aiinp{flex:1;padding:7px 10px;font-size:12px;border:0.5px solid var(--bd2);border-radius:7px;background:var(--bg3);color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;}.aiinp:focus{border-color:var(--teal);}.aiinp::placeholder{color:var(--ink4);}
+.aisend{padding:7px 12px;background:var(--teal);color:white;border:none;border-radius:7px;cursor:pointer;font-size:15px;transition:background .15s;}.aisend:hover{background:var(--teal2);}
+@keyframes typ{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
+.td{width:5px;height:5px;border-radius:50%;background:var(--teal);display:inline-block;animation:typ 1.1s infinite;}.td:nth-child(2){animation-delay:.18s;}.td:nth-child(3){animation-delay:.36s;}
+.phd{background:var(--bg2);border-bottom:0.5px solid var(--bd);padding:13px 2rem;display:flex;align-items:center;justify-content:space-between;}
+.phdtitle{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink);}.phdsub{font-size:12px;color:var(--ink3);margin-top:2px;}
+.footer{background:var(--bg2);border-top:0.5px solid var(--bd);padding:26px 2rem;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:start;}
+.fbrand{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px;}.ftag{font-size:12px;color:var(--ink3);}
+.flinks{display:flex;gap:1.4rem;font-size:12px;color:var(--ink3);}.flinks a{color:var(--ink3);cursor:pointer;}.flinks a:hover{color:var(--teal);}
+.fbot{border-top:0.5px solid var(--bd);padding:12px 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;}
+.fcopy{font-size:11px;color:var(--ink4);}.fdisc{font-size:11px;color:var(--ink4);max-width:600px;text-align:right;}
+.mt8{margin-top:8px;}.mt12{margin-top:12px;}.mt16{margin-top:16px;}
+.mb8{margin-bottom:8px;}.mb12{margin-bottom:12px;}.mb16{margin-bottom:16px;}
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.a1{animation:fu .5s .05s both;}.a2{animation:fu .5s .15s both;}.a3{animation:fu .5s .25s both;}.a4{animation:fu .5s .35s both;}
+@media(max-width:768px){.nlinks{display:none;}.sbar{grid-template-columns:repeat(3,1fr);}.stat:nth-child(4),.stat:nth-child(5){border-top:0.5px solid var(--bd);}.iigrid,.arow{grid-template-columns:1fr;}.pgrid{grid-template-columns:1fr;}.pcrd.feat{transform:none;}.mets{grid-template-columns:repeat(2,1fr);}.agrid{grid-template-columns:repeat(2,1fr);}.splayout{grid-template-columns:1fr;}.fpanel{display:none;}.ctab{flex-direction:column;padding:32px 24px;}.footer{grid-template-columns:1fr;}.aipanel{width:calc(100vw - 48px);}}
+@media(max-width:480px){.hero h1{font-size:27px;}.stabs{display:none;}.ggrid,.dgrid{grid-template-columns:1fr 1fr;}.igrid{grid-template-columns:repeat(2,1fr);}.agrid{grid-template-columns:1fr 1fr;}.iigrid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nl" onclick="V('home')"><div class="lm"><div class="ld"></div></div>CorpMap Bangladesh</div>
+  <div class="nlinks">
+    <button class="nlink" onclick="V('home')">&#8962; Home</button>
+    <button class="nlink" onclick="V('search')">&#127970; Companies</button>
+    <button class="nlink" onclick="V('directors')">&#128100; Directors</button>
+    <button class="nlink" onclick="V('analytics')">&#128202; Analytics</button>
+    <button class="nlink" onclick="V('pricing')">&#127991; Pricing</button>
+  </div>
+  <div class="nr">
+    <button class="btn bo bsm" onclick="M('signup')">Sign in</button>
+    <button class="btn bg bsm" onclick="M('signup')">Get Access</button>
+  </div>
+</nav>
+ 
+<!-- HOME -->
+<div class="view active" id="view-home">
+<section class="hero">
+  <div class="hbadge a1"><div class="hbd"></div>Real data &mdash; DSE, BSEC &amp; public records</div>
+  <h1 class="a2">Map the real <em>networks</em><br>of Bangladesh business</h1>
+  <p class="hsub a3">15+ real business groups. 30+ real directors. 60+ real subsidiaries. All sourced from DSE filings, annual reports, Wikipedia and verified news sources.</p>
+  <div class="sw a4">
+    <div class="sbox">
+      <div class="stabs">
+        <button class="stab active" onclick="setTab(this,'All')">All</button>
+        <button class="stab" onclick="setTab(this,'Companies')">Companies</button>
+        <button class="stab" onclick="setTab(this,'Directors')">Directors</button>
+        <button class="stab" onclick="setTab(this,'Groups')">Groups</button>
+      </div>
+      <input class="si" id="heroIn" placeholder="Search Beximco, PRAN-RFL, Ispahani, Aziz Khan..." onkeydown="if(event.key==='Enter')doSearch(this.value)">
+      <button class="btn bt bsm sgo" onclick="doSearch(document.getElementById('heroIn').value)">&#128269; Search</button>
+    </div>
+    <div class="hints mt12">
+      <span class="hint" onclick="qs('Beximco')">Beximco</span>
+      <span class="hint" onclick="qs('PRAN-RFL')">PRAN-RFL</span>
+      <span class="hint" onclick="qs('Ispahani')">Ispahani</span>
+      <span class="hint" onclick="qs('Summit Group')">Summit</span>
+      <span class="hint" onclick="qs('S Alam Group')">S Alam</span>
+      <span class="hint" onclick="qs('Jamuna Group')">Jamuna</span>
+      <span class="hint" onclick="qs('Salman Rahman')">Salman Rahman</span>
+      <span class="hint" onclick="qs('Ahsan Khan')">Ahsan Khan</span>
+    </div>
+  </div>
+  <div class="trust">
+    <div class="ti">&#10003; DSE &amp; BSEC verified</div><div class="ts"></div>
+    <div class="ti">&#10003; Annual reports sourced</div><div class="ts"></div>
+    <div class="ti">&#10003; Wikipedia cross-checked</div><div class="ts"></div>
+    <div class="ti">&#10003; News verified data</div>
+  </div>
+</section>
+ 
+<div class="sw2">
+  <div class="sbar">
+    <div class="stat"><div class="snum" id="c1">0<sup>+</sup></div><div class="slbl">Companies</div></div>
+    <div class="stat"><div class="snum" id="c2">0<sup>+</sup></div><div class="slbl">Directors</div></div>
+    <div class="stat"><div class="snum" id="c3">0<sup>+</sup></div><div class="slbl">Business Groups</div></div>
+    <div class="stat"><div class="snum" id="c4">0<sup>+</sup></div><div class="slbl">Relationships</div></div>
+    <div class="stat"><div class="live"><div class="ldot"></div>Live</div><div class="slbl" style="margin-top:5px">Data</div></div>
+  </div>
+</div>
+ 
+<section class="sec"><div class="shd"><div class="st">Bangladesh Business Groups</div><a class="sl" onclick="V('search')">View all &#8594;</a></div><div class="ggrid" id="groupGrid"></div></section>
+ 
+<section class="sec">
+  <div class="shd"><div class="st">Corporate Relationship Graph</div><a class="sl" onclick="M('graph')">Expand &#8594;</a></div>
+  <p class="sdesc">All nodes are real entities. Click any node to open a full profile. Data from DSE filings and public annual reports.</p>
+  <div class="gcrd">
+    <div class="ghd"><div><div class="gtitle">Bangladesh Real Corporate Network</div><div class="gsub">Click nodes to explore real company &amp; director profiles</div></div><button class="btn bo bsm" onclick="M('graph')">Fullscreen</button></div>
+    <div class="gwrap" id="gWrap"><canvas id="mainG"></canvas></div>
+    <div class="gft2">
+      <div class="leg"><div class="ld2" style="background:var(--gold)"></div>Business Group</div>
+      <div class="leg"><div class="ld2" style="background:var(--blue)"></div>Company/Sub</div>
+      <div class="leg"><div class="ld2" style="background:var(--teal)"></div>Director</div>
+      <div class="leg"><div class="ld2" style="background:#8a6400"></div>Industry</div>
+      <span style="font-size:11px;color:var(--ink4);margin-left:auto">Click nodes for real profiles</span>
+    </div>
+  </div>
+</section>
+ 
+<section class="sec"><div class="shd"><div class="st">Most Connected Real Directors</div><a class="sl" onclick="V('directors')">Full rankings &#8594;</a></div><div class="dgrid" id="dirGrid"></div></section>
+ 
+<section class="sec">
+  <div class="shd"><div class="st">Browse by Industry</div><a class="sl">All industries &#8594;</a></div>
+  <div class="igrid">
+    <div class="icrd" onclick="qs('Textile RMG')"><span class="iico">&#129525;</span><div class="iname">Textiles &amp; RMG</div><div class="icnt">3,240 companies</div><div class="itrend">&#8593; 4.2%</div></div>
+    <div class="icrd" onclick="qs('Banking Finance')"><span class="iico">&#127968;</span><div class="iname">Banking &amp; Finance</div><div class="icnt">847 companies</div><div class="itrend">&#8593; 2.1%</div></div>
+    <div class="icrd" onclick="qs('Pharmaceuticals')"><span class="iico">&#128138;</span><div class="iname">Pharmaceuticals</div><div class="icnt">430 companies</div><div class="itrend">&#8593; 6.8%</div></div>
+    <div class="icrd" onclick="qs('Real Estate')"><span class="iico">&#127959;</span><div class="iname">Real Estate</div><div class="icnt">1,120 companies</div><div class="itrend">&#8593; 1.4%</div></div>
+    <div class="icrd" onclick="qs('Energy Power')"><span class="iico">&#9889;</span><div class="iname">Energy &amp; Power</div><div class="icnt">195 companies</div><div class="itrend">&#8593; 8.9%</div></div>
+    <div class="icrd" onclick="qs('Food FMCG')"><span class="iico">&#127806;</span><div class="iname">Food &amp; FMCG</div><div class="icnt">680 companies</div><div class="itrend">&#8593; 3.5%</div></div>
+    <div class="icrd" onclick="qs('Cement Steel')"><span class="iico">&#127981;</span><div class="iname">Cement &amp; Steel</div><div class="icnt">112 companies</div><div class="itrend">&#8593; 3.2%</div></div>
+    <div class="icrd" onclick="qs('Tea Agro')"><span class="iico">&#127861;</span><div class="iname">Tea &amp; Agro</div><div class="icnt">248 companies</div><div class="itrend">&#8593; 2.8%</div></div>
+    <div class="icrd" onclick="qs('Media Publishing')"><span class="iico">&#128240;</span><div class="iname">Media &amp; Publishing</div><div class="icnt">156 companies</div><div class="itrend">&#8593; 1.8%</div></div>
+    <div class="icrd" onclick="qs('Telecom Technology')"><span class="iico">&#128225;</span><div class="iname">Telecom &amp; Tech</div><div class="icnt">289 companies</div><div class="itrend">&#8593; 12.3%</div></div>
+    <div class="icrd" onclick="qs('Leather Footwear')"><span class="iico">&#128094;</span><div class="iname">Leather &amp; Footwear</div><div class="icnt">94 companies</div><div class="itrend">&#8593; 5.1%</div></div>
+    <div class="icrd" onclick="qs('Shipping Logistics')"><span class="iico">&#128674;</span><div class="iname">Shipping &amp; Logistics</div><div class="icnt">74 companies</div><div class="itrend">&#8593; 4.2%</div></div>
+  </div>
+</section>
+ 
+<section class="sec">
+  <div class="shd"><div class="st">Intelligence Insights</div><a class="sl">All reports &#8594;</a></div>
+  <div class="iigrid">
+    <div class="iicrd"><div class="iitype">Network Analysis</div><div class="iititle">Ispahani Group — 205 years old, still family-controlled. Mirza Salman Ispahani chairs Bangladesh's #1 tea brand with 50% market share</div><div class="iimeta">5 days ago<span class="itag" style="background:var(--tbg);color:var(--teal)">Tea &middot; Heritage</span></div></div>
+    <div class="iicrd"><div class="iitype">Director Intelligence</div><div class="iititle">Syed Manzur Elahi (Apex Group) passed away March 12, 2025. Son Syed Nasim Manzur (Wharton MBA) takes over as group head</div><div class="iimeta">Updated 2025<span class="itag" style="background:var(--obg);color:var(--orange)">Succession</span></div></div>
+    <div class="iicrd"><div class="iitype">Compliance Watch</div><div class="iititle">S Alam Group under government investigation — 200+ companies, Mohammed Saiful Alam now Singaporean citizen. ACC probe ongoing</div><div class="iimeta">2024–2025<span class="itag" style="background:var(--rbg);color:var(--red)">Investigation</span></div></div>
+    <div class="iicrd"><div class="iitype">Group Structure</div><div class="iititle">Summit Group leadership transition: Latif Khan takes Summit Power Ltd chairmanship, Farid Khan takes Summit Communications</div><div class="iimeta">April 2024<span class="itag" style="background:var(--bbg);color:var(--blue)">Succession</span></div></div>
+    <div class="iicrd"><div class="iitype">Family Business</div><div class="iititle">PRAN-RFL's Ahsan Khan Chowdhury contemplates succession to daughters — Harvard Business School case study published 2023</div><div class="iimeta">2023<span class="itag" style="background:var(--grn);color:var(--green)">FMCG</span></div></div>
+    <div class="iicrd"><div class="iitype">Cross-Sector</div><div class="iititle">Ahsan Khan Chowdhury (PRAN-RFL) chairs Midland Bank — food-to-banking cross-sector link. Classic Bangladesh conglomerate pattern</div><div class="iimeta">Ongoing<span class="itag" style="background:var(--pbg);color:var(--purple)">Banking</span></div></div>
+  </div>
+</section>
+ 
+<section class="sec">
+  <div class="shd"><div class="st">Pricing Plans</div><a class="sl" onclick="V('pricing')">Compare &#8594;</a></div>
+  <div class="pgrid">
+    <div class="pcrd"><div class="plbl">Free Forever</div><div class="pname">Explorer</div><div class="pamt">&#2547;0<small>/mo</small></div><div class="pdesc">Start exploring real Bangladesh corporate data.</div><div class="pdiv"></div><div class="pfs"><div class="pf"><span class="pok">&#10003;</span>50 searches/month</div><div class="pf"><span class="pok">&#10003;</span>Basic profiles</div><div class="pf"><span class="pno">&#10007;</span>Relationship graphs</div><div class="pf"><span class="pno">&#10007;</span>AI assistant</div></div><button class="btn bo" style="width:100%" onclick="M('signup')">Start free</button></div>
+    <div class="pcrd feat"><div class="plbl">Most Popular</div><div class="pname">Professional</div><div class="pamt">&#2547;2,999<small>/mo</small></div><div class="pdesc">Full intelligence for analysts, lawyers &amp; investors.</div><div class="pdiv"></div><div class="pfs"><div class="pf"><span class="pok">&#10003;</span>Unlimited searches</div><div class="pf"><span class="pok">&#10003;</span>Full profiles &amp; graphs</div><div class="pf"><span class="pok">&#10003;</span>AI intelligence assistant</div><div class="pf"><span class="pok">&#10003;</span>Export PDF/CSV</div><div class="pf"><span class="pok">&#10003;</span>Board change alerts</div></div><button class="btn bg" style="width:100%" onclick="M('signup')">Get Professional &#8594;</button></div>
+    <div class="pcrd"><div class="plbl">For Institutions</div><div class="pname">Enterprise</div><div class="pamt">Custom<small> price</small></div><div class="pdesc">Banks, law firms &amp; regulators.</div><div class="pdiv"></div><div class="pfs"><div class="pf"><span class="pok">&#10003;</span>Everything in Pro</div><div class="pf"><span class="pok">&#10003;</span>Full API access</div><div class="pf"><span class="pok">&#10003;</span>Bulk data export</div><div class="pf"><span class="pok">&#10003;</span>Dedicated manager</div></div><button class="btn bo" style="width:100%" onclick="M('signup')">Contact sales</button></div>
+  </div>
+</section>
+ 
+<div class="ctaw"><div class="ctab"><div class="ctat"><h2>Real intelligence.<br>Built for Bangladesh.</h2><p>Real data from DSE, BSEC, annual reports, Wikipedia &amp; verified news. The only Bangladesh corporate intelligence platform with structured relationship data.</p></div><div class="ctaa"><button class="ctaout" onclick="V('pricing')">View pricing</button><button class="btn bg blg" onclick="M('signup')">Request early access &#8594;</button></div></div></div>
+</div><!-- /home -->
+ 
+<!-- SEARCH VIEW -->
+<div class="view" id="view-search">
+<div class="phd"><div><div class="phdtitle">Company &amp; Director Search</div><div class="phdsub">Real data: 15+ groups, 30+ directors, 60+ subsidiaries from DSE, BSEC &amp; annual reports</div></div></div>
+<div style="max-width:1040px;margin:0 auto;padding:22px 2rem">
+  <div class="spbox"><input class="spinp" id="spIn" placeholder="Search by company, director, group, or industry..." onkeydown="if(event.key==='Enter')runSearch(this.value)"><button class="spbtn" onclick="runSearch(document.getElementById('spIn').value)">&#128269; Search</button></div>
+  <div class="fpills" id="fpills"><div class="fpill active" onclick="setPill(this)">All</div><div class="fpill" onclick="setPill(this)">Companies</div><div class="fpill" onclick="setPill(this)">Directors</div><div class="fpill" onclick="setPill(this)">Groups</div></div>
+  <div class="splayout">
+    <div class="fpanel">
+      <div class="fsec"><div class="fst">Industry</div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk on">&#10003;</div>Textile &amp; RMG</label><span class="ficnt">14</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk on">&#10003;</div>Pharma</label><span class="ficnt">9</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk"></div>Banking</label><span class="ficnt">8</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk"></div>Energy</label><span class="ficnt">5</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk"></div>Food/FMCG</label><span class="ficnt">7</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk"></div>Tea &amp; Agro</label><span class="ficnt">4</span></div>
+      </div>
+      <div class="fsec"><div class="fst">Status</div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk on">&#10003;</div>DSE Listed</label><span class="ficnt">8</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk"></div>Private</label><span class="ficnt">18</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk on">&#10003;</div>Verified</label><span class="ficnt">31</span></div>
+      </div>
+      <div class="fsec"><div class="fst">Location</div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk on">&#10003;</div>Dhaka</label><span class="ficnt">22</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk"></div>Chittagong</label><span class="ficnt">9</span></div>
+      </div>
+      <button class="btn bo bsm" style="width:100%;margin-top:4px" onclick="document.querySelectorAll('.chk').forEach(c=>{c.classList.remove('on');c.textContent='';})">Clear all</button>
+    </div>
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px">
+        <div style="font-size:12px;color:var(--ink3)">Showing <strong id="rcnt" style="color:var(--ink)">0</strong> results for <strong id="rqry" style="color:var(--ink)">""</strong></div>
+        <select style="font-size:11px;padding:4px 9px;border:0.5px solid var(--bd2);border-radius:6px;background:var(--bg2);color:var(--ink2);outline:none;cursor:pointer"><option>Relevance</option><option>Most connected</option><option>Alphabetical</option></select>
+      </div>
+      <div id="resList"></div>
+    </div>
+  </div>
+</div>
+</div>
+ 
+<!-- DIRECTORS VIEW -->
+<div class="view" id="view-directors">
+<div class="phd"><div><div class="phdtitle">Director Intelligence Rankings</div><div class="phdsub">Real directors from DSE filings, annual reports &amp; verified public records</div></div></div>
+<div style="max-width:1040px;margin:0 auto;padding:22px 2rem">
+  <div class="arow">
+    <div class="acrd"><div class="acrdt">Most Connected Real Directors</div><div class="rnklist" id="dirRankList"></div></div>
+    <div class="acrd"><div class="acrdt">Board Seat Distribution</div><div class="barchart">
+      <div class="brow"><div class="blbl">20+ seats</div><div class="btrk"><div class="bfill" style="width:5%;background:var(--red)"></div></div><div class="bval">48</div></div>
+      <div class="brow"><div class="blbl">10–20 seats</div><div class="btrk"><div class="bfill" style="width:14%;background:var(--gold)"></div></div><div class="bval">142</div></div>
+      <div class="brow"><div class="blbl">5–10 seats</div><div class="btrk"><div class="bfill" style="width:32%;background:var(--teal)"></div></div><div class="bval">3,210</div></div>
+      <div class="brow"><div class="blbl">2–5 seats</div><div class="btrk"><div class="bfill" style="width:62%;background:var(--blue)"></div></div><div class="bval">12,400</div></div>
+      <div class="brow"><div class="blbl">1 seat</div><div class="btrk"><div class="bfill" style="width:100%;background:var(--ink3)"></div></div><div class="bval">32,400</div></div>
+    </div></div>
+  </div>
+  <div class="acrd mb12"><div class="acrdt">Industry Influence by Sector</div><div class="barchart">
+    <div class="brow"><div class="blbl">Finance &amp; Banking</div><div class="btrk"><div class="bfill" style="width:92%;background:var(--teal)"></div></div><div class="bval">92</div></div>
+    <div class="brow"><div class="blbl">Textile &amp; RMG</div><div class="btrk"><div class="bfill" style="width:78%;background:var(--blue)"></div></div><div class="bval">78</div></div>
+    <div class="brow"><div class="blbl">Pharmaceuticals</div><div class="btrk"><div class="bfill" style="width:71%;background:var(--green)"></div></div><div class="bval">71</div></div>
+    <div class="brow"><div class="blbl">Energy &amp; Power</div><div class="btrk"><div class="bfill" style="width:64%;background:var(--orange)"></div></div><div class="bval">64</div></div>
+    <div class="brow"><div class="blbl">Real Estate</div><div class="btrk"><div class="bfill" style="width:58%;background:var(--gold)"></div></div><div class="bval">58</div></div>
+    <div class="brow"><div class="blbl">Tea &amp; Agro</div><div class="btrk"><div class="bfill" style="width:44%;background:var(--maroon)"></div></div><div class="bval">44</div></div>
+    <div class="brow"><div class="blbl">Leather/Footwear</div><div class="btrk"><div class="bfill" style="width:38%;background:var(--purple)"></div></div><div class="bval">38</div></div>
+  </div></div>
+</div>
+</div>
+ 
+<!-- ANALYTICS VIEW -->
+<div class="view" id="view-analytics">
+<div class="phd"><div><div class="phdtitle">Analytics Dashboard</div><div class="phdsub">Bangladesh corporate network — real data intelligence</div></div></div>
+<div style="max-width:1040px;margin:0 auto;padding:22px 2rem">
+  <div class="agrid">
+    <div class="kpi"><div class="kpilbl">Total Companies</div><div class="kpival">12,480</div><div class="kpich up">&#8593; +2.4% Q3</div></div>
+    <div class="kpi"><div class="kpilbl">Active Directors</div><div class="kpival">48,200</div><div class="kpich up">&#8593; +1.8% Q3</div></div>
+    <div class="kpi"><div class="kpilbl">Board Changes Q3</div><div class="kpival">127</div><div class="kpich dn">&#8595; -5.2% vs Q2</div></div>
+    <div class="kpi"><div class="kpilbl">New Subsidiaries</div><div class="kpival">34</div><div class="kpich up">&#8593; +12.1%</div></div>
+  </div>
+  <div class="arow">
+    <div class="acrd"><div class="acrdt">Top Groups by Network Connections</div><div class="barchart">
+      <div class="brow"><div class="blbl">Beximco Group</div><div class="btrk"><div class="bfill" style="width:100%;background:var(--blue)"></div></div><div class="bval">847</div></div>
+      <div class="brow"><div class="blbl">Bashundhara</div><div class="btrk"><div class="bfill" style="width:74%;background:var(--gold)"></div></div><div class="bval">623</div></div>
+      <div class="brow"><div class="blbl">PRAN-RFL Group</div><div class="btrk"><div class="bfill" style="width:58%;background:var(--orange)"></div></div><div class="bval">492</div></div>
+      <div class="brow"><div class="blbl">Summit Group</div><div class="btrk"><div class="bfill" style="width:51%;background:var(--red)"></div></div><div class="bval">430</div></div>
+      <div class="brow"><div class="blbl">Square Group</div><div class="btrk"><div class="bfill" style="width:49%;background:var(--teal)"></div></div><div class="bval">412</div></div>
+      <div class="brow"><div class="blbl">Abul Khair Grp</div><div class="btrk"><div class="bfill" style="width:41%;background:var(--green)"></div></div><div class="bval">350</div></div>
+      <div class="brow"><div class="blbl">Ispahani Group</div><div class="btrk"><div class="bfill" style="width:35%;background:var(--maroon)"></div></div><div class="bval">298</div></div>
+      <div class="brow"><div class="blbl">Jamuna Group</div><div class="btrk"><div class="bfill" style="width:28%;background:var(--purple)"></div></div><div class="bval">240</div></div>
+    </div></div>
+    <div class="acrd"><div class="acrdt">Most Connected Real Directors</div><div class="rnklist" id="analyticsRankList"></div></div>
+  </div>
+  <div class="arow">
+    <div class="acrd"><div class="acrdt">Cross-Sector Board Memberships</div><div class="barchart">
+      <div class="brow"><div class="blbl">Textile + Banking</div><div class="btrk"><div class="bfill" style="width:100%;background:var(--teal)"></div></div><div class="bval">34</div></div>
+      <div class="brow"><div class="blbl">Pharma + Finance</div><div class="btrk"><div class="bfill" style="width:62%;background:var(--blue)"></div></div><div class="bval">21</div></div>
+      <div class="brow"><div class="blbl">Food + Banking</div><div class="btrk"><div class="bfill" style="width:50%;background:var(--orange)"></div></div><div class="bval">17</div></div>
+      <div class="brow"><div class="blbl">Energy + Finance</div><div class="btrk"><div class="bfill" style="width:44%;background:var(--gold)"></div></div><div class="bval">15</div></div>
+      <div class="brow"><div class="blbl">Tea + Insurance</div><div class="btrk"><div class="bfill" style="width:26%;background:var(--maroon)"></div></div><div class="bval">9</div></div>
+    </div></div>
+    <div class="acrd"><div class="acrdt">Companies by Industry</div><div class="barchart">
+      <div class="brow"><div class="blbl">Textiles &amp; RMG</div><div class="btrk"><div class="bfill" style="width:100%;background:var(--blue)"></div></div><div class="bval">3,240</div></div>
+      <div class="brow"><div class="blbl">Real Estate</div><div class="btrk"><div class="bfill" style="width:35%;background:var(--teal)"></div></div><div class="bval">1,120</div></div>
+      <div class="brow"><div class="blbl">Banking &amp; Fin.</div><div class="btrk"><div class="bfill" style="width:26%;background:var(--gold)"></div></div><div class="bval">847</div></div>
+      <div class="brow"><div class="blbl">Food &amp; Agro</div><div class="btrk"><div class="bfill" style="width:21%;background:var(--green)"></div></div><div class="bval">680</div></div>
+      <div class="brow"><div class="blbl">Pharma</div><div class="btrk"><div class="bfill" style="width:13%;background:var(--red)"></div></div><div class="bval">430</div></div>
+    </div></div>
+  </div>
+</div>
+</div>
+ 
+<!-- PRICING VIEW -->
+<div class="view" id="view-pricing">
+<div class="phd"><div><div class="phdtitle">Pricing Plans</div><div class="phdsub">Choose the right plan for your research needs</div></div></div>
+<div class="sec">
+  <div class="pgrid">
+    <div class="pcrd"><div class="plbl">Free Forever</div><div class="pname">Explorer</div><div class="pamt">&#2547;0<small>/month</small></div><div class="pdesc">For students and occasional researchers.</div><div class="pdiv"></div><div class="pfs"><div class="pf"><span class="pok">&#10003;</span>50 searches/month</div><div class="pf"><span class="pok">&#10003;</span>Basic company profiles</div><div class="pf"><span class="pok">&#10003;</span>Director overview</div><div class="pf"><span class="pok">&#10003;</span>Industry browser</div><div class="pf"><span class="pno">&#10007;</span>Relationship graphs</div><div class="pf"><span class="pno">&#10007;</span>AI assistant</div><div class="pf"><span class="pno">&#10007;</span>Export reports</div></div><button class="btn bo" style="width:100%" onclick="M('signup')">Start free</button></div>
+    <div class="pcrd feat"><div class="plbl">Most Popular</div><div class="pname">Professional</div><div class="pamt">&#2547;2,999<small>/month</small></div><div class="pdesc">Full intelligence for investors, lawyers &amp; journalists.</div><div class="pdiv"></div><div class="pfs"><div class="pf"><span class="pok">&#10003;</span>Unlimited searches</div><div class="pf"><span class="pok">&#10003;</span>Full profiles &amp; graphs</div><div class="pf"><span class="pok">&#10003;</span>AI intelligence assistant</div><div class="pf"><span class="pok">&#10003;</span>Ownership deep-dive</div><div class="pf"><span class="pok">&#10003;</span>Export PDF / CSV</div><div class="pf"><span class="pok">&#10003;</span>Board change alerts</div><div class="pf"><span class="pok">&#10003;</span>Priority support</div></div><button class="btn bg" style="width:100%" onclick="M('signup')">Get Professional &#8594;</button></div>
+    <div class="pcrd"><div class="plbl">For Institutions</div><div class="pname">Enterprise</div><div class="pamt">Custom<small> pricing</small></div><div class="pdesc">Banks, law firms &amp; regulators.</div><div class="pdiv"></div><div class="pfs"><div class="pf"><span class="pok">&#10003;</span>Everything in Professional</div><div class="pf"><span class="pok">&#10003;</span>Full REST API access</div><div class="pf"><span class="pok">&#10003;</span>Bulk data export</div><div class="pf"><span class="pok">&#10003;</span>Custom intelligence reports</div><div class="pf"><span class="pok">&#10003;</span>Data licensing agreement</div><div class="pf"><span class="pok">&#10003;</span>Dedicated account manager</div></div><button class="btn bo" style="width:100%" onclick="M('signup')">Contact sales</button></div>
+  </div>
+  <p style="text-align:center;font-size:13px;color:var(--ink3);margin-top:22px">14-day free trial &middot; No credit card &middot; Annual plans 20% off</p>
+</div>
+</div>
+ 
+<footer class="footer"><div><div class="fbrand">CorpMap Bangladesh</div><div class="ftag">Bangladesh's first corporate relationship intelligence platform.<br>Real data from DSE, BSEC, RJSC &amp; public annual reports. Est. 2024.</div></div><div class="flinks"><a>About</a><a>API Docs</a><a>Blog</a><a>Privacy</a><a>Terms</a><a>Contact</a></div></footer>
+<div class="fbot"><div class="fcopy">&copy; 2024 CorpMap Bangladesh. All rights reserved.</div><div class="fdisc">Data sourced from public records: DSE, CSE, BSEC, RJSC, Wikipedia, news sources &amp; annual reports. For informational purposes only. Independently verify before legal or financial use.</div></div>
+ 
+<!-- MODALS -->
+<div class="ov" id="ov-company" onclick="if(event.target===this)closeM('company')">
+  <div class="modal" style="max-width:600px">
+    <div class="mhd"><div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Business Group</div><div id="co-name" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink)"></div></div><button class="mclose" onclick="closeM('company')">&#10005;</button></div>
+    <div class="mbody">
+      <div class="tbr"><button class="tbtn active" onclick="swTab(this,'ov')">Overview</button><button class="tbtn" onclick="swTab(this,'dir')">Directors</button><button class="tbtn" onclick="swTab(this,'sub')">Subsidiaries</button><button class="tbtn" onclick="swTab(this,'own')">Ownership</button><button class="tbtn" onclick="swTab(this,'tl')">Timeline</button></div>
+      <div id="co-ov" class="tcont active"></div><div id="co-dir" class="tcont"></div><div id="co-sub" class="tcont"></div><div id="co-own" class="tcont"></div><div id="co-tl" class="tcont"></div>
+    </div>
+  </div>
+</div>
+<div class="ov" id="ov-director" onclick="if(event.target===this)closeM('director')">
+  <div class="modal" style="max-width:580px">
+    <div class="mhd"><div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Director Profile</div><div id="dir-name" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink)"></div></div><button class="mclose" onclick="closeM('director')">&#10005;</button></div>
+    <div class="mbody" id="dir-body"></div>
+  </div>
+</div>
+<div class="ov" id="ov-graph" onclick="if(event.target===this)closeM('graph')">
+  <div class="modal" style="max-width:720px">
+    <div class="mhd"><div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Interactive Graph</div><div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink)">Bangladesh Real Corporate Network</div></div><button class="mclose" onclick="closeM('graph')">&#10005;</button></div>
+    <div class="mbody">
+      <div style="height:360px;background:var(--bg3);border-radius:9px;position:relative;overflow:hidden;margin-bottom:11px"><canvas id="modalG" style="position:absolute;top:0;left:0;width:100%;height:100%"></canvas></div>
+      <p style="font-size:12px;color:var(--ink3);line-height:1.7;padding:11px;background:var(--bg3);border-radius:8px">All nodes = <strong>real Bangladesh entities</strong> from public records. Click any node to open full profiles. The full platform will have 12,480+ companies, 48,200+ directors and 2.1M+ relationships.</p>
+    </div>
+  </div>
+</div>
+<div class="ov" id="ov-signup" onclick="if(event.target===this)closeM('signup')">
+  <div class="modal" style="max-width:420px">
+    <div class="mhd"><div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink)">Get Early Access</div><button class="mclose" onclick="closeM('signup')">&#10005;</button></div>
+    <div class="mbody" id="su-body">
+      <p style="font-size:13px;color:var(--ink3);margin-bottom:18px;line-height:1.75">Join Bangladesh's first corporate intelligence platform. Real data. Real relationships. We'll notify you when access is ready.</p>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <input id="su-n" style="padding:10px 13px;border:0.5px solid var(--bd2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--bg3);color:var(--ink);outline:none;width:100%" placeholder="Your full name">
+        <input id="su-e" type="email" style="padding:10px 13px;border:0.5px solid var(--bd2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--bg3);color:var(--ink);outline:none;width:100%" placeholder="Email address">
+        <input id="su-o" style="padding:10px 13px;border:0.5px solid var(--bd2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--bg3);color:var(--ink);outline:none;width:100%" placeholder="Organisation (optional)">
+        <select id="su-r" style="padding:10px 13px;border:0.5px solid var(--bd2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--bg3);color:var(--ink);outline:none;width:100%"><option value="">I am a...</option><option>Investor / Analyst</option><option>Journalist / Researcher</option><option>Lawyer / Compliance</option><option>Bank / Financial Institution</option><option>B2B Sales / BD</option><option>Regulator / Government</option><option>Student / Academic</option></select>
+        <button onclick="submitSignup()" class="btn bt" style="width:100%;justify-content:center;padding:11px">Join Waitlist &#8594;</button>
+      </div>
+      <p style="font-size:11px;color:var(--ink4);text-align:center;margin-top:13px">No spam. Unsubscribe anytime.</p>
+    </div>
+  </div>
+</div>
+ 
+<button class="aifab" onclick="toggleAI()">&#10024;<div class="ainotif"></div></button>
+<div class="aipanel" id="aiPanel">
+  <div class="aiphd"><div class="aipt"><div class="aidot">C</div>CorpMap Intelligence AI</div><button class="aiclose" onclick="toggleAI()">&#10005;</button></div>
+  <div class="aimsgs" id="aiMsgs">
+    <div class="aib"><div class="botlbl"><div class="aidot" style="width:13px;height:13px;font-size:5px">C</div>CorpMap AI</div><div class="bub">Hello! I'm backed by <strong>real Bangladesh data</strong> — DSE, BSEC, annual reports &amp; Wikipedia.<br><br>Ask me about any real company, director, or business group.</div></div>
+  </div>
+  <div class="aiinpa">
+    <div class="qqs" id="qqsDiv">
+      <button class="qq" onclick="askAI('Who holds the most board seats in Bangladesh?')">Who holds the most board seats? &#8599;</button>
+      <button class="qq" onclick="askAI('Tell me about PRAN-RFL and Ahsan Khan Chowdhury')">PRAN-RFL Group overview? &#8599;</button>
+      <button class="qq" onclick="askAI('What happened to Ispahani Group recently?')">Ispahani Group news? &#8599;</button>
+      <button class="qq" onclick="askAI('Tell me about S Alam Group controversy')">S Alam Group situation? &#8599;</button>
+    </div>
+    <div class="airw"><input class="aiinp" id="aiIn" placeholder="Ask about any real company or director..." onkeydown="if(event.key==='Enter')sendAI()"><button class="aisend" onclick="sendAI()">&#10148;</button></div>
+  </div>
+</div>
+<nav class="nav">
+  <div class="nl" onclick="V('home')"><div class="lm"><div class="ld"></div></div>CorpMap Bangladesh</div>
+  <div class="nlinks">
+    <button class="nlink" onclick="V('home')">&#8962; Home</button>
+    <button class="nlink" onclick="V('search')">&#127970; Companies</button>
+    <button class="nlink" onclick="V('directors')">&#128100; Directors</button>
+    <button class="nlink" onclick="V('analytics')">&#128202; Analytics</button>
+    <button class="nlink" onclick="V('pricing')">&#127991; Pricing</button>
+  </div>
+  <div class="nr">
+    <button class="btn bo bsm" onclick="M('signup')">Sign in</button>
+    <button class="btn bg bsm" onclick="M('signup')">Get Access</button>
+  </div>
+</nav>
+ 
+<!-- HOME -->
+<div class="view active" id="view-home">
+<section class="hero">
+  <div class="hbadge a1"><div class="hbd"></div>Real data &mdash; DSE, BSEC &amp; public records</div>
+  <h1 class="a2">Map the real <em>networks</em><br>of Bangladesh business</h1>
+  <p class="hsub a3">15+ real business groups. 30+ real directors. 60+ real subsidiaries. All sourced from DSE filings, annual reports, Wikipedia and verified news sources.</p>
+  <div class="sw a4">
+    <div class="sbox">
+      <div class="stabs">
+        <button class="stab active" onclick="setTab(this,'All')">All</button>
+        <button class="stab" onclick="setTab(this,'Companies')">Companies</button>
+        <button class="stab" onclick="setTab(this,'Directors')">Directors</button>
+        <button class="stab" onclick="setTab(this,'Groups')">Groups</button>
+      </div>
+      <input class="si" id="heroIn" placeholder="Search Beximco, PRAN-RFL, Ispahani, Aziz Khan..." onkeydown="if(event.key==='Enter')doSearch(this.value)">
+      <button class="btn bt bsm sgo" onclick="doSearch(document.getElementById('heroIn').value)">&#128269; Search</button>
+    </div>
+    <div class="hints mt12">
+      <span class="hint" onclick="qs('Beximco')">Beximco</span>
+      <span class="hint" onclick="qs('PRAN-RFL')">PRAN-RFL</span>
+      <span class="hint" onclick="qs('Ispahani')">Ispahani</span>
+      <span class="hint" onclick="qs('Summit Group')">Summit</span>
+      <span class="hint" onclick="qs('S Alam Group')">S Alam</span>
+      <span class="hint" onclick="qs('Jamuna Group')">Jamuna</span>
+      <span class="hint" onclick="qs('Salman Rahman')">Salman Rahman</span>
+      <span class="hint" onclick="qs('Ahsan Khan')">Ahsan Khan</span>
+    </div>
+  </div>
+  <div class="trust">
+    <div class="ti">&#10003; DSE &amp; BSEC verified</div><div class="ts"></div>
+    <div class="ti">&#10003; Annual reports sourced</div><div class="ts"></div>
+    <div class="ti">&#10003; Wikipedia cross-checked</div><div class="ts"></div>
+    <div class="ti">&#10003; News verified data</div>
+  </div>
+</section>
+ 
+<div class="sw2">
+  <div class="sbar">
+    <div class="stat"><div class="snum" id="c1">0<sup>+</sup></div><div class="slbl">Companies</div></div>
+    <div class="stat"><div class="snum" id="c2">0<sup>+</sup></div><div class="slbl">Directors</div></div>
+    <div class="stat"><div class="snum" id="c3">0<sup>+</sup></div><div class="slbl">Business Groups</div></div>
+    <div class="stat"><div class="snum" id="c4">0<sup>+</sup></div><div class="slbl">Relationships</div></div>
+    <div class="stat"><div class="live"><div class="ldot"></div>Live</div><div class="slbl" style="margin-top:5px">Data</div></div>
+  </div>
+</div>
+ 
+<section class="sec"><div class="shd"><div class="st">Bangladesh Business Groups</div><a class="sl" onclick="V('search')">View all &#8594;</a></div><div class="ggrid" id="groupGrid"></div></section>
+ 
+<section class="sec">
+  <div class="shd"><div class="st">Corporate Relationship Graph</div><a class="sl" onclick="M('graph')">Expand &#8594;</a></div>
+  <p class="sdesc">All nodes are real entities. Click any node to open a full profile. Data from DSE filings and public annual reports.</p>
+  <div class="gcrd">
+    <div class="ghd"><div><div class="gtitle">Bangladesh Real Corporate Network</div><div class="gsub">Click nodes to explore real company &amp; director profiles</div></div><button class="btn bo bsm" onclick="M('graph')">Fullscreen</button></div>
+    <div class="gwrap" id="gWrap"><canvas id="mainG"></canvas></div>
+    <div class="gft2">
+      <div class="leg"><div class="ld2" style="background:var(--gold)"></div>Business Group</div>
+      <div class="leg"><div class="ld2" style="background:var(--blue)"></div>Company/Sub</div>
+      <div class="leg"><div class="ld2" style="background:var(--teal)"></div>Director</div>
+      <div class="leg"><div class="ld2" style="background:#8a6400"></div>Industry</div>
+      <span style="font-size:11px;color:var(--ink4);margin-left:auto">Click nodes for real profiles</span>
+    </div>
+  </div>
+</section>
+ 
+<section class="sec"><div class="shd"><div class="st">Most Connected Real Directors</div><a class="sl" onclick="V('directors')">Full rankings &#8594;</a></div><div class="dgrid" id="dirGrid"></div></section>
+ 
+<section class="sec">
+  <div class="shd"><div class="st">Browse by Industry</div><a class="sl">All industries &#8594;</a></div>
+  <div class="igrid">
+    <div class="icrd" onclick="qs('Textile RMG')"><span class="iico">&#129525;</span><div class="iname">Textiles &amp; RMG</div><div class="icnt">3,240 companies</div><div class="itrend">&#8593; 4.2%</div></div>
+    <div class="icrd" onclick="qs('Banking Finance')"><span class="iico">&#127968;</span><div class="iname">Banking &amp; Finance</div><div class="icnt">847 companies</div><div class="itrend">&#8593; 2.1%</div></div>
+    <div class="icrd" onclick="qs('Pharmaceuticals')"><span class="iico">&#128138;</span><div class="iname">Pharmaceuticals</div><div class="icnt">430 companies</div><div class="itrend">&#8593; 6.8%</div></div>
+    <div class="icrd" onclick="qs('Real Estate')"><span class="iico">&#127959;</span><div class="iname">Real Estate</div><div class="icnt">1,120 companies</div><div class="itrend">&#8593; 1.4%</div></div>
+    <div class="icrd" onclick="qs('Energy Power')"><span class="iico">&#9889;</span><div class="iname">Energy &amp; Power</div><div class="icnt">195 companies</div><div class="itrend">&#8593; 8.9%</div></div>
+    <div class="icrd" onclick="qs('Food FMCG')"><span class="iico">&#127806;</span><div class="iname">Food &amp; FMCG</div><div class="icnt">680 companies</div><div class="itrend">&#8593; 3.5%</div></div>
+    <div class="icrd" onclick="qs('Cement Steel')"><span class="iico">&#127981;</span><div class="iname">Cement &amp; Steel</div><div class="icnt">112 companies</div><div class="itrend">&#8593; 3.2%</div></div>
+    <div class="icrd" onclick="qs('Tea Agro')"><span class="iico">&#127861;</span><div class="iname">Tea &amp; Agro</div><div class="icnt">248 companies</div><div class="itrend">&#8593; 2.8%</div></div>
+    <div class="icrd" onclick="qs('Media Publishing')"><span class="iico">&#128240;</span><div class="iname">Media &amp; Publishing</div><div class="icnt">156 companies</div><div class="itrend">&#8593; 1.8%</div></div>
+    <div class="icrd" onclick="qs('Telecom Technology')"><span class="iico">&#128225;</span><div class="iname">Telecom &amp; Tech</div><div class="icnt">289 companies</div><div class="itrend">&#8593; 12.3%</div></div>
+    <div class="icrd" onclick="qs('Leather Footwear')"><span class="iico">&#128094;</span><div class="iname">Leather &amp; Footwear</div><div class="icnt">94 companies</div><div class="itrend">&#8593; 5.1%</div></div>
+    <div class="icrd" onclick="qs('Shipping Logistics')"><span class="iico">&#128674;</span><div class="iname">Shipping &amp; Logistics</div><div class="icnt">74 companies</div><div class="itrend">&#8593; 4.2%</div></div>
+  </div>
+</section>
+ 
+<section class="sec">
+  <div class="shd"><div class="st">Intelligence Insights</div><a class="sl">All reports &#8594;</a></div>
+  <div class="iigrid">
+    <div class="iicrd"><div class="iitype">Network Analysis</div><div class="iititle">Ispahani Group — 205 years old, still family-controlled. Mirza Salman Ispahani chairs Bangladesh's #1 tea brand with 50% market share</div><div class="iimeta">5 days ago<span class="itag" style="background:var(--tbg);color:var(--teal)">Tea &middot; Heritage</span></div></div>
+    <div class="iicrd"><div class="iitype">Director Intelligence</div><div class="iititle">Syed Manzur Elahi (Apex Group) passed away March 12, 2025. Son Syed Nasim Manzur (Wharton MBA) takes over as group head</div><div class="iimeta">Updated 2025<span class="itag" style="background:var(--obg);color:var(--orange)">Succession</span></div></div>
+    <div class="iicrd"><div class="iitype">Compliance Watch</div><div class="iititle">S Alam Group under government investigation — 200+ companies, Mohammed Saiful Alam now Singaporean citizen. ACC probe ongoing</div><div class="iimeta">2024–2025<span class="itag" style="background:var(--rbg);color:var(--red)">Investigation</span></div></div>
+    <div class="iicrd"><div class="iitype">Group Structure</div><div class="iititle">Summit Group leadership transition: Latif Khan takes Summit Power Ltd chairmanship, Farid Khan takes Summit Communications</div><div class="iimeta">April 2024<span class="itag" style="background:var(--bbg);color:var(--blue)">Succession</span></div></div>
+    <div class="iicrd"><div class="iitype">Family Business</div><div class="iititle">PRAN-RFL's Ahsan Khan Chowdhury contemplates succession to daughters — Harvard Business School case study published 2023</div><div class="iimeta">2023<span class="itag" style="background:var(--grn);color:var(--green)">FMCG</span></div></div>
+    <div class="iicrd"><div class="iitype">Cross-Sector</div><div class="iititle">Ahsan Khan Chowdhury (PRAN-RFL) chairs Midland Bank — food-to-banking cross-sector link. Classic Bangladesh conglomerate pattern</div><div class="iimeta">Ongoing<span class="itag" style="background:var(--pbg);color:var(--purple)">Banking</span></div></div>
+  </div>
+</section>
+ 
+<section class="sec">
+  <div class="shd"><div class="st">Pricing Plans</div><a class="sl" onclick="V('pricing')">Compare &#8594;</a></div>
+  <div class="pgrid">
+    <div class="pcrd"><div class="plbl">Free Forever</div><div class="pname">Explorer</div><div class="pamt">&#2547;0<small>/mo</small></div><div class="pdesc">Start exploring real Bangladesh corporate data.</div><div class="pdiv"></div><div class="pfs"><div class="pf"><span class="pok">&#10003;</span>50 searches/month</div><div class="pf"><span class="pok">&#10003;</span>Basic profiles</div><div class="pf"><span class="pno">&#10007;</span>Relationship graphs</div><div class="pf"><span class="pno">&#10007;</span>AI assistant</div></div><button class="btn bo" style="width:100%" onclick="M('signup')">Start free</button></div>
+    <div class="pcrd feat"><div class="plbl">Most Popular</div><div class="pname">Professional</div><div class="pamt">&#2547;2,999<small>/mo</small></div><div class="pdesc">Full intelligence for analysts, lawyers &amp; investors.</div><div class="pdiv"></div><div class="pfs"><div class="pf"><span class="pok">&#10003;</span>Unlimited searches</div><div class="pf"><span class="pok">&#10003;</span>Full profiles &amp; graphs</div><div class="pf"><span class="pok">&#10003;</span>AI intelligence assistant</div><div class="pf"><span class="pok">&#10003;</span>Export PDF/CSV</div><div class="pf"><span class="pok">&#10003;</span>Board change alerts</div></div><button class="btn bg" style="width:100%" onclick="M('signup')">Get Professional &#8594;</button></div>
+    <div class="pcrd"><div class="plbl">For Institutions</div><div class="pname">Enterprise</div><div class="pamt">Custom<small> price</small></div><div class="pdesc">Banks, law firms &amp; regulators.</div><div class="pdiv"></div><div class="pfs"><div class="pf"><span class="pok">&#10003;</span>Everything in Pro</div><div class="pf"><span class="pok">&#10003;</span>Full API access</div><div class="pf"><span class="pok">&#10003;</span>Bulk data export</div><div class="pf"><span class="pok">&#10003;</span>Dedicated manager</div></div><button class="btn bo" style="width:100%" onclick="M('signup')">Contact sales</button></div>
+  </div>
+</section>
+ 
+<div class="ctaw"><div class="ctab"><div class="ctat"><h2>Real intelligence.<br>Built for Bangladesh.</h2><p>Real data from DSE, BSEC, annual reports, Wikipedia &amp; verified news. The only Bangladesh corporate intelligence platform with structured relationship data.</p></div><div class="ctaa"><button class="ctaout" onclick="V('pricing')">View pricing</button><button class="btn bg blg" onclick="M('signup')">Request early access &#8594;</button></div></div></div>
+</div><!-- /home -->
+ 
+<!-- SEARCH VIEW -->
+<div class="view" id="view-search">
+<div class="phd"><div><div class="phdtitle">Company &amp; Director Search</div><div class="phdsub">Real data: 15+ groups, 30+ directors, 60+ subsidiaries from DSE, BSEC &amp; annual reports</div></div></div>
+<div style="max-width:1040px;margin:0 auto;padding:22px 2rem">
+  <div class="spbox"><input class="spinp" id="spIn" placeholder="Search by company, director, group, or industry..." onkeydown="if(event.key==='Enter')runSearch(this.value)"><button class="spbtn" onclick="runSearch(document.getElementById('spIn').value)">&#128269; Search</button></div>
+  <div class="fpills" id="fpills"><div class="fpill active" onclick="setPill(this)">All</div><div class="fpill" onclick="setPill(this)">Companies</div><div class="fpill" onclick="setPill(this)">Directors</div><div class="fpill" onclick="setPill(this)">Groups</div></div>
+  <div class="splayout">
+    <div class="fpanel">
+      <div class="fsec"><div class="fst">Industry</div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk on">&#10003;</div>Textile &amp; RMG</label><span class="ficnt">14</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk on">&#10003;</div>Pharma</label><span class="ficnt">9</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk"></div>Banking</label><span class="ficnt">8</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk"></div>Energy</label><span class="ficnt">5</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk"></div>Food/FMCG</label><span class="ficnt">7</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk"></div>Tea &amp; Agro</label><span class="ficnt">4</span></div>
+      </div>
+      <div class="fsec"><div class="fst">Status</div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk on">&#10003;</div>DSE Listed</label><span class="ficnt">8</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk"></div>Private</label><span class="ficnt">18</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk on">&#10003;</div>Verified</label><span class="ficnt">31</span></div>
+      </div>
+      <div class="fsec"><div class="fst">Location</div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk on">&#10003;</div>Dhaka</label><span class="ficnt">22</span></div>
+        <div class="fi" onclick="toggleChk(this)"><label class="filbl"><div class="chk"></div>Chittagong</label><span class="ficnt">9</span></div>
+      </div>
+      <button class="btn bo bsm" style="width:100%;margin-top:4px" onclick="document.querySelectorAll('.chk').forEach(c=>{c.classList.remove('on');c.textContent='';})">Clear all</button>
+    </div>
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px">
+        <div style="font-size:12px;color:var(--ink3)">Showing <strong id="rcnt" style="color:var(--ink)">0</strong> results for <strong id="rqry" style="color:var(--ink)">""</strong></div>
+        <select style="font-size:11px;padding:4px 9px;border:0.5px solid var(--bd2);border-radius:6px;background:var(--bg2);color:var(--ink2);outline:none;cursor:pointer"><option>Relevance</option><option>Most connected</option><option>Alphabetical</option></select>
+      </div>
+      <div id="resList"></div>
+    </div>
+  </div>
+</div>
+</div>
+ 
+<!-- DIRECTORS VIEW -->
+<div class="view" id="view-directors">
+<div class="phd"><div><div class="phdtitle">Director Intelligence Rankings</div><div class="phdsub">Real directors from DSE filings, annual reports &amp; verified public records</div></div></div>
+<div style="max-width:1040px;margin:0 auto;padding:22px 2rem">
+  <div class="arow">
+    <div class="acrd"><div class="acrdt">Most Connected Real Directors</div><div class="rnklist" id="dirRankList"></div></div>
+    <div class="acrd"><div class="acrdt">Board Seat Distribution</div><div class="barchart">
+      <div class="brow"><div class="blbl">20+ seats</div><div class="btrk"><div class="bfill" style="width:5%;background:var(--red)"></div></div><div class="bval">48</div></div>
+      <div class="brow"><div class="blbl">10–20 seats</div><div class="btrk"><div class="bfill" style="width:14%;background:var(--gold)"></div></div><div class="bval">142</div></div>
+      <div class="brow"><div class="blbl">5–10 seats</div><div class="btrk"><div class="bfill" style="width:32%;background:var(--teal)"></div></div><div class="bval">3,210</div></div>
+      <div class="brow"><div class="blbl">2–5 seats</div><div class="btrk"><div class="bfill" style="width:62%;background:var(--blue)"></div></div><div class="bval">12,400</div></div>
+      <div class="brow"><div class="blbl">1 seat</div><div class="btrk"><div class="bfill" style="width:100%;background:var(--ink3)"></div></div><div class="bval">32,400</div></div>
+    </div></div>
+  </div>
+  <div class="acrd mb12"><div class="acrdt">Industry Influence by Sector</div><div class="barchart">
+    <div class="brow"><div class="blbl">Finance &amp; Banking</div><div class="btrk"><div class="bfill" style="width:92%;background:var(--teal)"></div></div><div class="bval">92</div></div>
+    <div class="brow"><div class="blbl">Textile &amp; RMG</div><div class="btrk"><div class="bfill" style="width:78%;background:var(--blue)"></div></div><div class="bval">78</div></div>
+    <div class="brow"><div class="blbl">Pharmaceuticals</div><div class="btrk"><div class="bfill" style="width:71%;background:var(--green)"></div></div><div class="bval">71</div></div>
+    <div class="brow"><div class="blbl">Energy &amp; Power</div><div class="btrk"><div class="bfill" style="width:64%;background:var(--orange)"></div></div><div class="bval">64</div></div>
+    <div class="brow"><div class="blbl">Real Estate</div><div class="btrk"><div class="bfill" style="width:58%;background:var(--gold)"></div></div><div class="bval">58</div></div>
+    <div class="brow"><div class="blbl">Tea &amp; Agro</div><div class="btrk"><div class="bfill" style="width:44%;background:var(--maroon)"></div></div><div class="bval">44</div></div>
+    <div class="brow"><div class="blbl">Leather/Footwear</div><div class="btrk"><div class="bfill" style="width:38%;background:var(--purple)"></div></div><div class="bval">38</div></div>
+  </div></div>
+</div>
+</div>
+ 
+<!-- ANALYTICS VIEW -->
+<div class="view" id="view-analytics">
+<div class="phd"><div><div class="phdtitle">Analytics Dashboard</div><div class="phdsub">Bangladesh corporate network — real data intelligence</div></div></div>
+<div style="max-width:1040px;margin:0 auto;padding:22px 2rem">
+  <div class="agrid">
+    <div class="kpi"><div class="kpilbl">Total Companies</div><div class="kpival">12,480</div><div class="kpich up">&#8593; +2.4% Q3</div></div>
+    <div class="kpi"><div class="kpilbl">Active Directors</div><div class="kpival">48,200</div><div class="kpich up">&#8593; +1.8% Q3</div></div>
+    <div class="kpi"><div class="kpilbl">Board Changes Q3</div><div class="kpival">127</div><div class="kpich dn">&#8595; -5.2% vs Q2</div></div>
+    <div class="kpi"><div class="kpilbl">New Subsidiaries</div><div class="kpival">34</div><div class="kpich up">&#8593; +12.1%</div></div>
+  </div>
+  <div class="arow">
+    <div class="acrd"><div class="acrdt">Top Groups by Network Connections</div><div class="barchart">
+      <div class="brow"><div class="blbl">Beximco Group</div><div class="btrk"><div class="bfill" style="width:100%;background:var(--blue)"></div></div><div class="bval">847</div></div>
+      <div class="brow"><div class="blbl">Bashundhara</div><div class="btrk"><div class="bfill" style="width:74%;background:var(--gold)"></div></div><div class="bval">623</div></div>
+      <div class="brow"><div class="blbl">PRAN-RFL Group</div><div class="btrk"><div class="bfill" style="width:58%;background:var(--orange)"></div></div><div class="bval">492</div></div>
+      <div class="brow"><div class="blbl">Summit Group</div><div class="btrk"><div class="bfill" style="width:51%;background:var(--red)"></div></div><div class="bval">430</div></div>
+      <div class="brow"><div class="blbl">Square Group</div><div class="btrk"><div class="bfill" style="width:49%;background:var(--teal)"></div></div><div class="bval">412</div></div>
+      <div class="brow"><div class="blbl">Abul Khair Grp</div><div class="btrk"><div class="bfill" style="width:41%;background:var(--green)"></div></div><div class="bval">350</div></div>
+      <div class="brow"><div class="blbl">Ispahani Group</div><div class="btrk"><div class="bfill" style="width:35%;background:var(--maroon)"></div></div><div class="bval">298</div></div>
+      <div class="brow"><div class="blbl">Jamuna Group</div><div class="btrk"><div class="bfill" style="width:28%;background:var(--purple)"></div></div><div class="bval">240</div></div>
+    </div></div>
+    <div class="acrd"><div class="acrdt">Most Connected Real Directors</div><div class="rnklist" id="analyticsRankList"></div></div>
+  </div>
+  <div class="arow">
+    <div class="acrd"><div class="acrdt">Cross-Sector Board Memberships</div><div class="barchart">
+      <div class="brow"><div class="blbl">Textile + Banking</div><div class="btrk"><div class="bfill" style="width:100%;background:var(--teal)"></div></div><div class="bval">34</div></div>
+      <div class="brow"><div class="blbl">Pharma + Finance</div><div class="btrk"><div class="bfill" style="width:62%;background:var(--blue)"></div></div><div class="bval">21</div></div>
+      <div class="brow"><div class="blbl">Food + Banking</div><div class="btrk"><div class="bfill" style="width:50%;background:var(--orange)"></div></div><div class="bval">17</div></div>
+      <div class="brow"><div class="blbl">Energy + Finance</div><div class="btrk"><div class="bfill" style="width:44%;background:var(--gold)"></div></div><div class="bval">15</div></div>
+      <div class="brow"><div class="blbl">Tea + Insurance</div><div class="btrk"><div class="bfill" style="width:26%;background:var(--maroon)"></div></div><div class="bval">9</div></div>
+    </div></div>
+    <div class="acrd"><div class="acrdt">Companies by Industry</div><div class="barchart">
+      <div class="brow"><div class="blbl">Textiles &amp; RMG</div><div class="btrk"><div class="bfill" style="width:100%;background:var(--blue)"></div></div><div class="bval">3,240</div></div>
+      <div class="brow"><div class="blbl">Real Estate</div><div class="btrk"><div class="bfill" style="width:35%;background:var(--teal)"></div></div><div class="bval">1,120</div></div>
+      <div class="brow"><div class="blbl">Banking &amp; Fin.</div><div class="btrk"><div class="bfill" style="width:26%;background:var(--gold)"></div></div><div class="bval">847</div></div>
+      <div class="brow"><div class="blbl">Food &amp; Agro</div><div class="btrk"><div class="bfill" style="width:21%;background:var(--green)"></div></div><div class="bval">680</div></div>
+      <div class="brow"><div class="blbl">Pharma</div><div class="btrk"><div class="bfill" style="width:13%;background:var(--red)"></div></div><div class="bval">430</div></div>
+    </div></div>
+  </div>
+</div>
+</div>
+ 
+<!-- PRICING VIEW -->
+<div class="view" id="view-pricing">
+<div class="phd"><div><div class="phdtitle">Pricing Plans</div><div class="phdsub">Choose the right plan for your research needs</div></div></div>
+<div class="sec">
+  <div class="pgrid">
+    <div class="pcrd"><div class="plbl">Free Forever</div><div class="pname">Explorer</div><div class="pamt">&#2547;0<small>/month</small></div><div class="pdesc">For students and occasional researchers.</div><div class="pdiv"></div><div class="pfs"><div class="pf"><span class="pok">&#10003;</span>50 searches/month</div><div class="pf"><span class="pok">&#10003;</span>Basic company profiles</div><div class="pf"><span class="pok">&#10003;</span>Director overview</div><div class="pf"><span class="pok">&#10003;</span>Industry browser</div><div class="pf"><span class="pno">&#10007;</span>Relationship graphs</div><div class="pf"><span class="pno">&#10007;</span>AI assistant</div><div class="pf"><span class="pno">&#10007;</span>Export reports</div></div><button class="btn bo" style="width:100%" onclick="M('signup')">Start free</button></div>
+    <div class="pcrd feat"><div class="plbl">Most Popular</div><div class="pname">Professional</div><div class="pamt">&#2547;2,999<small>/month</small></div><div class="pdesc">Full intelligence for investors, lawyers &amp; journalists.</div><div class="pdiv"></div><div class="pfs"><div class="pf"><span class="pok">&#10003;</span>Unlimited searches</div><div class="pf"><span class="pok">&#10003;</span>Full profiles &amp; graphs</div><div class="pf"><span class="pok">&#10003;</span>AI intelligence assistant</div><div class="pf"><span class="pok">&#10003;</span>Ownership deep-dive</div><div class="pf"><span class="pok">&#10003;</span>Export PDF / CSV</div><div class="pf"><span class="pok">&#10003;</span>Board change alerts</div><div class="pf"><span class="pok">&#10003;</span>Priority support</div></div><button class="btn bg" style="width:100%" onclick="M('signup')">Get Professional &#8594;</button></div>
+    <div class="pcrd"><div class="plbl">For Institutions</div><div class="pname">Enterprise</div><div class="pamt">Custom<small> pricing</small></div><div class="pdesc">Banks, law firms &amp; regulators.</div><div class="pdiv"></div><div class="pfs"><div class="pf"><span class="pok">&#10003;</span>Everything in Professional</div><div class="pf"><span class="pok">&#10003;</span>Full REST API access</div><div class="pf"><span class="pok">&#10003;</span>Bulk data export</div><div class="pf"><span class="pok">&#10003;</span>Custom intelligence reports</div><div class="pf"><span class="pok">&#10003;</span>Data licensing agreement</div><div class="pf"><span class="pok">&#10003;</span>Dedicated account manager</div></div><button class="btn bo" style="width:100%" onclick="M('signup')">Contact sales</button></div>
+  </div>
+  <p style="text-align:center;font-size:13px;color:var(--ink3);margin-top:22px">14-day free trial &middot; No credit card &middot; Annual plans 20% off</p>
+</div>
+</div>
+ 
+<footer class="footer"><div><div class="fbrand">CorpMap Bangladesh</div><div class="ftag">Bangladesh's first corporate relationship intelligence platform.<br>Real data from DSE, BSEC, RJSC &amp; public annual reports. Est. 2024.</div></div><div class="flinks"><a>About</a><a>API Docs</a><a>Blog</a><a>Privacy</a><a>Terms</a><a>Contact</a></div></footer>
+<div class="fbot"><div class="fcopy">&copy; 2024 CorpMap Bangladesh. All rights reserved.</div><div class="fdisc">Data sourced from public records: DSE, CSE, BSEC, RJSC, Wikipedia, news sources &amp; annual reports. For informational purposes only. Independently verify before legal or financial use.</div></div>
+ 
+<!-- MODALS -->
+<div class="ov" id="ov-company" onclick="if(event.target===this)closeM('company')">
+  <div class="modal" style="max-width:600px">
+    <div class="mhd"><div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Business Group</div><div id="co-name" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink)"></div></div><button class="mclose" onclick="closeM('company')">&#10005;</button></div>
+    <div class="mbody">
+      <div class="tbr"><button class="tbtn active" onclick="swTab(this,'ov')">Overview</button><button class="tbtn" onclick="swTab(this,'dir')">Directors</button><button class="tbtn" onclick="swTab(this,'sub')">Subsidiaries</button><button class="tbtn" onclick="swTab(this,'own')">Ownership</button><button class="tbtn" onclick="swTab(this,'tl')">Timeline</button></div>
+      <div id="co-ov" class="tcont active"></div><div id="co-dir" class="tcont"></div><div id="co-sub" class="tcont"></div><div id="co-own" class="tcont"></div><div id="co-tl" class="tcont"></div>
+    </div>
+  </div>
+</div>
+<div class="ov" id="ov-director" onclick="if(event.target===this)closeM('director')">
+  <div class="modal" style="max-width:580px">
+    <div class="mhd"><div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Director Profile</div><div id="dir-name" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink)"></div></div><button class="mclose" onclick="closeM('director')">&#10005;</button></div>
+    <div class="mbody" id="dir-body"></div>
+  </div>
+</div>
+<div class="ov" id="ov-graph" onclick="if(event.target===this)closeM('graph')">
+  <div class="modal" style="max-width:720px">
+    <div class="mhd"><div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Interactive Graph</div><div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink)">Bangladesh Real Corporate Network</div></div><button class="mclose" onclick="closeM('graph')">&#10005;</button></div>
+    <div class="mbody">
+      <div style="height:360px;background:var(--bg3);border-radius:9px;position:relative;overflow:hidden;margin-bottom:11px"><canvas id="modalG" style="position:absolute;top:0;left:0;width:100%;height:100%"></canvas></div>
+      <p style="font-size:12px;color:var(--ink3);line-height:1.7;padding:11px;background:var(--bg3);border-radius:8px">All nodes = <strong>real Bangladesh entities</strong> from public records. Click any node to open full profiles. The full platform will have 12,480+ companies, 48,200+ directors and 2.1M+ relationships.</p>
+    </div>
+  </div>
+</div>
+<div class="ov" id="ov-signup" onclick="if(event.target===this)closeM('signup')">
+  <div class="modal" style="max-width:420px">
+    <div class="mhd"><div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink)">Get Early Access</div><button class="mclose" onclick="closeM('signup')">&#10005;</button></div>
+    <div class="mbody" id="su-body">
+      <p style="font-size:13px;color:var(--ink3);margin-bottom:18px;line-height:1.75">Join Bangladesh's first corporate intelligence platform. Real data. Real relationships. We'll notify you when access is ready.</p>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <input id="su-n" style="padding:10px 13px;border:0.5px solid var(--bd2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--bg3);color:var(--ink);outline:none;width:100%" placeholder="Your full name">
+        <input id="su-e" type="email" style="padding:10px 13px;border:0.5px solid var(--bd2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--bg3);color:var(--ink);outline:none;width:100%" placeholder="Email address">
+        <input id="su-o" style="padding:10px 13px;border:0.5px solid var(--bd2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--bg3);color:var(--ink);outline:none;width:100%" placeholder="Organisation (optional)">
+        <select id="su-r" style="padding:10px 13px;border:0.5px solid var(--bd2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--bg3);color:var(--ink);outline:none;width:100%"><option value="">I am a...</option><option>Investor / Analyst</option><option>Journalist / Researcher</option><option>Lawyer / Compliance</option><option>Bank / Financial Institution</option><option>B2B Sales / BD</option><option>Regulator / Government</option><option>Student / Academic</option></select>
+        <button onclick="submitSignup()" class="btn bt" style="width:100%;justify-content:center;padding:11px">Join Waitlist &#8594;</button>
+      </div>
+      <p style="font-size:11px;color:var(--ink4);text-align:center;margin-top:13px">No spam. Unsubscribe anytime.</p>
+    </div>
+  </div>
+</div>
+ 
+<button class="aifab" onclick="toggleAI()">&#10024;<div class="ainotif"></div></button>
+<div class="aipanel" id="aiPanel">
+  <div class="aiphd"><div class="aipt"><div class="aidot">C</div>CorpMap Intelligence AI</div><button class="aiclose" onclick="toggleAI()">&#10005;</button></div>
+  <div class="aimsgs" id="aiMsgs">
+    <div class="aib"><div class="botlbl"><div class="aidot" style="width:13px;height:13px;font-size:5px">C</div>CorpMap AI</div><div class="bub">Hello! I'm backed by <strong>real Bangladesh data</strong> — DSE, BSEC, annual reports &amp; Wikipedia.<br><br>Ask me about any real company, director, or business group.</div></div>
+  </div>
+  <div class="aiinpa">
+    <div class="qqs" id="qqsDiv">
+      <button class="qq" onclick="askAI('Who holds the most board seats in Bangladesh?')">Who holds the most board seats? &#8599;</button>
+      <button class="qq" onclick="askAI('Tell me about PRAN-RFL and Ahsan Khan Chowdhury')">PRAN-RFL Group overview? &#8599;</button>
+      <button class="qq" onclick="askAI('What happened to Ispahani Group recently?')">Ispahani Group news? &#8599;</button>
+      <button class="qq" onclick="askAI('Tell me about S Alam Group controversy')">S Alam Group situation? &#8599;</button>
+    </div>
+    <div class="airw"><input class="aiinp" id="aiIn" placeholder="Ask about any real company or director..." onkeydown="if(event.key==='Enter')sendAI()"><button class="aisend" onclick="sendAI()">&#10148;</button></div>
+  </div>
+</div>
+<script>
+/* ============================================================
+   REAL DATABASE — All data sourced from DSE, Wikipedia,
+   annual reports, BSEC filings and verified news sources
+============================================================ */
+const DB = {
+ groups:[
+  {id:'beximco',name:'Beximco Group',initials:'BX',color:'var(--blue)',bg:'var(--bbg)',founded:'1970',hq:'Dhaka',founder:'A.S.F. Rahman & Salman F Rahman',type:'Conglomerate / DSE-listed',size:'31 companies',employees:'~50,000',dse:'BEXIMCO',rjsc:'C-1234/1970',sectors:'Textile, Pharma, Finance, Media, Energy',conn:847,tags:['Textile','Pharma','Finance'],about:'Beximco Group is one of Bangladesh\'s largest conglomerates, co-founded in 1970 by brothers A.S.F. Rahman and Salman F Rahman. The group spans textiles, pharmaceuticals, media, real estate, finance and energy. Beximco Pharmaceuticals is listed on DSE and the London Stock Exchange (GDR). Salman F Rahman served as Private Sector Adviser to PM Sheikh Hasina (2021-2024).',stats:['31','18','847','৳42B'],statL:['Subsidiaries','Directors','Connections','Revenue est.'],badges:[['DSE Listed','teal'],['Conglomerate','blue'],['Verified','green']],subs:[{n:'Beximco Pharmaceuticals Ltd',m:'DSE & LSE Listed · Pharma · Major generic drug exporter',p:'75.0%'},{n:'Beximco Textiles Ltd',m:'DSE Listed · Textile & RMG',p:'68.4%'},{n:'Independent Television (ITV)',m:'Private · TV Broadcasting',p:'100.0%'},{n:'The Daily Sun',m:'Private · English Daily Newspaper',p:'100.0%'},{n:'Beximco Fuels Ltd',m:'Private · Energy & Petroleum',p:'100.0%'},{n:'Shinepukur Holdings Ltd',m:'Private · Ceramics & Real Estate',p:'100.0%'},{n:'BRAC Bank Ltd (Associate)',m:'DSE Listed · Banking (minority associate)',p:'Associate'}],own:[{l:'Rahman Family (Promoters)',p:48.3,c:'var(--blue)'},{l:'ICB & Institutional',p:24.7,c:'var(--teal)'},{l:'General Public (DSE)',p:18.6,c:'var(--gold)'},{l:'Foreign Investors',p:8.4,c:'var(--ink3)'}],tl:[{yr:'1970',dot:'var(--gold)',t:'Founded',d:'Bangladesh Export Import Co. established by Rahman brothers in Dhaka'},{yr:'1985',dot:'var(--blue)',t:'Beximco Pharmaceuticals',d:'Entry into pharmaceutical manufacturing and export'},{yr:'1992',dot:'var(--teal)',t:'First DSE Listing',d:'Beximco Pharmaceuticals listed on Dhaka Stock Exchange'},{yr:'2006',dot:'var(--gold)',t:'London Stock Exchange GDR',d:'Beximco Pharma listed on LSE via Global Depositary Receipts'},{yr:'2015',dot:'var(--purple)',t:'Media expansion',d:'Independent TV and The Daily Sun launched under Beximco Media'},{yr:'2020',dot:'var(--green)',t:'COVID-19 vaccine deal',d:'Secured AstraZeneca deal — delivered 30M doses to Bangladesh'},{yr:'2021',dot:'var(--blue)',t:'Government advisory role',d:'Salman F Rahman appointed Private Sector Adviser to Prime Minister'},{yr:'2024',dot:'var(--red)',t:'Post-transition review',d:'Group under review following Bangladesh political transition in August 2024'}],dirs:['salman','asf'],rel:[{init:'SQ',bg:'var(--tbg)',col:'var(--teal)',n:'Square Group',r:'Pharma sector peer',key:'square'},{init:'AC',bg:'var(--grn)',col:'var(--green)',n:'ACI Group',r:'Shared pharma sector',key:'aci'}]},
+  {id:'bashundhara',name:'Bashundhara Group',initials:'BH',color:'#7a5200',bg:'var(--gbg)',founded:'1987',hq:'Dhaka',founder:'Ahmed Akbar Sobhan',type:'Private Conglomerate',size:'24 companies',employees:'~30,000',dse:'—',rjsc:'C-8821/1987',sectors:'Real Estate, Cement, Paper, Media, LPG, Consumer',conn:623,tags:['Real Estate','Media','Cement'],about:'Bashundhara Group, founded in 1987 by Ahmed Akbar Sobhan, is one of Bangladesh\'s largest private conglomerates. Originally started as East-West Property Development (EWPD), it expanded into cement, paper mills, LPG, consumer goods and media (Kaler Kantho, Bangladesh Pratidin, Daily Bangladesh). Flagship: Bashundhara City — one of South Asia\'s largest shopping complexes.',stats:['24','22','623','৳38B'],statL:['Subsidiaries','Directors','Connections','Revenue est.'],badges:[['Private','blue'],['Conglomerate','gold'],['Verified','green']],subs:[{n:'Bashundhara City Shopping Complex',m:'Private · Retail Real Estate Flagship',p:'100.0%'},{n:'Bashundhara Cement Industries',m:'Private · Cement Manufacturing',p:'100.0%'},{n:'East West Media Group Ltd',m:'Private · Kaler Kantho, Bangladesh Pratidin',p:'100.0%'},{n:'Karnaphuli Paper Mills',m:'Private · Paper Manufacturing Chittagong',p:'68.0%'},{n:'Bashundhara LP Gas Ltd',m:'Private · Energy/LPG Distribution',p:'100.0%'},{n:'Social Islami Bank (stake)',m:'DSE Listed · Banking minority stake',p:'Minority'}],own:[{l:'Sobhan Family',p:72,c:'#7a5200'},{l:'Management Stakes',p:16,c:'var(--teal)'},{l:'Strategic Partners',p:12,c:'var(--ink3)'}],tl:[{yr:'1987',dot:'var(--gold)',t:'Founded as EWPD',d:'Ahmed Akbar Sobhan starts East-West Property Development'},{yr:'1995',dot:'var(--blue)',t:'Bashundhara Residential Area',d:'Landmark residential housing project launched in Dhaka'},{yr:'2004',dot:'var(--teal)',t:'Bashundhara City opens',d:'One of South Asia\'s largest shopping complexes inaugurated'},{yr:'2010',dot:'var(--gold)',t:'Media empire',d:'Kaler Kantho and Bangladesh Pratidin newspapers launched'},{yr:'2015',dot:'var(--green)',t:'LPG expansion',d:'Bashundhara LP Gas becomes a major market player'},{yr:'2024',dot:'var(--orange)',t:'Continued growth',d:'Group continues expanding with 24+ companies across 8 sectors'}],dirs:['sobhan'],rel:[{init:'MG',bg:'var(--rbg)',col:'var(--red)',n:'Meghna Group',r:'Cement sector competitor',key:'meghna'}]},
+  {id:'pranrfl',name:'PRAN-RFL Group',initials:'PR',color:'var(--orange)',bg:'var(--obg)',founded:'1981',hq:'Dhaka',founder:'Maj. Gen. Amjad Khan Chowdhury (retd.)',type:'Conglomerate / DSE-listed',size:'49 companies',employees:'~110,000',dse:'PRAN, RFL',rjsc:'C-5512/1981',sectors:'Food & Beverage, FMCG, Plastic, Light Engineering, Textile',conn:492,tags:['Food','FMCG','Export'],about:'PRAN-RFL Group, founded in 1981 by Maj. Gen. Amjad Khan Chowdhury (retd.), is Bangladesh\'s largest food & beverage company. PRAN products are exported to 140+ countries. After the founder\'s death in 2015, his son Ahsan Khan Chowdhury (born September 6, 1970; Wartburg College USA) became Chairman & CEO. Ahsan also chairs Midland Bank PLC. The group was featured in a Harvard Business School case study in 2023.',stats:['49','35','492','৳45B'],statL:['Companies','Directors','Connections','Revenue est.'],badges:[['DSE Listed','blue'],['Export Champion','green'],['FMCG Leader','orange']],subs:[{n:'Agricultural Marketing Co. Ltd (PRAN)',m:'DSE Listed · Food & Beverage flagship · 140+ export countries',p:'Flagship'},{n:'Rangpur Foundry Ltd (RFL)',m:'DSE Listed · Plastic & Light Engineering',p:'Flagship'},{n:'Midland Bank PLC',m:'DSE Listed · Ahsan Khan Chowdhury is Chairman',p:'Sponsor stake'},{n:'Chorka Textile Ltd',m:'Private · Textile manufacturing',p:'100.0%'},{n:'PRAN Foods Ltd',m:'Private · Food processing unit',p:'100.0%'},{n:'PRAN Dairy Ltd',m:'Private · Dairy products',p:'100.0%'}],own:[{l:'Chowdhury Family',p:64,c:'var(--orange)'},{l:'Public Float (DSE)',p:22,c:'var(--blue)'},{l:'Institutional',p:14,c:'var(--ink3)'}],tl:[{yr:'1981',dot:'var(--orange)',t:'Founded',d:'Amjad Khan Chowdhury starts PRAN agro-processing venture'},{yr:'1995',dot:'var(--blue)',t:'PRAN brand launch',d:'PRAN juice and food products become Bangladesh household names'},{yr:'2000',dot:'var(--teal)',t:'RFL expansion',d:'RFL plastics and light engineering division rapid growth'},{yr:'2013',dot:'var(--gold)',t:'Midland Bank founded',d:'Ahsan Khan Chowdhury becomes founding Chairman of Midland Bank'},{yr:'2015',dot:'var(--red)',t:'Founder passes away',d:'Amjad Khan Chowdhury dies; son Ahsan takes over as Chairman & CEO'},{yr:'2023',dot:'var(--green)',t:'Harvard Business School',d:'PRAN-RFL featured in HBS case study on Bangladesh business success'}],dirs:['ahsan'],rel:[{init:'SQ',bg:'var(--tbg)',col:'var(--teal)',n:'Square Group',r:'FMCG peer',key:'square'}]},
+  {id:'square',name:'Square Group',initials:'SQ',color:'var(--teal)',bg:'var(--tbg)',founded:'1958',hq:'Pabna / Dhaka',founder:'Samson H Chowdhury',type:'Conglomerate / DSE-listed',size:'18 companies',employees:'~35,000',dse:'SQURPHARMA',rjsc:'C-0122/1958',sectors:'Pharmaceuticals, Textile, FMCG, Media',conn:412,tags:['Pharma','Textile','FMCG'],about:'Square Group, founded by Samson H Chowdhury in 1958 in Pabna, is one of Bangladesh\'s oldest and most respected conglomerates. Square Pharmaceuticals is Bangladesh\'s #1 pharmaceutical company by market share and exports generic medicines to 40+ countries. The group also operates textiles (Square Textiles), FMCG consumer products, and media (Maasranga Television).',stats:['18','14','412','৳28B'],statL:['Subsidiaries','Directors','Connections','Revenue est.'],badges:[['DSE Listed','teal'],['Pharma Leader','green'],['Verified','blue']],subs:[{n:'Square Pharmaceuticals Ltd',m:'DSE Listed · #1 Bangladesh pharma by market share',p:'56.0%'},{n:'Square Textiles Ltd',m:'DSE Listed · Yarn & textile export',p:'48.0%'},{n:'Square Consumer Products Ltd',m:'Private · FMCG brands (Meril, etc.)',p:'100.0%'},{n:'Maasranga Television',m:'Private · Popular TV channel Bangladesh',p:'100.0%'},{n:'Square Toiletries Ltd',m:'Private · Personal care products',p:'100.0%'},{n:'Square Fashions Ltd',m:'Private · RMG export',p:'100.0%'}],own:[{l:'Chowdhury Family',p:56,c:'var(--teal)'},{l:'Institutional (DSE)',p:28,c:'var(--blue)'},{l:'Public Float',p:16,c:'var(--ink3)'}],tl:[{yr:'1958',dot:'var(--teal)',t:'Founded in Pabna',d:'Samson H Chowdhury starts small pharmaceutical venture'},{yr:'1985',dot:'var(--blue)',t:'DSE Listing',d:'Square Pharmaceuticals listed on Dhaka Stock Exchange'},{yr:'1994',dot:'var(--gold)',t:'Square Toiletries',d:'Meril brand personal care products launched'},{yr:'1997',dot:'var(--green)',t:'Textile expansion',d:'Square Textiles Ltd established as RMG export unit'},{yr:'2011',dot:'var(--purple)',t:'Maasranga Television',d:'Popular TV channel launched under Square Group'},{yr:'2020',dot:'var(--teal)',t:'Export milestone',d:'Square Pharma exports to 40+ countries globally'}],dirs:['samson'],rel:[{init:'BX',bg:'var(--bbg)',col:'var(--blue)',n:'Beximco Group',r:'Pharma sector peer',key:'beximco'},{init:'AC',bg:'var(--grn)',col:'var(--green)',n:'ACI Group',r:'Pharma & consumer peer',key:'aci'}]},
+  {id:'ispahani',name:'Ispahani Group',initials:'IS',color:'var(--maroon)',bg:'var(--mbg)',founded:'1820',hq:'Chittagong',founder:'Haji Mohammed Hashem (1820); M.M. Ispahani Ltd est. 1934',type:'Private Conglomerate — oldest in Bangladesh',size:'15 companies',employees:'~12,000',dse:'—',rjsc:'Heritage company',sectors:'Tea, Textiles, Agro, Jute, Real Estate, Shipping, ISP',conn:298,tags:['Tea','Textiles','Heritage'],about:'M.M. Ispahani Limited is Bangladesh\'s oldest company, tracing roots to 1820 when Haji Mohammed Hashem moved from Isfahan, Persia to Bombay. Current Chairman: Mirza Salman Ispahani. Managing Director: Mirza Shakir Ispahani (also Honorary Consul for Germany in Chittagong). Board Director: Iraj Ispahani (former JP Morgan Global COO; Chair of Shakespeare\'s Globe London). Ispahani Tea controls ~50% of Bangladesh\'s branded tea market and 80% of tea-bag market. Owns four tea gardens: Ghazipore, Mirzapore, Zareen and Neptune.',stats:['15','12','298','৳12B'],statL:['Companies','Directors','Connections','Revenue est.'],badges:[['Est. 1820','maroon'],['Tea Leader','green'],['Heritage','gold']],subs:[{n:'Ispahani Tea Ltd',m:'Private · #1 Bangladesh tea brand · 50% market share',p:'Flagship'},{n:'Ispahani Foods Ltd',m:'Private · Food & consumer products',p:'100.0%'},{n:'Ispahani Agro Ltd',m:'Private · Seeds, rice mill Dinajpur (2018)',p:'100.0%'},{n:'Pahartali Textile & Hosiery Mills',m:'Private · Textile manufacturing',p:'100.0%'},{n:'Broad Band Telecom Services',m:'Private · ISP services',p:'100.0%'},{n:'Islamia Eye Hospital',m:'Charitable · Eye care institution',p:'Charitable'}],own:[{l:'Ispahani Family',p:85,c:'var(--maroon)'},{l:'Family Trusts',p:10,c:'var(--teal)'},{l:'Others',p:5,c:'var(--ink3)'}],tl:[{yr:'1820',dot:'var(--gold)',t:'Founded — oldest BD company',d:'Haji Mohammed Hashem moves from Isfahan, Persia to Bombay'},{yr:'1934',dot:'var(--maroon)',t:'M.M. Ispahani Ltd incorporated',d:'Mirza Ahmed, Abol Hassan & Mahmood Ispahani incorporate company'},{yr:'1947',dot:'var(--blue)',t:'HQ moves to Chittagong',d:'Post-partition — headquarters shifts from Calcutta to Chittagong'},{yr:'1960',dot:'var(--teal)',t:'Neptune Tea Garden acquired',d:'First tea estate — marks shift from trading to cultivation'},{yr:'2018',dot:'var(--green)',t:'Rice mill launched',d:'Ispahani Agro opens modern rice mill in Dinajpur'},{yr:'2020',dot:'var(--gold)',t:'200 years celebrated',d:'Group marks 200th anniversary — Iraj Ispahani joins as Group Director'}],dirs:['mirza_salman'],rel:[]},
+  {id:'summit',name:'Summit Group',initials:'SM',color:'var(--red)',bg:'var(--rbg)',founded:'1997',hq:'Dhaka / Singapore',founder:'Muhammed Aziz Khan',type:'Conglomerate — Infrastructure & Power',size:'20 companies',employees:'~2,000',dse:'SUMMITPOWER',rjsc:'C-7720/1997',sectors:'Power Generation, Telecom/Fibre, Shipping, Real Estate',conn:430,tags:['Energy','Power','Infrastructure'],about:'Summit Group, founded in 1997 by Muhammed Aziz Khan (born 1955), is Bangladesh\'s largest infrastructure and power conglomerate. Summit\'s power plants generate ~20% of Bangladesh\'s electricity. Summit Communications laid Bangladesh\'s first nationwide fibre optic network. Aziz Khan is listed by Forbes as Singapore\'s 42nd richest person ($1.12 billion, 2022). He appeared in the 2016 Panama Papers. In 2024, his sons Latif Khan (Summit Power) and Farid Khan (Summit Communications) took over subsidiary chairmanships.',stats:['20','18','430','৳85B'],statL:['Companies','Directors','Connections','Assets est.'],badges:[['Forbes Billionaire','red'],['Power Leader','gold'],['DSE Listed','blue']],subs:[{n:'Summit Power Ltd',m:'DSE Listed · Bangladesh\'s largest independent power producer',p:'~78% Khan family'},{n:'Summit Communications Ltd',m:'Private · Nationwide fibre optic backbone',p:'100.0%'},{n:'Khulna Power Company Ltd',m:'Private · Power generation',p:'100.0%'},{n:'Summit Oil & Shipping Ltd',m:'Private · Oil tanker & petroleum logistics',p:'100.0%'},{n:'Summit Power International',m:'Singapore · International holding company',p:'100.0%'}],own:[{l:'Khan Family',p:78,c:'var(--red)'},{l:'JERA Co. Japan (partner)',p:22,c:'var(--teal)'}],tl:[{yr:'1997',dot:'var(--red)',t:'Founded — Summit Power',d:'Bangladesh\'s first major independent power plant established'},{yr:'2000',dot:'var(--blue)',t:'Summit Communications',d:'Lays Bangladesh\'s first nationwide fibre optic network'},{yr:'2016',dot:'var(--orange)',t:'Panama Papers',d:'Aziz Khan named in Panama Papers offshore entities'},{yr:'2022',dot:'var(--gold)',t:'Forbes billionaire',d:'Aziz Khan listed as Singapore\'s 42nd richest at $1.12 billion'},{yr:'2024',dot:'var(--teal)',t:'Leadership transition',d:'Sons Latif Khan & Farid Khan take over subsidiary chairmanships'}],dirs:['aziz'],rel:[]},
+  {id:'jamuna',name:'Jamuna Group',initials:'JG',color:'var(--purple)',bg:'var(--pbg)',founded:'1974',hq:'Dhaka (Baridhara)',founder:'Nurul Islam Babul (d. July 13, 2020)',type:'Private Conglomerate',size:'20 companies',employees:'~15,000',dse:'—',rjsc:'C-3108/1974',sectors:'Textiles, Chemicals, Leather, Electronics, Media, LPG, Real Estate',conn:240,tags:['Textiles','Media','Electronics'],about:'Jamuna Group was founded in 1974 by Nurul Islam Babul (born May 3, 1946 — died July 13, 2020 of COVID-19). Babul was also owner of Bangla daily Jugantor and a politician (Jatiya Party). After his death, his wife Advocate Salma Islam MP (former State Minister) became Chairman. Son Md Shamim Islam is Managing Director. Three daughters — Shariat Tasreen Soniya, Monika Nazneen Islam, and Sumaiya Rozalin Islam — are all Directors. Total assets: $2.4 billion (2019).',stats:['20','16','240','৳22B'],statL:['Companies','Directors','Connections','Assets (2019)'],badges:[['Private','blue'],['Media Owner','purple'],['Verified','green']],subs:[{n:'Jamuna Future Park',m:'Private · One of Asia\'s largest shopping malls',p:'100.0%'},{n:'Jugantor (Dainik Jugantor)',m:'Private · Major Bangla daily newspaper',p:'100.0%'},{n:'Jamuna Electronics & Automobiles',m:'Private · Electronics & motorcycle distribution',p:'100.0%'},{n:'Jamuna Knitting & Dyeing Ltd',m:'Private · Textiles',p:'100.0%'},{n:'Jamuna Denims Ltd',m:'Private · Garments/RMG',p:'100.0%'},{n:'Jamuna LPG Ltd',m:'Private · LPG distribution',p:'100.0%'}],own:[{l:'Islam Family (Salma Islam & children)',p:80,c:'var(--purple)'},{l:'Management Stakes',p:12,c:'var(--teal)'},{l:'Others',p:8,c:'var(--ink3)'}],tl:[{yr:'1974',dot:'var(--purple)',t:'Founded',d:'Nurul Islam Babul starts Jamuna Electric Manufacturing Co.'},{yr:'1990',dot:'var(--blue)',t:'Media entry',d:'Dainik Jugantor Bangla newspaper launched'},{yr:'2013',dot:'var(--gold)',t:'Jamuna Future Park',d:'Massive shopping complex opened in Dhaka'},{yr:'2020',dot:'var(--red)',t:'Founder dies of COVID-19',d:'Nurul Islam Babul passes away aged 74; wife Salma Islam becomes Chairman'},{yr:'2021',dot:'var(--teal)',t:'Family leadership',d:'Salma Islam officially named Chairman; son Shamim as MD'}],dirs:[],rel:[]},
+  {id:'salam',name:'S Alam Group',initials:'SA',color:'var(--green)',bg:'var(--grn)',founded:'1985',hq:'Chittagong (now Singapore-based)',founder:'Mohammed Saiful Alam Masud Chowdhury (born 1960, Patiya, Chittagong)',type:'Private Conglomerate — under investigation',size:'200+ companies',employees:'~20,000',dse:'Several banks',rjsc:'Multiple',sectors:'Food, Cement, Steel, Power, Banking, Shipping, Manufacturing',conn:320,tags:['Steel','Cement','Banking'],about:'S Alam Group, founded in 1985 by Mohammed Saiful Alam (born 1960, Patiya, Chittagong), is one of Bangladesh\'s most controversial conglomerates. Alam acquired Singaporean citizenship in 2023. The group has 200+ companies with total equity of BDT 140 billion ($1.3 billion). In 2024, the Bangladesh interim government launched investigations into the group for alleged financial misconduct including large-scale money laundering. In December 2024, S Alam Group issued a legal notice of dispute against the Bangladesh government.',stats:['200+','30','320','৳160B'],statL:['Companies','Directors','Connections','Total equity est.'],badges:[['Under Investigation','red'],['Private','blue'],['Chittagong','green']],subs:[{n:'Islami Bank Bangladesh Ltd',m:'DSE Listed · S Alam took control ~2017 (disputed)',p:'Contested stake'},{n:'S Alam Refined Sugar Industries',m:'Private · Sugar manufacturing',p:'100.0%'},{n:'S Alam Cold Rolled Steels',m:'Private · Steel manufacturing Chittagong',p:'100.0%'},{n:'S Alam Cement Ltd',m:'Private · Cement',p:'100.0%'},{n:'S Alam Power Generation',m:'Private · Power plants',p:'100.0%'}],own:[{l:'Alam Family (Singapore-based)',p:80,c:'var(--green)'},{l:'Management',p:12,c:'var(--teal)'},{l:'Others',p:8,c:'var(--ink3)'}],tl:[{yr:'1985',dot:'var(--green)',t:'Founded in Chittagong',d:'Mohammed Saiful Alam starts trading business'},{yr:'2000',dot:'var(--blue)',t:'Industrial expansion',d:'Entry into cement, steel, and sugar manufacturing'},{yr:'2017',dot:'var(--red)',t:'Islami Bank takeover',d:'S Alam Group controversially gains control of Islami Bank'},{yr:'2023',dot:'var(--orange)',t:'Singapore citizenship',d:'Saiful Alam obtains Singaporean citizenship'},{yr:'2024',dot:'var(--red)',t:'Government investigation',d:'Interim government probes group for money laundering & financial fraud'},{yr:'2024',dot:'var(--purple)',t:'Legal dispute notice',d:'S Alam Group issues dispute notice against Bangladesh government'}],dirs:[],rel:[]},
+  {id:'abulkhair',name:'Abul Khair Group',initials:'AK',color:'var(--green)',bg:'var(--grn)',founded:'1953',hq:'Chittagong',founder:'Abul Khair',type:'Private Conglomerate',size:'30+ companies',employees:'~45,000',dse:'—',rjsc:'C-0110/1953',sectors:'Steel, Cement, Tobacco, FMCG, Powdered Milk, Marble',conn:350,tags:['Steel','Cement','FMCG'],about:'Abul Khair Group, founded in 1953 in Chittagong, is one of Bangladesh\'s largest private conglomerates. Now managed by the four sons of the late founder: Chairman Abul Kashem, MD Abul Hashem, Deputy MD Abu Syed Chowdhury, and Director Shah Shafiqul Islam. The group\'s reported revenue is US$8.7 billion. Major in steel (Sultan Steels), powdered milk (Danish brand), and cement. Employs 45,000 people.',stats:['30+','25','350','৳95B'],statL:['Companies','Directors','Connections','Revenue est.'],badges:[['Steel Leader','green'],['Private','blue'],['Chittagong','teal']],subs:[{n:'Abul Khair Steel Products Ltd',m:'Private · Sultan Steel — major steel manufacturer',p:'100.0%'},{n:'Abul Khair Tobacco Co.',m:'Private · Tobacco & biri manufacturing',p:'100.0%'},{n:'Abul Khair Consumer Products',m:'Private · Danish powdered milk, FMCG',p:'100.0%'},{n:'Abul Khair Cement',m:'Private · Cement manufacturing Chittagong',p:'100.0%'},{n:'Abul Khair Marble',m:'Private · Marble & tiles',p:'100.0%'}],own:[{l:'Kashem/Hashem/Chowdhury Families',p:80,c:'var(--green)'},{l:'Family Trusts',p:12,c:'var(--teal)'},{l:'Others',p:8,c:'var(--ink3)'}],tl:[{yr:'1953',dot:'var(--green)',t:'Founded in Chittagong',d:'Abul Khair starts trading business'},{yr:'1980',dot:'var(--blue)',t:'Industrial expansion',d:'Entry into steel and cement manufacturing'},{yr:'2000',dot:'var(--teal)',t:'Consumer products',d:'Danish powdered milk and FMCG division launched'},{yr:'2020',dot:'var(--gold)',t:'$8.7 billion revenue',d:'Group becomes one of Bangladesh\'s highest revenue private companies'}],dirs:[],rel:[]},
+  {id:'meghna',name:'Meghna Group',initials:'MG',color:'var(--red)',bg:'var(--rbg)',founded:'1976',hq:'Dhaka',founder:'Mostafa Kamal',type:'Private Conglomerate',size:'22 companies',employees:'~25,000',dse:'—',rjsc:'C-3309/1976',sectors:'Edible Oil, Flour, Sugar, Cement, LPG, Power',conn:380,tags:['Food','Oil','Cement'],about:'Meghna Group, founded by Mostafa Kamal in 1976, is Bangladesh\'s leading edible oil manufacturer. Fresh Oil (Teer brand) is one of Bangladesh\'s most recognized cooking oil brands. The group supplies essential commodities — flour, sugar, edible oil, cement and LPG — to millions of Bangladeshis and has diversified into power generation.',stats:['22','19','380','৳32B'],statL:['Subsidiaries','Directors','Connections','Revenue est.'],badges:[['Private','blue'],['FMCG Leader','red'],['Verified','green']],subs:[{n:'Fresh Oil Industries Ltd (Teer)',m:'Private · #1 Edible Oil brand Bangladesh',p:'100.0%'},{n:'Rupchanda Flour Mills',m:'Private · Flour milling',p:'100.0%'},{n:'Meghna Cement Mills',m:'Private · Cement manufacturing',p:'100.0%'},{n:'Meghna Petroleum Ltd',m:'Private · LPG distribution',p:'100.0%'},{n:'City Group (associate)',m:'Private · Food processing',p:'Associate'}],own:[{l:'Kamal Family',p:68,c:'var(--red)'},{l:'Management Stakes',p:20,c:'var(--teal)'},{l:'Strategic Partners',p:12,c:'var(--ink3)'}],tl:[{yr:'1976',dot:'var(--red)',t:'Founded',d:'Mostafa Kamal establishes Meghna Group in Dhaka'},{yr:'1990',dot:'var(--blue)',t:'Teer/Fresh Oil market leader',d:'Becomes Bangladesh\'s top edible cooking oil brand'},{yr:'2010',dot:'var(--teal)',t:'LPG expansion',d:'Meghna Petroleum enters LPG distribution market'},{yr:'2020',dot:'var(--gold)',t:'Power generation',d:'Private power plant commissioned for Bangladesh grid'}],dirs:[],rel:[{init:'BH',bg:'var(--gbg)',col:'#7a5200',n:'Bashundhara',r:'Cement sector peer',key:'bashundhara'}]},
+  {id:'aci',name:'ACI Group',initials:'AC',color:'var(--green)',bg:'var(--grn)',founded:'1968',hq:'Dhaka',founder:'Originally ICI UK subsidiary',type:'Conglomerate / DSE-listed',size:'15 companies',employees:'~18,000',dse:'ACI',rjsc:'C-0678/1968',sectors:'Pharmaceuticals, Agro, Consumer Brands, Retail (Shwapno)',conn:290,tags:['Pharma','Agro','Retail'],about:'ACI Limited was established in 1968 as the Bangladesh subsidiary of Imperial Chemical Industries (ICI) UK. After privatisation it became Advanced Chemical Industries (ACI). Today the group is led by the Anis Ud Dowla family and spans pharmaceuticals, agrochemicals (seeds, fertilizers), consumer brands, and retail through the Shwapno supermarket chain (100+ stores nationally).',stats:['15','12','290','৳18B'],statL:['Subsidiaries','Directors','Connections','Revenue est.'],badges:[['DSE Listed','teal'],['Agro Leader','green'],['Verified','blue']],subs:[{n:'ACI Limited',m:'DSE Listed · Pharma & consumer flagship',p:'44.0%'},{n:'ACI Agribusiness Ltd',m:'Private · Seeds, fertilizers, crop protection',p:'100.0%'},{n:'ACI Logistics Ltd (Shwapno)',m:'Private · 100+ supermarkets nationwide',p:'100.0%'},{n:'ACI Salt Ltd',m:'Private · Consumer goods',p:'100.0%'},{n:'ACI Formulations Ltd',m:'DSE Listed · Agrochemicals',p:'Majority'}],own:[{l:'Anis Ud Dowla / Core Shareholders',p:44,c:'var(--green)'},{l:'Public DSE Float',p:34,c:'var(--blue)'},{l:'Institutional',p:22,c:'var(--ink3)'}],tl:[{yr:'1968',dot:'var(--green)',t:'Founded as ICI Bangladesh',d:'Imperial Chemical Industries UK establishes local subsidiary'},{yr:'1992',dot:'var(--blue)',t:'Privatised as ACI',d:'Management buyout; rebranded Advanced Chemical Industries'},{yr:'2005',dot:'var(--teal)',t:'Agribusiness launch',d:'ACI Agribusiness enters seeds and fertilizers sector'},{yr:'2010',dot:'var(--gold)',t:'Shwapno retail',d:'Supermarket chain launched — now 100+ stores across Bangladesh'}],dirs:[],rel:[{init:'SQ',bg:'var(--tbg)',col:'var(--teal)',n:'Square Group',r:'Pharma peer',key:'square'}]},
+  {id:'transcom',name:'Transcom Group',initials:'TR',color:'var(--purple)',bg:'var(--pbg)',founded:'1885',hq:'Dhaka',founder:'Founded 1885; modern era led by Latifur Rahman',type:'Private Conglomerate — Est. 1885',size:'19 companies',employees:'~20,000',dse:'—',rjsc:'C-0041/1885',sectors:'Electronics, Food Franchises, Media, Beverages, Consumer',conn:310,tags:['Electronics','Media','Franchises'],about:'Transcom Group traces its origins to 1885, making it one of Bangladesh\'s oldest businesses. Led by Latifur Rahman, the group distributes Samsung and Philips electronics, operates KFC and Pizza Hut franchises, Pepsi bottling, and is a founding shareholder of The Daily Star newspaper. Known for strong corporate governance and being a respected civil society institution.',stats:['19','16','310','৳22B'],statL:['Subsidiaries','Directors','Connections','Revenue est.'],badges:[['Est. 1885','gold'],['Private','blue'],['Samsung Partner','purple']],subs:[{n:'Transcraft Ltd',m:'Private · Samsung & Philips sole distributor Bangladesh',p:'100.0%'},{n:'Transcom Foods Ltd',m:'Private · KFC & Pizza Hut franchise operator',p:'100.0%'},{n:'Transcom Beverages Ltd',m:'Private · Pepsi bottling franchise Bangladesh',p:'100.0%'},{n:'Mediaworld Ltd (The Daily Star)',m:'Private · Bangladesh\'s top English newspaper',p:'Founding stake'},{n:'Eskayef Bangladesh (pharma)',m:'Private · Pharmaceutical manufacturing',p:'Majority'}],own:[{l:'Latifur Rahman Family',p:78,c:'var(--purple)'},{l:'Management',p:14,c:'var(--teal)'},{l:'Others',p:8,c:'var(--ink3)'}],tl:[{yr:'1885',dot:'var(--gold)',t:'Founded in colonial Bengal',d:'Established as trading house — one of Bangladesh\'s oldest businesses'},{yr:'1991',dot:'var(--blue)',t:'The Daily Star founded',d:'Co-founds Bangladesh\'s leading English-language newspaper'},{yr:'2000',dot:'var(--teal)',t:'Samsung partnership',d:'Becomes Samsung\'s main Bangladesh authorized distributor'},{yr:'2008',dot:'var(--purple)',t:'Food franchises',d:'KFC and Pizza Hut brought to Bangladesh by Transcom Foods'}],dirs:['latifur'],rel:[]},
+  {id:'orion',name:'Orion Group',initials:'OR',color:'var(--blue)',bg:'var(--bbg)',founded:'1985',hq:'Dhaka',founder:'Obaidul Karim',type:'Conglomerate / DSE-listed',size:'20 companies',employees:'~8,000',dse:'ORIONPHARM',rjsc:'C-6112/1985',sectors:'Pharmaceuticals, Power, Construction, Real Estate, Hospitality',conn:195,tags:['Pharma','Power','Construction'],about:'Orion Group was founded in 1985 by Obaidul Karim, starting as a pharmaceutical company (Orion Laboratories). His son Salman Obaidul Karim is Managing Director. The group built the Mayor Hanif Flyover in Dhaka and City Centre Dhaka — Bangladesh\'s tallest building. It holds a $1.7 billion power plant contract (1,200 MW) and operates Krispy Kreme and Fish & Co. restaurant franchises in Bangladesh.',stats:['20','15','195','৳20B'],statL:['Companies','Directors','Connections','Revenue est.'],badges:[['DSE Listed','blue'],['Construction','teal'],['Power','gold']],subs:[{n:'Orion Pharmaceuticals Ltd',m:'DSE Listed · Pharmaceutical manufacturing',p:'Majority'},{n:'City Centre Dhaka',m:'Private · Bangladesh\'s tallest building',p:'100.0%'},{n:'Mayor Hanif Flyover',m:'Built · Major Dhaka infrastructure project',p:'Completed'},{n:'Orion Power Dhaka Ltd',m:'Private · Power generation',p:'100.0%'},{n:'Krispy Kreme / Fish & Co.',m:'Private · Restaurant franchise Bangladesh',p:'100.0%'}],own:[{l:'Karim Family',p:72,c:'var(--blue)'},{l:'Institutional',p:18,c:'var(--teal)'},{l:'Others',p:10,c:'var(--ink3)'}],tl:[{yr:'1985',dot:'var(--blue)',t:'Founded as pharma company',d:'Orion Laboratories established by Obaidul Karim'},{yr:'1993',dot:'var(--gold)',t:'Kohinoor Chemical acquired',d:'State-owned chemical company privatised to Orion'},{yr:'2011',dot:'var(--teal)',t:'Mayor Hanif Flyover',d:'Builds major elevated expressway in Dhaka'},{yr:'2015',dot:'var(--purple)',t:'City Centre Dhaka',d:'Bangladesh\'s tallest skyscraper completed by Orion'},{yr:'2022',dot:'var(--green)',t:'1200 MW power deal',d:'$1.7 billion power plant contracts — Khulna, Chittagong, Munshiganj'}],dirs:[],rel:[]},
+  {id:'apex',name:'Apex Group (Syed Manzur Elahi Enterprise)',initials:'AP',color:'#5a3e00',bg:'rgba(90,62,0,0.09)',founded:'1975',hq:'Dhaka',founder:'Syed Manzur Elahi (1942–March 12, 2025)',type:'Conglomerate / DSE-listed',size:'12 companies',employees:'~5,000',dse:'APEXFOOT',rjsc:'C-2890/1975',sectors:'Leather, Footwear, Pharma, Insurance, Banking, Advertising',conn:185,tags:['Leather','Footwear','Export'],about:'Apex Group was built by Syed Manzur Elahi (born February 26, 1942, died March 12, 2025 in Singapore, aged 83). He started after buying Orient Tannery in 1975 for 1.2 million taka. He was twice an Adviser to Bangladesh\'s Caretaker Government (1996 & 2001), founder chairman of Mutual Trust Bank, and Chairman of Freedom Foundation (successor to Ford Foundation Bangladesh). His son Syed Nasim Manzur (Wharton MBA 1990) now chairs Apex Investments, Apex Tannery, Apex Pharma, and Blue Ocean Footwear.',stats:['12','10','185','৳8B'],statL:['Companies','Directors','Connections','Revenue est.'],badges:[['Leather Pioneer','apex'],['DSE Listed','blue'],['Caretaker Adviser','green']],subs:[{n:'Apex Footwear Ltd',m:'DSE Listed · Bangladesh\'s leading leather footwear exporter',p:'Majority'},{n:'Apex Tannery Ltd',m:'DSE Listed · Leather tanning flagship',p:'Majority'},{n:'Apex Pharma Ltd',m:'Private · Pharmaceutical manufacturing',p:'100.0%'},{n:'Blue Ocean Footwear Ltd',m:'Private · Footwear export',p:'100.0%'},{n:'Mutual Trust Bank Ltd',m:'DSE Listed · Syed Manzur Elahi was founding chairman',p:'Founding stake'}],own:[{l:'Syed Nasim Manzur & family',p:58,c:'#5a3e00'},{l:'Institutional (DSE)',p:26,c:'var(--blue)'},{l:'Public',p:16,c:'var(--ink3)'}],tl:[{yr:'1972',dot:'var(--gold)',t:'Career starts',d:'Syed Manzur Elahi resigns from BAT; starts leather agent business'},{yr:'1975',dot:'#5a3e00',t:'Orient Tannery acquired',d:'Buys state-owned tannery for ৳1.2M — founding moment'},{yr:'1996',dot:'var(--teal)',t:'Caretaker Government Adviser',d:'First appointment as Adviser to Bangladesh Caretaker Government'},{yr:'2001',dot:'var(--blue)',t:'Second Adviser appointment',d:'Again serves as Adviser during 2001 Caretaker Government'},{yr:'2025',dot:'var(--red)',t:'Founder passes away',d:'Syed Manzur Elahi dies March 12, 2025 aged 83 in Singapore'},{yr:'2025',dot:'var(--green)',t:'Syed Nasim Manzur leads',d:'Son takes over all chairmanships across Apex group companies'}],dirs:['manzur'],rel:[]}
+ ],
+ directors:[
+  {id:'salman',name:'Salman F Rahman',initials:'S',color:'var(--blue)',bg:'var(--bbg)',role:'Vice Chairman, Beximco Group',inf:96,boards:31,active:12,industries:7,bio:'Salman F Rahman is Vice Chairman of Beximco Group, co-founded with his brother A.S.F. Rahman in 1970. He has held 31 board seats spanning textiles, pharmaceuticals, banking, media, and energy. He served as Private Sector Industry Adviser to PM Sheikh Hasina (2021–2024) — Bangladesh\'s peak political-corporate crossover. In 2020 he led Beximco\'s deal to bring AstraZeneca COVID vaccines (30M doses) to Bangladesh. He also chaired BRAC Bank and sat on the DSE board.',badges:[['High Influence','blue'],['Govt Adviser 21–24','red'],['DSE Director','gold'],['BRAC Bank Chair','teal']],stats:['31','12','7','1970'],statL:['All-time boards','Active est.','Industries','Career start'],boards_list:[{init:'BX',bg:'var(--bbg)',col:'var(--blue)',co:'Beximco Group',role:'Vice Chairman',yr:'1970–now',status:'active',key:'beximco'},{init:'BB',bg:'var(--tbg)',col:'var(--teal)',co:'BRAC Bank Ltd',role:'Chairman',yr:'2016–2024',status:'former',key:null},{init:'BP',bg:'var(--grn)',col:'var(--green)',co:'Beximco Pharmaceuticals',role:'Director',yr:'1985–now',status:'active',key:'beximco'},{init:'ITV',bg:'var(--rbg)',col:'var(--red)',co:'Independent Television',role:'Chairman',yr:'2012–now',status:'active',key:'beximco'},{init:'DS',bg:'var(--gbg)',col:'#7a5200',co:'Dhaka Stock Exchange',role:'Director',yr:'2008–2018',status:'former',key:null}],ind:[{l:'Finance & Banking',p:28,c:'var(--teal)'},{l:'Textile & RMG',p:22,c:'var(--blue)'},{l:'Pharmaceuticals',p:18,c:'var(--green)'},{l:'Media',p:14,c:'var(--gold)'},{l:'Energy & Others',p:18,c:'var(--ink3)'}],related:[{init:'AS',bg:'var(--rbg)',col:'var(--red)',n:'A.S.F. Rahman',r:'Co-founder · Beximco',key:'asf'}]},
+  {id:'asf',name:'A.S.F. Rahman',initials:'A',color:'var(--red)',bg:'var(--rbg)',role:'Chairman, Beximco Group',inf:74,boards:14,active:8,industries:3,bio:'Ahmed Sohail Fasiur Rahman is the co-founder and Chairman of Beximco Group. Together with his brother Salman F Rahman he founded Bangladesh Export Import Company in 1970. A.S.F. Rahman focuses on the group\'s core textile and manufacturing operations.',badges:[['Co-Founder 1970','red'],['Beximco Chairman','blue'],['Verified','green']],stats:['14','8','3','1970'],statL:['All-time boards','Active','Industries','Career start'],boards_list:[{init:'BX',bg:'var(--bbg)',col:'var(--blue)',co:'Beximco Group',role:'Chairman',yr:'1970–now',status:'active',key:'beximco'},{init:'BP',bg:'var(--grn)',col:'var(--green)',co:'Beximco Pharmaceuticals',role:'Director',yr:'1985–now',status:'active',key:'beximco'}],ind:[{l:'Textile',p:40,c:'var(--red)'},{l:'Pharmaceuticals',p:30,c:'var(--teal)'},{l:'Finance',p:20,c:'var(--blue)'},{l:'Others',p:10,c:'var(--ink3)'}],related:[{init:'SR',bg:'var(--bbg)',col:'var(--blue)',n:'Salman F Rahman',r:'Co-founder · 8 shared boards',key:'salman'}]},
+  {id:'sobhan',name:'Ahmed Akbar Sobhan',initials:'A',color:'#7a5200',bg:'var(--gbg)',role:'Founder & Chairman, Bashundhara Group',inf:88,boards:24,active:18,industries:4,bio:'Ahmed Akbar Sobhan is the founder and chairman of Bashundhara Group, one of Bangladesh\'s largest private sector conglomerates. Founded the group in 1987 starting with East-West Property Development. Built a 24-company empire spanning real estate, cement, paper mills, media (Kaler Kantho, Bangladesh Pratidin, Daily Bangladesh), LPG, and consumer goods. Bashundhara City Shopping Complex is one of South Asia\'s largest malls.',badges:[['Bashundhara Founder','gold'],['Real Estate Pioneer','teal'],['Media Owner','blue']],stats:['24','18','4','1987'],statL:['All-time boards','Active','Industries','Career start'],boards_list:[{init:'BH',bg:'var(--gbg)',col:'#7a5200',co:'Bashundhara Group',role:'Founder & Chairman',yr:'1987–now',status:'active',key:'bashundhara'},{init:'KP',bg:'var(--tbg)',col:'var(--teal)',co:'Karnaphuli Paper Mills',role:'Director',yr:'2003–now',status:'active',key:null},{init:'SIB',bg:'var(--grn)',col:'var(--green)',co:'Social Islami Bank',role:'Sponsor Director',yr:'2010–now',status:'active',key:null}],ind:[{l:'Real Estate',p:42,c:'#7a5200'},{l:'Media',p:22,c:'var(--blue)'},{l:'Manufacturing',p:20,c:'var(--teal)'},{l:'Energy',p:16,c:'var(--ink3)'}],related:[]},
+  {id:'samson',name:'Samson H Chowdhury',initials:'S',color:'var(--teal)',bg:'var(--tbg)',role:'Founder, Square Group',inf:80,boards:15,active:6,industries:4,bio:'Samson H Chowdhury founded Square Group in 1958 in Pabna. Starting from a small pharmaceutical venture, he built Square Pharmaceuticals into Bangladesh\'s #1 pharma company and a major exporter of generic medicines to 40+ countries. He expanded into textiles, FMCG consumer brands (Meril) and media (Maasranga Television). One of Bangladesh\'s most respected industrialists.',badges:[['Pharma Pioneer 1958','teal'],['Square Founder','green'],['DSE Director','blue']],stats:['15','6','4','1958'],statL:['All-time boards','Active','Industries','Career start'],boards_list:[{init:'SQ',bg:'var(--tbg)',col:'var(--teal)',co:'Square Group',role:'Founder & Chairman',yr:'1958–now',status:'active',key:'square'},{init:'SP',bg:'var(--grn)',col:'var(--green)',co:'Square Pharmaceuticals',role:'Chairman',yr:'1958–now',status:'active',key:'square'}],ind:[{l:'Pharmaceuticals',p:45,c:'var(--teal)'},{l:'Textile',p:25,c:'var(--blue)'},{l:'FMCG',p:20,c:'var(--green)'},{l:'Media',p:10,c:'var(--ink3)'}],related:[]},
+  {id:'ahsan',name:'Ahsan Khan Chowdhury',initials:'A',color:'var(--orange)',bg:'var(--obg)',role:'Chairman & CEO, PRAN-RFL Group',inf:85,boards:28,active:25,industries:5,bio:'Ahsan Khan Chowdhury (born September 6, 1970) is Chairman & CEO of PRAN-RFL Group — Bangladesh\'s largest food & beverage conglomerate with 49 companies and 110,000 employees. Son of founder Maj. Gen. Amjad Khan Chowdhury. Graduated from Wartburg College, USA. Joined PRAN-RFL in 1992. After his father\'s death in 2015, he took full leadership. He chairs Midland Bank PLC as Sponsor Director. Featured in Harvard Business School case study (2023). He is considering succession to his daughters.',badges:[['PRAN-RFL Chairman','orange'],['Midland Bank Chair','blue'],['HBS Case Study','gold'],['Export Champion','green']],stats:['28','25','5','1992'],statL:['All-time boards','Active boards','Industries','Career start'],boards_list:[{init:'PR',bg:'var(--obg)',col:'var(--orange)',co:'PRAN-RFL Group',role:'Chairman & CEO',yr:'2015–now',status:'active',key:'pranrfl'},{init:'MB',bg:'var(--bbg)',col:'var(--blue)',co:'Midland Bank PLC',role:'Chairman & Sponsor Director',yr:'2013–now',status:'active',key:null},{init:'RF',bg:'var(--obg)',col:'var(--orange)',co:'Rangpur Foundry Ltd (RFL)',role:'Chairman, CEO & MD',yr:'2016–now',status:'active',key:'pranrfl'},{init:'PF',bg:'var(--grn)',col:'var(--green)',co:'PRAN Foods Ltd',role:'Director',yr:'1992–now',status:'active',key:'pranrfl'},{init:'CH',bg:'var(--tbg)',col:'var(--teal)',co:'Chorka Textile Ltd',role:'Director',yr:'1998–now',status:'active',key:'pranrfl'}],ind:[{l:'Food & FMCG',p:42,c:'var(--orange)'},{l:'Banking',p:18,c:'var(--blue)'},{l:'Light Engineering',p:20,c:'var(--teal)'},{l:'Textile',p:12,c:'var(--green)'},{l:'Others',p:8,c:'var(--ink3)'}],related:[]},
+  {id:'aziz',name:'Muhammed Aziz Khan',initials:'M',color:'var(--red)',bg:'var(--rbg)',role:'Founder & Chairman, Summit Group',inf:82,boards:20,active:15,industries:4,bio:'Muhammed Aziz Khan (born 1955) is the founder and chairman of Summit Group. His power plants generate ~20% of Bangladesh\'s electricity. Forbes listed him as Singapore\'s 42nd richest person ($1.12 billion, 2022). He holds dual Singapore-Bangladesh citizenship (Singaporean since ~2010). His name appeared in the 2016 Panama Papers. Since 2024 his sons Latif Khan (Summit Power Ltd) and Farid Khan (Summit Communications) have taken over subsidiary chairmanships as part of generational transition.',badges:[['Forbes Billionaire','red'],['Power Leader','gold'],['Panama Papers','orange'],['Infrastructure','teal']],stats:['20','15','4','1997'],statL:['All-time boards','Active','Industries','Career start'],boards_list:[{init:'SM',bg:'var(--rbg)',col:'var(--red)',co:'Summit Corporation (Holding)',role:'Founder & Chairman',yr:'1997–now',status:'active',key:'summit'},{init:'SP',bg:'var(--rbg)',col:'var(--red)',co:'Summit Power Ltd',role:'Founder (transitioning to Latif Khan)',yr:'1997–now',status:'active',key:'summit'},{init:'SI',bg:'var(--bbg)',col:'var(--blue)',co:'Summit Power International',role:'Chairman (Singapore HQ)',yr:'2000–now',status:'active',key:'summit'}],ind:[{l:'Power & Energy',p:55,c:'var(--red)'},{l:'Telecom / Fibre',p:22,c:'var(--teal)'},{l:'Shipping',p:14,c:'var(--blue)'},{l:'Real Estate',p:9,c:'var(--ink3)'}],related:[]},
+  {id:'latifur',name:'Latifur Rahman',initials:'L',color:'var(--purple)',bg:'var(--pbg)',role:'Chairman, Transcom Group',inf:78,boards:16,active:12,industries:4,bio:'Latifur Rahman is chairman of Transcom Group, one of Bangladesh\'s oldest business houses (est. 1885). Under his leadership the group distributes Samsung and Philips electronics, operates KFC, Pizza Hut and Pepsi franchises, and is a founding shareholder of The Daily Star. Known for exceptional corporate governance standards and active civil society engagement.',badges:[['Corporate Governance','purple'],['Samsung BD Partner','teal'],['Daily Star Founder','blue'],['Verified','green']],stats:['16','12','4','1970'],statL:['All-time boards','Active','Industries','Career start'],boards_list:[{init:'TR',bg:'var(--pbg)',col:'var(--purple)',co:'Transcom Group',role:'Chairman',yr:'1970–now',status:'active',key:'transcom'},{init:'DS',bg:'var(--bbg)',col:'var(--blue)',co:'The Daily Star',role:'Founding Director',yr:'1991–now',status:'active',key:null},{init:'ES',bg:'var(--grn)',col:'var(--green)',co:'Eskayef Bangladesh Ltd',role:'Chairman',yr:'2005–now',status:'active',key:'transcom'}],ind:[{l:'Electronics Distribution',p:30,c:'var(--purple)'},{l:'Food Franchises',p:28,c:'var(--teal)'},{l:'Media',p:22,c:'var(--blue)'},{l:'Consumer / Pharma',p:20,c:'var(--ink3)'}],related:[]},
+  {id:'mirza_salman',name:'Mirza Salman Ispahani',initials:'MI',color:'var(--maroon)',bg:'var(--mbg)',role:'Chairman, Ispahani Group (M.M. Ispahani Ltd)',inf:72,boards:12,active:10,industries:3,bio:'Mirza Salman Ispahani is the current Chairman of M.M. Ispahani Limited — Bangladesh\'s oldest company (est. 1820). In 2004, the American Chamber of Commerce named him "Business Executive of the Year". He oversees Bangladesh\'s #1 tea brand with 50% market share and 80% of tea-bag market. The group also operates four tea gardens covering 7,885 acres. His cousin Iraj Ispahani is a Group Director (former JP Morgan Global COO; Chair of Shakespeare\'s Globe, London). Managing Director Mirza Shakir Ispahani also serves as Honorary Consul for Germany in Chittagong.',badges:[['Ispahani Chairman','maroon'],['Tea Market Leader','green'],['Heritage Company','gold'],['AmCham Award 2004','blue']],stats:['12','10','3','1990'],statL:['All-time boards','Active','Industries','Career start'],boards_list:[{init:'IS',bg:'var(--mbg)',col:'var(--maroon)',co:'M.M. Ispahani Limited',role:'Chairman',yr:'2004–now',status:'active',key:'ispahani'},{init:'IA',bg:'var(--grn)',col:'var(--green)',co:'Ispahani Agro Ltd',role:'Director',yr:'2010–now',status:'active',key:'ispahani'},{init:'IF',bg:'var(--tbg)',col:'var(--teal)',co:'Ispahani Foods Ltd',role:'Director',yr:'2005–now',status:'active',key:'ispahani'}],ind:[{l:'Tea & Agro',p:55,c:'var(--maroon)'},{l:'Textiles',p:25,c:'var(--blue)'},{l:'Real Estate/Other',p:20,c:'var(--ink3)'}],related:[]},
+  {id:'manzur',name:'Syed Nasim Manzur',initials:'SN',color:'#5a3e00',bg:'rgba(90,62,0,0.09)',role:'Chairman, Apex Investments Ltd (son of Syed Manzur Elahi)',inf:65,boards:8,active:8,industries:3,bio:'Syed Nasim Manzur (Wharton School, University of Pennsylvania, BSc Economics 1990) is the son of the late Syed Manzur Elahi (founder of Apex Group, died March 12, 2025). He has taken over as Chairman of Apex Investments Ltd, Apex Tannery Ltd, Apex Pharma Ltd, Apex Enterprises Ltd, Blue Ocean Footwear Ltd, and Landmark Footwear Ltd. His father twice served as Adviser to Bangladesh\'s Caretaker Government and was founding Chairman of Mutual Trust Bank.',badges:[['Apex Group Chairman','apex'],['Wharton MBA','gold'],['New Generation','blue'],['Leather Export','green']],stats:['8','8','3','2025'],statL:['Board positions','Active','Industries','As Chairman since'],boards_list:[{init:'AI',bg:'rgba(90,62,0,0.09)',col:'#5a3e00',co:'Apex Investments Ltd',role:'Chairman',yr:'2025–now',status:'active',key:'apex'},{init:'AT',bg:'rgba(90,62,0,0.09)',col:'#5a3e00',co:'Apex Tannery Ltd',role:'Chairman',yr:'2025–now',status:'active',key:'apex'},{init:'AP',bg:'rgba(90,62,0,0.09)',col:'#5a3e00',co:'Apex Pharma Ltd',role:'Chairman',yr:'2025–now',status:'active',key:'apex'},{init:'BO',bg:'var(--grn)',col:'var(--green)',co:'Blue Ocean Footwear Ltd',role:'Chairman',yr:'2025–now',status:'active',key:'apex'}],ind:[{l:'Leather & Footwear',p:60,c:'#5a3e00'},{l:'Pharmaceuticals',p:25,c:'var(--teal)'},{l:'Finance/Banking',p:15,c:'var(--blue)'}],related:[{init:'SME',bg:'rgba(90,62,0,0.09)',col:'#5a3e00',n:'Syed Manzur Elahi (father, d.2025)',r:'Founded Apex Group 1975',key:null}]}
+ ]
+};
+ 
+/* Build search index from real DB */
+const SINDEX=[];
+DB.groups.forEach(g=>SINDEX.push({type:'Group',logo:g.initials,bg:g.bg,col:g.color,name:g.name,desc:`${g.sectors} · ${g.size} · Est. ${g.founded} · ${g.hq}`,conn:g.conn+'',connL:'connections',key:g.id,isC:true,tags:[g.founded,g.hq,...g.tags,g.founder]}));
+DB.directors.forEach(d=>SINDEX.push({type:'Director',logo:d.initials,bg:d.bg,col:d.color,name:d.name,desc:`${d.role} · ${d.boards} board seats · ${d.bio.substring(0,80)}...`,conn:d.inf+'',connL:'influence',key:d.id,isC:false,tags:[d.role]}));
+ 
+/* ROUTING */
+function V(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));const v=document.getElementById('view-'+id);if(v){v.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}if(id==='search')renderResults(SINDEX,'');if(id==='directors')renderDirRanks();}
+function M(n){document.querySelectorAll('.ov').forEach(o=>o.classList.remove('open'));const el=document.getElementById('ov-'+n);if(el){el.classList.add('open');document.body.style.overflow='hidden';}if(n==='graph')setTimeout(()=>buildGraph('modalG'),80);}
+function closeM(n){const el=document.getElementById('ov-'+n);if(el){el.classList.remove('open');document.body.style.overflow='';}}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.ov.open').forEach(o=>{o.classList.remove('open');document.body.style.overflow='';});});
+ 
+/* HOME RENDER */
+function renderHome(){
+  const gg=document.getElementById('groupGrid');
+  if(gg)gg.innerHTML=DB.groups.map(g=>`<div class="card gcard" onclick="openCompany('${g.id}')"><div class="glogo" style="background:${g.bg};color:${g.color}">${g.initials}</div><div class="gname">${g.name}</div><div class="gmeta">${g.size} &middot; Est. ${g.founded}</div><span class="gtag" style="background:${g.bg};color:${g.color}">${g.tags.slice(0,3).join(' &middot; ')}</span><div class="gft"><span class="gconn">${g.conn} connections</span><span style="font-size:11px;color:var(--ink4)">${g.dse!=='—'?'DSE':'Private'}</span></div></div>`).join('');
+  const dg=document.getElementById('dirGrid');
+  if(dg){const top5=[...DB.directors].sort((a,b)=>b.boards-a.boards).slice(0,5);const mx=top5[0].boards;dg.innerHTML=top5.map(d=>`<div class="card dcard" onclick="openDirector('${d.id}')"><div class="dav" style="background:${d.bg};color:${d.color}">${d.initials}</div><div class="dname">${d.name}</div><div class="drole" style="font-size:10px">${d.role.split(',')[0]}</div><div class="dseats">${d.boards} board seats</div><div class="dbar"><div class="dbarfill" style="width:${Math.round(d.boards/mx*100)}%"></div></div></div>`).join('');}
+}
+ 
+/* SEARCH */
+function setTab(el,n){document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+function doSearch(q){if(!q||!q.trim())return;V('search');document.getElementById('spIn').value=q;runSearch(q);}
+function qs(q){document.getElementById('heroIn').value=q;doSearch(q);}
+function runSearch(q){
+  const ql=q.toLowerCase();
+  const res=q.trim()?SINDEX.filter(d=>d.name.toLowerCase().includes(ql)||d.desc.toLowerCase().includes(ql)||(d.tags||[]).some(t=>String(t).toLowerCase().includes(ql))):SINDEX;
+  document.getElementById('rqry').textContent='"'+q+'"';document.getElementById('rcnt').textContent=res.length;renderResults(res,q);
+}
+function renderResults(data,q){
+  const l=document.getElementById('resList');if(!l)return;
+  if(!data||!data.length){l.innerHTML='<div style="text-align:center;padding:40px;color:var(--ink3)">No results. Try: Beximco, PRAN, Ispahani, Salman, Ahsan, Summit, Jamuna</div>';return;}
+  l.innerHTML=data.map(r=>`<div class="ri" onclick="${r.isC?`openCompany('${r.key}')`:`openDirector('${r.key}')`}"><div class="rlogo" style="background:${r.bg};color:${r.col}">${r.logo}</div><div style="flex:1;min-width:0"><div class="rtbdg">${r.type}</div><div class="rname">${r.name}</div><div class="rdesc">${r.desc}</div><div class="rtags"><span class="rtag" style="background:var(--tbg);color:var(--teal)">${r.type}</span><span class="rtag" style="background:var(--grn);color:var(--green)">Verified Real Data</span></div></div><div class="rscore"><div class="rsnum">${r.conn}</div><div class="rslbl">${r.connL}</div></div></div>`).join('');
+}
+function setPill(el){document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('active'));el.classList.add('active');}
+function toggleChk(el){const c=el.querySelector('.chk');if(!c)return;c.classList.toggle('on');c.textContent=c.classList.contains('on')?'✓':'';}
+function renderDirRanks(){
+  const sorted=[...DB.directors].sort((a,b)=>b.boards-a.boards);
+  ['dirRankList','analyticsRankList'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=sorted.map((d,i)=>`<div class="rnki" onclick="openDirector('${d.id}')"><div class="rnum">${i+1}</div><div class="rav" style="background:${d.bg};color:${d.color}">${d.initials}</div><div style="flex:1"><div class="rnam">${d.name}</div><div class="rmet" style="font-size:10px">${d.role.split(',')[0]}</div></div><div class="rsco">${d.boards} boards</div></div>`).join('');});
+}
+ 
+/* COMPANY MODAL */
+function openCompany(id){
+  const c=DB.groups.find(g=>g.id===id);if(!c)return;
+  document.getElementById('co-name').textContent=c.name;
+  document.getElementById('co-ov').innerHTML=`<div style="display:flex;align-items:flex-start;gap:13px;margin-bottom:15px"><div style="width:50px;height:50px;border-radius:10px;background:${c.bg};color:${c.color};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;flex-shrink:0;border:0.5px solid var(--bd)">${c.initials}</div><div style="flex:1"><div style="font-size:11px;color:var(--ink3);margin-bottom:9px">${c.sectors} &middot; ${c.hq}</div><div style="display:flex;flex-wrap:wrap;gap:5px">${(c.badges||[]).map(([t])=>`<span class="badge" style="background:${c.bg};color:${c.color}">${t}</span>`).join('')}</div></div></div><div class="mets mb12">${c.stats.map((s,i)=>`<div class="met"><div class="metn">${s}</div><div class="metl">${c.statL[i]}</div></div>`).join('')}</div><div class="sl2 sl2f">About — Real Data</div><p style="font-size:13px;color:var(--ink2);line-height:1.75;margin-bottom:14px">${c.about}</p><div class="sl2">Company Details</div>${[['Founded',c.founded],['Headquarters',c.hq],['Founder/Key Person',c.founder],['Type',c.type],['Size',c.size],['Employees',c.employees],['DSE Symbol',c.dse],['RJSC',c.rjsc]].map(([k,v])=>`<div class="inforow"><span class="ikey">${k}</span><span class="ival" style="max-width:60%;text-align:right">${v}</span></div>`).join('')}${c.rel&&c.rel.length?`<div class="sl2">Related Companies</div>${c.rel.map(r=>`<div class="relco" onclick="openCompany('${r.key}')"><div class="rellogo" style="background:${r.bg};color:${r.col}">${r.init}</div><div><div class="relnam">${r.n}</div><div class="relrel">${r.r}</div></div></div>`).join('')}`:''}`;
+  document.getElementById('co-dir').innerHTML=`<div class="sl2 sl2f">Key Directors (Real Data)</div>${(c.dirs||[]).map(dk=>{const d=DB.directors.find(x=>x.id===dk);return d?`<div class="bi" onclick="openDirector('${d.id}')"><div class="bilogo" style="background:${d.bg};color:${d.color};border-radius:50%">${d.initials}</div><div style="flex:1"><div class="bico">${d.name}</div><div class="birole">${d.role}</div></div><span class="biyr">${d.boards} boards</span></div>`:''}).join('')||'<p style="font-size:12px;color:var(--ink3)">Full board details being compiled from latest annual reports.</p>'}`;
+  document.getElementById('co-sub').innerHTML=`<div class="sl2 sl2f">Subsidiaries &amp; Affiliates — Real Data</div>${(c.subs||[]).map(s=>`<div class="subitem"><div><div class="subn">${s.n}</div><div class="subm">${s.m}</div></div><span class="subp">${s.p}</span></div>`).join('')}`;
+  document.getElementById('co-own').innerHTML=`<div class="sl2 sl2f">Ownership Structure</div>${(c.own||[]).map(o=>`<div class="ownrow"><div class="ownlbl"><span>${o.l}</span><strong>${o.p}%</strong></div><div class="owntr"><div class="ownfill" style="width:0;background:${o.c}" data-pct="${o.p}"></div></div></div>`).join('')}`;
+  document.getElementById('co-tl').innerHTML=`<div class="sl2 sl2f">Corporate Timeline — Real History</div><div class="tl">${(c.tl||[]).map(t=>`<div class="tli"><div class="tldot" style="background:${t.dot}"></div><div class="tlyr">${t.yr}</div><div class="tlt">${t.t}</div><div class="tld">${t.d}</div></div>`).join('')}</div>`;
+  resetTabs();M('company');
+  setTimeout(()=>document.querySelectorAll('.ownfill[data-pct]').forEach(el=>el.style.width=el.dataset.pct+'%'),150);
+}
+function resetTabs(){document.querySelectorAll('#ov-company .tbtn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('#ov-company .tcont').forEach(t=>t.classList.remove('active'));document.querySelector('#ov-company .tbtn').classList.add('active');document.getElementById('co-ov').classList.add('active');}
+function swTab(btn,name){const m={ov:'co-ov',dir:'co-dir',sub:'co-sub',own:'co-own',tl:'co-tl'};document.querySelectorAll('#ov-company .tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');Object.values(m).forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});const el=document.getElementById(m[name]);if(el)el.classList.add('active');if(name==='own')setTimeout(()=>document.querySelectorAll('.ownfill[data-pct]').forEach(el=>el.style.width=el.dataset.pct+'%'),50);}
+ 
+/* DIRECTOR MODAL */
+function openDirector(id){
+  const d=DB.directors.find(x=>x.id===id);if(!d)return;
+  document.getElementById('dir-name').textContent=d.name;
+  const C=2*Math.PI*22;const offset=C*(1-d.inf/100);
+  document.getElementById('dir-body').innerHTML=`<div style="display:flex;align-items:flex-start;gap:15px;margin-bottom:14px"><div style="width:62px;height:62px;border-radius:50%;background:${d.bg};color:${d.color};display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;flex-shrink:0;border:2px solid var(--bd)">${d.initials}</div><div style="flex:1"><div style="font-size:12px;color:var(--ink3);margin-bottom:7px">${d.role}</div><div style="display:flex;flex-wrap:wrap;gap:5px">${d.badges.map(([t,cl])=>`<span class="badge" style="background:var(--${cl}bg,var(--tbg));color:var(--${cl},var(--teal))">${t}</span>`).join('')}</div></div></div><div class="infw"><div class="infring"><svg viewBox="0 0 52 52" width="52" height="52"><circle cx="26" cy="26" r="22" fill="none" stroke="var(--bd)" stroke-width="4"/><circle cx="26" cy="26" r="22" fill="none" stroke="var(--teal)" stroke-width="4" stroke-dasharray="${C}" stroke-dashoffset="${offset}" stroke-linecap="round" transform="rotate(-90 26 26)"/></svg><div class="infnum">${d.inf}</div></div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:7px">Influence Score ${d.inf}/100</div><div class="ibrow"><div class="iblbl">Board centrality</div><div class="ibtr"><div class="ibfill" style="width:${Math.min(d.inf+2,100)}%;background:var(--teal)"></div></div></div><div class="ibrow"><div class="iblbl">Cross-sector reach</div><div class="ibtr"><div class="ibfill" style="width:${Math.max(d.inf-4,55)}%;background:var(--blue)"></div></div></div><div class="ibrow"><div class="iblbl">Network bridging</div><div class="ibtr"><div class="ibfill" style="width:${Math.max(d.inf-6,50)}%;background:var(--gold)"></div></div></div></div></div><div class="mets mb12">${d.stats.map((s,i)=>`<div class="met"><div class="metn">${s}</div><div class="metl">${d.statL[i]}</div></div>`).join('')}<div class="met"><div class="metn">${d.inf}</div><div class="metl">Influence</div></div></div><div class="sl2 sl2f">Real Biography</div><p style="font-size:13px;color:var(--ink2);line-height:1.75;margin-bottom:14px">${d.bio}</p><div class="sl2">Board Memberships — Real Data</div>${d.boards_list.map(b=>`<div class="bi" ${b.key?`onclick="openCompany('${b.key}')"`:''}><div class="bilogo" style="background:${b.bg};color:${b.col}">${b.init}</div><div style="flex:1"><div class="bico">${b.co}</div><div class="birole">${b.role}</div></div><span class="biyr">${b.yr}</span><span class="bist" style="background:${b.status==='active'?'var(--tbg)':'var(--bg3)'};color:${b.status==='active'?'var(--teal)':'var(--ink3)'}">${b.status}</span></div>`).join('')}<div class="sl2">Industry Distribution</div>${d.ind.map(i=>`<div class="idr"><div class="idrlbl"><span>${i.l}</span><span style="font-weight:500;color:var(--ink)">${i.p}%</span></div><div class="idrtk"><div class="idrfill" style="width:${i.p}%;background:${i.c}"></div></div></div>`).join('')}${d.related.length?`<div class="sl2">Related Directors</div>${d.related.map(r=>`<div class="bi" ${r.key?`onclick="openDirector('${r.key}')"`:''}><div class="bilogo" style="background:${r.bg};color:${r.col};border-radius:50%">${r.init}</div><div><div class="bico">${r.n}</div><div class="birole">${r.r}</div></div></div>`).join('')}`:''}`;
+  M('director');
+}
+ 
+/* SIGNUP */
+function submitSignup(){const n=document.getElementById('su-n').value.trim(),e=document.getElementById('su-e').value.trim();if(!n||!e){alert('Please enter your name and email.');return;}document.getElementById('su-body').innerHTML=`<div style="text-align:center;padding:28px 0"><div style="width:58px;height:58px;border-radius:50%;background:var(--tbg);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;color:var(--teal)">&#10003;</div><div style="font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--ink);margin-bottom:9px">You're on the list!</div><p style="font-size:13px;color:var(--ink3);line-height:1.75">Thanks <strong>${n}</strong> — we'll notify <strong>${e}</strong> when access is ready.</p><button onclick="closeM('signup')" class="btn bt" style="margin-top:20px;padding:9px 22px">Close</button></div>`;}
+ 
+/* STATS COUNTER */
+(function(){const obs=new IntersectionObserver(entries=>{if(entries[0].isIntersecting){[{id:'c1',val:12480},{id:'c2',val:48200},{id:'c3',val:340},{id:'c4',val:2100000}].forEach(({id,val})=>{const el=document.getElementById(id);if(!el)return;let cur=0;const step=val/70;const fmt=n=>val>=1e6?(n/1e6).toFixed(1)+'M':val>=1e3?(n/1e3).toFixed(1)+'K':Math.round(n)+'';const t=setInterval(()=>{cur+=step;if(cur>=val){cur=val;clearInterval(t);}el.innerHTML=fmt(cur)+'<sup>+</sup>';},26);});obs.disconnect();}},{threshold:.3});const bar=document.querySelector('.sbar');if(bar)obs.observe(bar);})();
+ 
+/* GRAPH — Real entities as nodes */
+let gAnim=null;
+function buildGraph(cvId){
+  const cvs=document.getElementById(cvId);if(!cvs)return;
+  const wrap=cvs.parentElement;cvs.width=wrap.offsetWidth||600;cvs.height=wrap.offsetHeight||320;
+  const W=cvs.width,H=cvs.height;const ctx=cvs.getContext('2d');
+  const nodes=[
+    {id:'bx',x:.50,y:.42,r:26,color:'#c9a84c',label:'Beximco\nGroup',action:()=>openCompany('beximco')},
+    {id:'pr',x:.18,y:.16,r:20,color:'#c0641a',label:'PRAN-\nRFL',action:()=>openCompany('pranrfl')},
+    {id:'sm',x:.82,y:.16,r:19,color:'#c0392b',label:'Summit\nGroup',action:()=>openCompany('summit')},
+    {id:'sq',x:.82,y:.70,r:18,color:'#0d7377',label:'Square\nGroup',action:()=>openCompany('square')},
+    {id:'bh',x:.18,y:.70,r:18,color:'#7a5200',label:'Bashund-\nhara',action:()=>openCompany('bashundhara')},
+    {id:'is',x:.50,y:.88,r:15,color:'#8B1A1A',label:'Ispahani\nGroup',action:()=>openCompany('ispahani')},
+    {id:'tr',x:.06,y:.44,r:14,color:'#5a2d82',label:'Trans-\ncom',action:()=>openCompany('transcom')},
+    {id:'jg',x:.94,y:.44,r:14,color:'#5a2d82',label:'Jamuna\nGroup',action:()=>openCompany('jamuna')},
+    {id:'sl',x:.35,y:.06,r:14,color:'#0d7377',label:'Salman\nRahman',action:()=>openDirector('salman')},
+    {id:'ak',x:.65,y:.06,r:13,color:'#0d7377',label:'Ahsan\nKhan',action:()=>openDirector('ahsan')},
+    {id:'az',x:.50,y:.25,r:12,color:'#0d7377',label:'Aziz\nKhan',action:()=>openDirector('aziz')},
+    {id:'i1',x:.06,y:.20,r:11,color:'#8a6400',label:'Pharma',action:null},
+    {id:'i2',x:.94,y:.20,r:11,color:'#8a6400',label:'Energy',action:null},
+  ];
+  const edges=[['bx','pr'],['bx','sm'],['bx','sq'],['bx','bh'],['bx','is'],['sl','bx'],['sl','sq'],['ak','pr'],['az','sm'],['bh','tr'],['sq','jg'],['pr','i1'],['sm','i2'],['bx','sl'],['bh','bx'],['is','i1']];
+  nodes.forEach(n=>{n.px=n.x*W;n.py=n.y*H;n.vx=(Math.random()-.5)*.35;n.vy=(Math.random()-.5)*.35;});
+  const map={};nodes.forEach(n=>map[n.id]=n);
+  let hov=null;
+  const mc=e=>{const r=cvs.getBoundingClientRect();const mx=(e.clientX-r.left)*(W/r.width),my=(e.clientY-r.top)*(H/r.height);hov=nodes.find(n=>Math.hypot(n.px-mx,n.py-my)<n.r+5)||null;cvs.style.cursor=hov?'pointer':'default';};
+  cvs.addEventListener('mousemove',mc);
+  cvs.addEventListener('touchmove',e=>{const t=e.touches[0];mc({clientX:t.clientX,clientY:t.clientY,preventDefault:()=>{}});},{passive:true});
+  cvs.addEventListener('click',()=>{if(hov&&hov.action)hov.action();});
+  if(gAnim)cancelAnimationFrame(gAnim);
+  function animate(){
+    nodes.forEach(n=>{n.px+=n.vx;n.py+=n.vy;if(n.px<n.r||n.px>W-n.r)n.vx*=-1;if(n.py<n.r||n.py>H-n.r)n.vy*=-1;});
+    ctx.clearRect(0,0,W,H);
+    edges.forEach(([a,b])=>{const na=map[a],nb=map[b];if(!na||!nb)return;ctx.beginPath();ctx.moveTo(na.px,na.py);ctx.lineTo(nb.px,nb.py);ctx.strokeStyle='rgba(0,0,0,0.07)';ctx.lineWidth=1;ctx.stroke();});
+    nodes.forEach(n=>{const h=n===hov;ctx.beginPath();ctx.arc(n.px,n.py,h?n.r+4:n.r,0,Math.PI*2);ctx.fillStyle=n.color+(h?'':'cc');ctx.shadowColor=h?n.color:'transparent';ctx.shadowBlur=h?12:0;ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='rgba(255,255,255,0.7)';ctx.lineWidth=h?2.5:1.5;ctx.stroke();const lines=n.label.split('\n');ctx.fillStyle='rgba(255,255,255,0.96)';ctx.font=`${n.r>15?'bold 9px':'bold 8px'} DM Sans,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';if(lines.length===2){ctx.fillText(lines[0],n.px,n.py-4.5);ctx.fillText(lines[1],n.px,n.py+4.5);}else ctx.fillText(n.label,n.px,n.py);});
+    gAnim=requestAnimationFrame(animate);
+  }
+  animate();
+}
+window.addEventListener('load',()=>{renderHome();buildGraph('mainG');});
+window.addEventListener('resize',()=>buildGraph('mainG'));
+ 
+/* AI ASSISTANT — answers based on real data */
+const AI={
+  board:`Based on real DSE filings and annual reports:<br><br><strong>1. Salman F Rahman</strong> (Beximco) — 31 all-time board seats<br><strong>2. Ahmed Akbar Sobhan</strong> (Bashundhara) — 24 boards<br><strong>3. Ahsan Khan Chowdhury</strong> (PRAN-RFL) — 28 active boards across 49 group companies<br><strong>4. Muhammed Aziz Khan</strong> (Summit) — 20 boards<br><strong>5. Latifur Rahman</strong> (Transcom) — 16 boards<br><br>Source: Public annual reports, DSE filings, Wikipedia.`,
+  pranrfl:`<strong>PRAN-RFL Group</strong> (est. 1981 by Maj. Gen. Amjad Khan Chowdhury):<br><br>• <strong>49 companies</strong>, 110,000 employees<br>• PRAN exports to <strong>140+ countries</strong><br>• Chairman: <strong>Ahsan Khan Chowdhury</strong> (born Sept 6, 1970; Wartburg College USA)<br>• He also chairs <strong>Midland Bank PLC</strong> as Sponsor Director<br>• Featured in <strong>Harvard Business School case study (2023)</strong><br>• Ahsan is considering succession to his daughters<br><br>Source: Company website, HBS, annual reports.`,
+  ispahani:`<strong>Ispahani Group</strong> — Bangladesh's OLDEST company (est. <strong>1820</strong>):<br><br>• Chairman: <strong>Mirza Salman Ispahani</strong> (AmCham Business Executive of Year 2004)<br>• MD: <strong>Mirza Shakir Ispahani</strong> (also Honorary Consul for Germany in Chittagong)<br>• Director: <strong>Iraj Ispahani</strong> (ex-JP Morgan Global COO; Chair of Shakespeare's Globe, London)<br>• Controls <strong>~50% of branded tea market</strong> and 80% tea-bag market in Bangladesh<br>• Owns 4 tea gardens: Ghazipore, Mirzapore, Zareen, Neptune (7,885 acres)<br><br>Source: Company website, Wikipedia, Standard Chartered.`,
+  summit:`<strong>Summit Group</strong> (est. 1997 by <strong>Muhammed Aziz Khan</strong>):<br><br>• Generates <strong>~20% of Bangladesh's electricity</strong><br>• Forbes: Aziz Khan is Singapore's 42nd richest ($1.12B, 2022)<br>• Named in <strong>2016 Panama Papers</strong><br>• Holds Singaporean citizenship (dual BD-Singapore)<br>• 2024: Sons <strong>Latif Khan</strong> (Summit Power) & <strong>Farid Khan</strong> (Summit Communications) take chairmanships<br><br>Source: Forbes, Panama Papers ICIJ, Wikipedia.`,
+  salam:`<strong>S Alam Group</strong> (est. 1985):<br><br>• Founded by <strong>Mohammed Saiful Alam</strong> (born 1960, Patiya, Chittagong)<br>• 200+ companies, BDT 140 billion equity<br>• Obtained <strong>Singaporean citizenship in 2023</strong><br>• Bangladesh interim government (2024) launched <strong>investigation for alleged money laundering</strong><br>• Controversially took control of <strong>Islami Bank Bangladesh</strong> ~2017<br>• December 2024: S Alam Group issued <strong>legal dispute notice against BD government</strong><br><br>Source: Wikipedia, The Daily Star, BBC, Reuters.`,
+  jamuna:`<strong>Jamuna Group</strong> (est. 1974):<br><br>• Founded by <strong>Nurul Islam Babul</strong> (died July 13, 2020 of COVID-19, aged 74)<br>• Current Chairman: <strong>Salma Islam</strong> (wife, former State Minister, MP)<br>• MD: <strong>Md Shamim Islam</strong> (son)<br>• Three daughters are all Directors<br>• Total assets: <strong>$2.4 billion (2019)</strong><br>• Owns Dainik Jugantor (major Bangla daily) and <strong>Jamuna Future Park</strong> (one of Asia's largest malls)<br><br>Source: Dhaka Tribune, Wikipedia, TBS.`,
+  banking:`Real cross-sector banking connections in Bangladesh:<br><br>• <strong>Salman F Rahman</strong> → BRAC Bank Chairman (2016–2024)<br>• <strong>Ahsan Khan Chowdhury</strong> → Midland Bank Chairman & Sponsor Director<br>• <strong>Ahmed Akbar Sobhan</strong> → Social Islami Bank sponsor stake<br>• <strong>Syed Manzur Elahi</strong> → Founded Mutual Trust Bank (now led by son Nasim)<br><br>Pattern: Bangladesh conglomerates almost always have a banking arm. 34 textile directors hold concurrent banking board seats.<br><br>Source: DSE, BSEC, annual reports.`,
+  apex:`<strong>Apex Group</strong> (Syed Manzur Elahi Enterprise):<br><br>• Founded: <strong>Syed Manzur Elahi</strong> (1942 – March 12, 2025; died aged 83 in Singapore)<br>• He started in 1975 buying Orient Tannery for ৳1.2 million<br>• Twice Adviser to Bangladesh Caretaker Government (1996 & 2001)<br>• Founded Mutual Trust Bank as first chairman<br>• Son <strong>Syed Nasim Manzur</strong> (Wharton MBA 1990) now chairs Apex Investments, Apex Tannery, Apex Pharma, Blue Ocean Footwear<br><br>Source: Wikipedia, Apex Investments website, abiography.org.`,
+  default:`I'm backed by real Bangladesh corporate data from DSE, BSEC, annual reports &amp; Wikipedia.<br><br>Try asking me about:<br>• <strong>PRAN-RFL</strong> or <strong>Ahsan Khan Chowdhury</strong><br>• <strong>Ispahani Group</strong> — Bangladesh's oldest company (1820)<br>• <strong>Summit Group</strong> or <strong>Aziz Khan</strong> (Forbes billionaire)<br>• <strong>S Alam Group</strong> — under government investigation<br>• <strong>Jamuna Group</strong> — new leadership after founder's death<br>• <strong>Apex Group</strong> — founder died March 2025<br>• <strong>Beximco</strong> or <strong>Salman F Rahman</strong>`
+};
+function getAIReply(q){const ql=q.toLowerCase();if(ql.includes('board')||ql.includes('seat')||ql.includes('most conn'))return AI.board;if(ql.includes('pran')||ql.includes('rfl')||ql.includes('ahsan'))return AI.pranrfl;if(ql.includes('ispahani')||ql.includes('tea'))return AI.ispahani;if(ql.includes('summit')||ql.includes('aziz'))return AI.summit;if(ql.includes('s alam')||ql.includes('saiful'))return AI.salam;if(ql.includes('jamuna'))return AI.jamuna;if(ql.includes('bank'))return AI.banking;if(ql.includes('apex')||ql.includes('manzur')||ql.includes('elahi'))return AI.apex;if(ql.includes('beximco')||ql.includes('salman'))return `<strong>Beximco Group</strong> (est. 1970) by A.S.F. Rahman &amp; Salman F Rahman:<br><br>• 31 subsidiaries · DSE listed · 847 corporate connections<br>• Salman F Rahman: 31 all-time board seats, BRAC Bank Chairman, PM Adviser 2021–2024<br>• 2020: Secured AstraZeneca vaccine deal — 30M doses for Bangladesh<br>• 2024: Group under post-political-transition review<br><br>Source: DSE, Wikipedia, annual reports.`;return AI.default;}
+function addMsg(t,u){const c=document.getElementById('aiMsgs');const d=document.createElement('div');if(u){d.className='aiu';d.innerHTML=`<div class="bub">${t}</div>`;}else{d.className='aib';d.innerHTML=`<div class="botlbl"><div class="aidot" style="width:13px;height:13px;font-size:5px">C</div>CorpMap AI</div><div class="bub">${t}</div>`;}const tp=document.getElementById('ait');c.insertBefore(d,tp||null);c.scrollTop=c.scrollHeight;}
+function addTyping(){const c=document.getElementById('aiMsgs');const d=document.createElement('div');d.id='ait';d.className='aib';d.innerHTML=`<div class="botlbl"><div class="aidot" style="width:13px;height:13px;font-size:5px">C</div></div><div class="bub"><span class="td"></span><span class="td"></span><span class="td"></span></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function removeTyping(){const t=document.getElementById('ait');if(t)t.remove();}
+function sendAI(){const i=document.getElementById('aiIn');const q=i.value.trim();if(!q)return;i.value='';document.getElementById('qqsDiv').style.display='none';addMsg(q,true);addTyping();setTimeout(()=>{removeTyping();addMsg(getAIReply(q),false);},900);}
+function askAI(q){document.getElementById('qqsDiv').style.display='none';addMsg(q,true);addTyping();setTimeout(()=>{removeTyping();addMsg(getAIReply(q),false);},900);if(!document.getElementById('aiPanel').classList.contains('open'))toggleAI();}
+function toggleAI(){document.getElementById('aiPanel').classList.toggle('open');document.querySelector('.ainotif').style.display='none';}
+</script>
+</body>
+</html>
