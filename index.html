@@ -621,8 +621,31 @@ function openDirector(id){
 }
  
 /* SIGNUP */
-function submitSignup(){const n=document.getElementById('su-n').value.trim(),e=document.getElementById('su-e').value.trim();if(!n||!e){alert('Please enter your name and email.');return;}document.getElementById('su-body').innerHTML=`<div style="text-align:center;padding:28px 0"><div style="width:58px;height:58px;border-radius:50%;background:var(--tbg);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;color:var(--teal)">&#10003;</div><div style="font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--ink);margin-bottom:9px">You're on the list!</div><p style="font-size:13px;color:var(--ink3);line-height:1.75">Thanks <strong>${n}</strong> — we'll notify <strong>${e}</strong> when access is ready.</p><button onclick="closeM('signup')" class="btn bt" style="margin-top:20px;padding:9px 22px">Close</button></div>`;}
- 
+function submitSignup(){
+  const n=document.getElementById('su-n').value.trim();
+  const e=document.getElementById('su-e').value.trim();
+  const o=document.getElementById('su-o').value.trim();
+  const r=document.getElementById('su-r').value;
+  if(!n||!e){alert('Please enter your name and email.');return;}
+  import('https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js').then(({initializeApp})=>{
+    import('https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js').then(({getFirestore,addDoc,collection,serverTimestamp})=>{
+      const app=initializeApp({
+        apiKey:"AIzaSyDZj_MKurFUdoxC2xovq8JV5E5nfKcUMf4",
+        authDomain:"corpmap-bd.firebaseapp.com",
+        projectId:"corpmap-bd",
+        storageBucket:"corpmap-bd.firebasestorage.app",
+        messagingSenderId:"427579183346",
+        appId:"1:427579183346:web:8297c2b9174159aeb4806b"
+      },{name:'signup-'+Date.now()});
+      const db=getFirestore(app);
+      addDoc(collection(db,'signups'),{name:n,email:e,org:o,role:r,date:serverTimestamp()})
+      .then(()=>{
+        document.getElementById('su-body').innerHTML=`<div style="text-align:center;padding:28px 0"><div style="width:58px;height:58px;border-radius:50%;background:var(--tbg);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;color:var(--teal)">&#10003;</div><div style="font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--ink);margin-bottom:9px">You're on the list!</div><p style="font-size:13px;color:var(--ink3);line-height:1.75">Thanks <strong>${n}</strong> — we'll notify <strong>${e}</strong> when access is ready.</p><button onclick="closeM('signup')" class="btn bt" style="margin-top:20px;padding:9px 22px">Close</button></div>`;
+      })
+      .catch(err=>{alert('Error saving. Please try again.');console.error(err);});
+    });
+  });
+}
 /* STATS COUNTER */
 (function(){const obs=new IntersectionObserver(entries=>{if(entries[0].isIntersecting){[{id:'c1',val:12480},{id:'c2',val:48200},{id:'c3',val:340},{id:'c4',val:2100000}].forEach(({id,val})=>{const el=document.getElementById(id);if(!el)return;let cur=0;const step=val/70;const fmt=n=>val>=1e6?(n/1e6).toFixed(1)+'M':val>=1e3?(n/1e3).toFixed(1)+'K':Math.round(n)+'';const t=setInterval(()=>{cur+=step;if(cur>=val){cur=val;clearInterval(t);}el.innerHTML=fmt(cur)+'<sup>+</sup>';},26);});obs.disconnect();}},{threshold:.3});const bar=document.querySelector('.sbar');if(bar)obs.observe(bar);})();
  
