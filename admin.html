@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CorpMap Admin — Manage Data</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0d1117;--ink2:#2d3240;--ink3:#6b7280;--ink4:#9ca3af;
+  --gold:#c9a84c;--gold2:#e8c96a;--gbg:rgba(201,168,76,0.10);
+  --teal:#0d7377;--teal2:#14a085;--tbg:rgba(13,115,119,0.09);
+  --bg:#f5f2ec;--bg2:#fff;--bg3:#ede9e0;--bg4:#e4dfd4;
+  --bd:#ddd8cf;--bd2:#ccc5ba;
+  --red:#c0392b;--rbg:rgba(192,57,43,0.09);
+  --green:#167b48;--grn:rgba(22,123,72,0.09);
+  --s1:0 1px 3px rgba(0,0,0,0.05),0 4px 12px rgba(0,0,0,0.04);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);}
+.hide{display:none!important;}
+/* LOGIN */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.loginbox{background:var(--bg2);border:0.5px solid var(--bd);border-radius:14px;padding:36px 32px;width:100%;max-width:380px;box-shadow:var(--s1);}
+.loginbox h1{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px;}
+.loginbox p{font-size:13px;color:var(--ink3);margin-bottom:22px;}
+.field{margin-bottom:13px;}
+.field label{display:block;font-size:12px;color:var(--ink3);margin-bottom:5px;}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:0.5px solid var(--bd2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--bg3);color:var(--ink);outline:none;}
+.field input:focus,.field textarea:focus{border-color:var(--teal);}
+.field textarea{resize:vertical;font-family:monospace;font-size:11px;min-height:70px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:8px;font-size:13px;font-weight:500;padding:10px 18px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;}
+.bt{background:var(--teal);color:#fff;}.bt:hover{background:var(--teal2);}
+.bo{background:transparent;border:0.5px solid var(--bd2);color:var(--ink2);}.bo:hover{background:var(--bg3);}
+.br{background:var(--red);color:#fff;}.br:hover{opacity:.85;}
+.errmsg{font-size:12px;color:var(--red);margin-top:8px;min-height:14px;}
+/* APP SHELL */
+#appShell{display:flex;min-height:100vh;}
+.sidebar{width:210px;background:var(--ink);color:#e8e4db;padding:20px 14px;flex-shrink:0;}
+.sbrand{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:26px;display:flex;align-items:center;gap:8px;}
+.sdot{width:9px;height:9px;border-radius:50%;background:var(--gold);}
+.snav button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:none;color:#c5bfb4;font-size:13px;padding:10px 12px;border-radius:8px;cursor:pointer;margin-bottom:3px;font-family:'DM Sans',sans-serif;}
+.snav button:hover{background:rgba(255,255,255,0.06);color:#fff;}
+.snav button.active{background:var(--gold);color:#1a1200;font-weight:500;}
+.sfoot{margin-top:auto;padding-top:18px;border-top:0.5px solid rgba(255,255,255,0.1);}
+.sfoot .uemail{font-size:11px;color:#9a948a;margin-bottom:8px;word-break:break-all;}
+.main{flex:1;padding:28px 32px;overflow-x:auto;}
+.pagehd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.pagehd h2{font-family:'Playfair Display',serif;font-size:22px;}
+.pagehd p{font-size:12px;color:var(--ink3);margin-top:3px;}
+table{width:100%;border-collapse:collapse;background:var(--bg2);border:0.5px solid var(--bd);border-radius:10px;overflow:hidden;}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);padding:10px 14px;background:var(--bg3);border-bottom:0.5px solid var(--bd);}
+td{padding:10px 14px;font-size:13px;border-bottom:0.5px solid var(--bd);vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+.rowbtns{display:flex;gap:6px;}
+.rowbtns button{font-size:11px;padding:5px 10px;border-radius:6px;border:none;cursor:pointer;}
+.editbtn{background:var(--tbg);color:var(--teal);}
+.delbtn{background:var(--rbg);color:var(--red);}
+.tag{font-size:10px;padding:2px 7px;border-radius:7px;background:var(--gbg);color:var(--gold);}
+.loadingrow td{text-align:center;color:var(--ink3);padding:24px;}
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;z-index:300;background:rgba(13,17,23,0.6);align-items:center;justify-content:center;padding:20px;}
+.ov.open{display:flex;}
+.modal{background:var(--bg2);border-radius:14px;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.mhd{padding:18px 22px;border-bottom:0.5px solid var(--bd);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg2);}
+.mhd h3{font-family:'Playfair Display',serif;font-size:18px;}
+.mclose{background:var(--bg3);border:none;border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:14px;color:var(--ink3);}
+.mbody{padding:18px 22px 24px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.sectionlbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin:16px 0 8px;}
+.hint{font-size:10.5px;color:var(--ink4);margin-top:3px;}
+.savebar{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--ink);color:#fff;padding:11px 18px;border-radius:9px;font-size:13px;z-index:400;display:none;box-shadow:0 8px 24px rgba(0,0,0,.2);}
+.toast.show{display:block;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="loginbox">
+    <h1>CorpMap Admin</h1>
+    <p>Sign in to manage companies, directors &amp; signups.</p>
+    <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="you@example.com"></div>
+    <div class="field"><label>Password</label><input id="loginPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn bt" style="width:100%" onclick="doLogin()">Sign In</button>
+    <div class="errmsg" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="appShell" class="hide">
+  <div class="sidebar" style="display:flex;flex-direction:column">
+    <div class="sbrand"><div class="sdot"></div>CorpMap Admin</div>
+    <div class="snav">
+      <button id="navGroups" class="active" onclick="switchTab('groups')">&#127970; Groups</button>
+      <button id="navDirectors" onclick="switchTab('directors')">&#128100; Directors</button>
+      <button id="navSignups" onclick="switchTab('signups')">&#128231; Signups</button>
+    </div>
+    <div class="sfoot">
+      <div class="uemail" id="userEmail"></div>
+      <button class="btn bo" style="width:100%;font-size:12px" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- GROUPS TAB -->
+    <div id="tab-groups">
+      <div class="pagehd">
+        <div><h2>Business Groups</h2><p>Companies shown on the homepage &amp; search</p></div>
+        <button class="btn bt" onclick="openGroupModal(null)">+ Add Group</button>
+      </div>
+      <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Founded</th><th>HQ</th><th>Connections</th><th></th></tr></thead>
+        <tbody id="groupsTbody"><tr class="loadingrow"><td colspan="6">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- DIRECTORS TAB -->
+    <div id="tab-directors" class="hide">
+      <div class="pagehd">
+        <div><h2>Directors</h2><p>People shown in rankings &amp; profiles</p></div>
+        <button class="btn bt" onclick="openDirectorModal(null)">+ Add Director</button>
+      </div>
+      <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Boards</th><th>Influence</th><th></th></tr></thead>
+        <tbody id="dirsTbody"><tr class="loadingrow"><td colspan="6">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- SIGNUPS TAB -->
+    <div id="tab-signups" class="hide">
+      <div class="pagehd">
+        <div><h2>Waitlist Signups</h2><p>People who requested early access on the homepage</p></div>
+      </div>
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Organisation</th><th>Role</th><th>Date</th><th></th></tr></thead>
+        <tbody id="signupsTbody"><tr class="loadingrow"><td colspan="6">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- GROUP MODAL -->
+<div class="ov" id="ov-group">
+  <div class="modal">
+    <div class="mhd"><h3 id="groupModalTitle">Add Group</h3><button class="mclose" onclick="closeModal('group')">&#10005;</button></div>
+    <div class="mbody">
+      <div class="grid2">
+        <div class="field"><label>ID (short, no spaces — e.g. "beximco")</label><input id="g-id"></div>
+        <div class="field"><label>Name</label><input id="g-name"></div>
+        <div class="field"><label>Initials (2 letters)</label><input id="g-initials"></div>
+        <div class="field"><label>Founded (year)</label><input id="g-founded"></div>
+        <div class="field"><label>HQ</label><input id="g-hq"></div>
+        <div class="field"><label>Founder</label><input id="g-founder"></div>
+        <div class="field"><label>Type</label><input id="g-type"></div>
+        <div class="field"><label>Size (e.g. "31 companies")</label><input id="g-size"></div>
+        <div class="field"><label>Employees</label><input id="g-employees"></div>
+        <div class="field"><label>DSE Symbol</label><input id="g-dse"></div>
+        <div class="field"><label>RJSC</label><input id="g-rjsc"></div>
+        <div class="field"><label>Connections (number)</label><input id="g-conn" type="number"></div>
+      </div>
+      <div class="field"><label>Sectors (comma separated)</label><input id="g-sectors"></div>
+      <div class="field"><label>Tags (comma separated, max 3 shown on card)</label><input id="g-tags"></div>
+      <div class="field"><label>About (paragraph)</label><textarea id="g-about" style="font-family:'DM Sans',sans-serif;min-height:80px"></textarea></div>
+
+      <div class="sectionlbl">Advanced (JSON) — leave as [] if unsure</div>
+      <div class="field"><label>Badges — [["DSE Listed","teal"],["Verified","green"]]</label><textarea id="g-badges">[]</textarea></div>
+      <div class="field"><label>Subsidiaries — [{"n":"Name","m":"meta text","p":"75.0%"}]</label><textarea id="g-subs">[]</textarea></div>
+      <div class="field"><label>Ownership — [{"l":"Label","p":50,"c":"var(--teal)"}]</label><textarea id="g-own">[]</textarea></div>
+      <div class="field"><label>Timeline — [{"yr":"1970","dot":"var(--gold)","t":"Title","d":"Description"}]</label><textarea id="g-tl">[]</textarea></div>
+      <div class="field"><label>Director IDs linked (comma separated, e.g. salman,asf)</label><input id="g-dirs"></div>
+      <div class="field"><label>Related companies — [{"init":"SQ","bg":"var(--tbg)","col":"var(--teal)","n":"Name","r":"relation text","key":"square"}]</label><textarea id="g-rel">[]</textarea></div>
+
+      <div class="errmsg" id="groupErr"></div>
+      <div class="savebar">
+        <button class="btn bo" onclick="closeModal('group')">Cancel</button>
+        <button class="btn bt" onclick="saveGroup()">Save Group</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DIRECTOR MODAL -->
+<div class="ov" id="ov-director">
+  <div class="modal">
+    <div class="mhd"><h3 id="dirModalTitle">Add Director</h3><button class="mclose" onclick="closeModal('director')">&#10005;</button></div>
+    <div class="mbody">
+      <div class="grid2">
+        <div class="field"><label>ID (short, no spaces — e.g. "salman")</label><input id="d-id"></div>
+        <div class="field"><label>Name</label><input id="d-name"></div>
+        <div class="field"><label>Initials (1-2 letters)</label><input id="d-initials"></div>
+        <div class="field"><label>Role</label><input id="d-role"></div>
+        <div class="field"><label>Influence score (0-100)</label><input id="d-inf" type="number"></div>
+        <div class="field"><label>All-time boards</label><input id="d-boards" type="number"></div>
+        <div class="field"><label>Active boards</label><input id="d-active" type="number"></div>
+        <div class="field"><label>Industries (count)</label><input id="d-industries" type="number"></div>
+      </div>
+      <div class="field"><label>Bio (paragraph)</label><textarea id="d-bio" style="font-family:'DM Sans',sans-serif;min-height:80px"></textarea></div>
+
+      <div class="sectionlbl">Advanced (JSON) — leave as [] if unsure</div>
+      <div class="field"><label>Badges — [["High Influence","blue"]]</label><textarea id="d-badges">[]</textarea></div>
+      <div class="field"><label>Stats (4 numbers shown) — ["31","12","7","1970"]</label><textarea id="d-stats">[]</textarea></div>
+      <div class="field"><label>Stat labels — ["All-time boards","Active","Industries","Career start"]</label><textarea id="d-statL">[]</textarea></div>
+      <div class="field"><label>Board memberships — [{"init":"BX","bg":"var(--bbg)","col":"var(--blue)","co":"Company","role":"Chairman","yr":"1970–now","status":"active","key":"beximco"}]</label><textarea id="d-boards_list">[]</textarea></div>
+      <div class="field"><label>Industry distribution — [{"l":"Banking","p":28,"c":"var(--teal)"}]</label><textarea id="d-ind">[]</textarea></div>
+      <div class="field"><label>Related directors — [{"init":"AS","bg":"var(--rbg)","col":"var(--red)","n":"Name","r":"relation","key":"asf"}]</label><textarea id="d-related">[]</textarea></div>
+
+      <div class="errmsg" id="dirErr"></div>
+      <div class="savebar">
+        <button class="btn bo" onclick="closeModal('director')">Cancel</button>
+        <button class="btn bt" onclick="saveDirector()">Save Director</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===================== FIREBASE ===================== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ⬇️⬇️ PASTE YOUR FIREBASE CONFIG HERE (from Project Settings > Your apps) ⬇️⬇️ */
+const firebaseConfig = {
+  apiKey: "AIzaSyDZj_MKurFUdoxC2xovq8JV5E5nfKcUMf4",
+  authDomain: "corpmap-bd.firebaseapp.com",
+  projectId: "corpmap-bd",
+  storageBucket: "corpmap-bd.firebasestorage.app",
+  messagingSenderId: "427579183346",
+  appId: "1:427579183346:web:8297c2b9174159aeb4806b"
+};
+/* ⬆️⬆️ ----------------------------------------------------- ⬆️⬆️ */
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+/* ===================== AUTH ===================== */
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  document.getElementById('loginErr').textContent='';
+  auth.signInWithEmailAndPassword(email,pass).catch(err=>{
+    document.getElementById('loginErr').textContent=err.message;
+  });
+}
+function doLogout(){ auth.signOut(); }
+
+auth.onAuthStateChanged(user=>{
+  if(user){
+    document.getElementById('loginScreen').classList.add('hide');
+    document.getElementById('appShell').classList.remove('hide');
+    document.getElementById('userEmail').textContent=user.email;
+    loadGroups(); loadDirectors(); loadSignups();
+  } else {
+    document.getElementById('loginScreen').classList.remove('hide');
+    document.getElementById('appShell').classList.add('hide');
+  }
+});
+
+/* ===================== TABS ===================== */
+function switchTab(name){
+  ['groups','directors','signups'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('hide', t!==name);
+    document.getElementById('nav'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===name);
+  });
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+function closeModal(name){ document.getElementById('ov-'+name).classList.remove('open'); }
+function parseJSONField(id,fallback){
+  const raw=document.getElementById(id).value.trim()||fallback;
+  try{ return JSON.parse(raw); }catch(e){ throw new Error('Invalid JSON in field: '+id); }
+}
+function splitCSV(v){ return v.split(',').map(s=>s.trim()).filter(Boolean); }
+
+/* ===================== GROUPS ===================== */
+let groupsCache={};
+function loadGroups(){
+  db.collection('groups').orderBy('conn','desc').get().then(snap=>{
+    groupsCache={};
+    const tbody=document.getElementById('groupsTbody');
+    if(snap.empty){ tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No groups yet. Click "+ Add Group" to create one, or run the seed script.</td></tr>'; return; }
+    tbody.innerHTML='';
+    snap.forEach(doc=>{
+      const g=doc.data(); groupsCache[doc.id]=g;
+      tbody.innerHTML+=`<tr>
+        <td><span class="tag">${doc.id}</span></td>
+        <td>${g.name||''}</td>
+        <td>${g.founded||''}</td>
+        <td>${g.hq||''}</td>
+        <td>${g.conn||0}</td>
+        <td><div class="rowbtns">
+          <button class="editbtn" onclick="openGroupModal('${doc.id}')">Edit</button>
+          <button class="delbtn" onclick="deleteGroup('${doc.id}')">Delete</button>
+        </div></td>
+      </tr>`;
+    });
+  });
+}
+function openGroupModal(id){
+  document.getElementById('groupErr').textContent='';
+  const fields=['id','name','initials','founded','hq','founder','type','size','employees','dse','rjsc','conn','sectors','tags','about','badges','subs','own','tl','dirs','rel'];
+  if(id===null){
+    document.getElementById('groupModalTitle').textContent='Add Group';
+    fields.forEach(f=>{ const el=document.getElementById('g-'+f); if(el) el.value = (['badges','subs','own','tl','rel'].includes(f) ? '[]' : ''); });
+    document.getElementById('g-id').disabled=false;
+  } else {
+    const g=groupsCache[id];
+    document.getElementById('groupModalTitle').textContent='Edit: '+g.name;
+    document.getElementById('g-id').value=id; document.getElementById('g-id').disabled=true;
+    document.getElementById('g-name').value=g.name||'';
+    document.getElementById('g-initials').value=g.initials||'';
+    document.getElementById('g-founded').value=g.founded||'';
+    document.getElementById('g-hq').value=g.hq||'';
+    document.getElementById('g-founder').value=g.founder||'';
+    document.getElementById('g-type').value=g.type||'';
+    document.getElementById('g-size').value=g.size||'';
+    document.getElementById('g-employees').value=g.employees||'';
+    document.getElementById('g-dse').value=g.dse||'';
+    document.getElementById('g-rjsc').value=g.rjsc||'';
+    document.getElementById('g-conn').value=g.conn||0;
+    document.getElementById('g-sectors').value=g.sectors||'';
+    document.getElementById('g-tags').value=(g.tags||[]).join(', ');
+    document.getElementById('g-about').value=g.about||'';
+    document.getElementById('g-badges').value=JSON.stringify(g.badges||[]);
+    document.getElementById('g-subs').value=JSON.stringify(g.subs||[]);
+    document.getElementById('g-own').value=JSON.stringify(g.own||[]);
+    document.getElementById('g-tl').value=JSON.stringify(g.tl||[]);
+    document.getElementById('g-dirs').value=(g.dirs||[]).join(', ');
+    document.getElementById('g-rel').value=JSON.stringify(g.rel||[]);
+  }
+  document.getElementById('ov-group').classList.add('open');
+}
+function saveGroup(){
+  try{
+    const id=document.getElementById('g-id').value.trim();
+    if(!id){ throw new Error('ID is required'); }
+    const data={
+      name:document.getElementById('g-name').value.trim(),
+      initials:document.getElementById('g-initials').value.trim(),
+      founded:document.getElementById('g-founded').value.trim(),
+      hq:document.getElementById('g-hq').value.trim(),
+      founder:document.getElementById('g-founder').value.trim(),
+      type:document.getElementById('g-type').value.trim(),
+      size:document.getElementById('g-size').value.trim(),
+      employees:document.getElementById('g-employees').value.trim(),
+      dse:document.getElementById('g-dse').value.trim(),
+      rjsc:document.getElementById('g-rjsc').value.trim(),
+      conn:Number(document.getElementById('g-conn').value)||0,
+      sectors:document.getElementById('g-sectors').value.trim(),
+      tags:splitCSV(document.getElementById('g-tags').value),
+      about:document.getElementById('g-about').value.trim(),
+      badges:parseJSONField('g-badges','[]'),
+      subs:parseJSONField('g-subs','[]'),
+      own:parseJSONField('g-own','[]'),
+      tl:parseJSONField('g-tl','[]'),
+      dirs:splitCSV(document.getElementById('g-dirs').value),
+      rel:parseJSONField('g-rel','[]')
+    };
+    db.collection('groups').doc(id).set(data).then(()=>{
+      closeModal('group'); showToast('Group saved'); loadGroups();
+    });
+  }catch(e){ document.getElementById('groupErr').textContent=e.message; }
+}
+function deleteGroup(id){
+  if(!confirm('Delete "'+id+'"? This cannot be undone.'))return;
+  db.collection('groups').doc(id).delete().then(()=>{ showToast('Group deleted'); loadGroups(); });
+}
+
+/* ===================== DIRECTORS ===================== */
+let dirsCache={};
+function loadDirectors(){
+  db.collection('directors').orderBy('inf','desc').get().then(snap=>{
+    dirsCache={};
+    const tbody=document.getElementById('dirsTbody');
+    if(snap.empty){ tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No directors yet. Click "+ Add Director" to create one, or run the seed script.</td></tr>'; return; }
+    tbody.innerHTML='';
+    snap.forEach(doc=>{
+      const d=doc.data(); dirsCache[doc.id]=d;
+      tbody.innerHTML+=`<tr>
+        <td><span class="tag">${doc.id}</span></td>
+        <td>${d.name||''}</td>
+        <td>${d.role||''}</td>
+        <td>${d.boards||0}</td>
+        <td>${d.inf||0}</td>
+        <td><div class="rowbtns">
+          <button class="editbtn" onclick="openDirectorModal('${doc.id}')">Edit</button>
+          <button class="delbtn" onclick="deleteDirector('${doc.id}')">Delete</button>
+        </div></td>
+      </tr>`;
+    });
+  });
+}
+function openDirectorModal(id){
+  document.getElementById('dirErr').textContent='';
+  if(id===null){
+    document.getElementById('dirModalTitle').textContent='Add Director';
+    ['id','name','initials','role','inf','boards','active','industries','bio'].forEach(f=>{ const el=document.getElementById('d-'+f); if(el) el.value=''; });
+    ['badges','stats','statL','boards_list','ind','related'].forEach(f=>document.getElementById('d-'+f).value='[]');
+    document.getElementById('d-id').disabled=false;
+  } else {
+    const d=dirsCache[id];
+    document.getElementById('dirModalTitle').textContent='Edit: '+d.name;
+    document.getElementById('d-id').value=id; document.getElementById('d-id').disabled=true;
+    document.getElementById('d-name').value=d.name||'';
+    document.getElementById('d-initials').value=d.initials||'';
+    document.getElementById('d-role').value=d.role||'';
+    document.getElementById('d-inf').value=d.inf||0;
+    document.getElementById('d-boards').value=d.boards||0;
+    document.getElementById('d-active').value=d.active||0;
+    document.getElementById('d-industries').value=d.industries||0;
+    document.getElementById('d-bio').value=d.bio||'';
+    document.getElementById('d-badges').value=JSON.stringify(d.badges||[]);
+    document.getElementById('d-stats').value=JSON.stringify(d.stats||[]);
+    document.getElementById('d-statL').value=JSON.stringify(d.statL||[]);
+    document.getElementById('d-boards_list').value=JSON.stringify(d.boards_list||[]);
+    document.getElementById('d-ind').value=JSON.stringify(d.ind||[]);
+    document.getElementById('d-related').value=JSON.stringify(d.related||[]);
+  }
+  document.getElementById('ov-director').classList.add('open');
+}
+function saveDirector(){
+  try{
+    const id=document.getElementById('d-id').value.trim();
+    if(!id){ throw new Error('ID is required'); }
+    const data={
+      name:document.getElementById('d-name').value.trim(),
+      initials:document.getElementById('d-initials').value.trim(),
+      role:document.getElementById('d-role').value.trim(),
+      inf:Number(document.getElementById('d-inf').value)||0,
+      boards:Number(document.getElementById('d-boards').value)||0,
+      active:Number(document.getElementById('d-active').value)||0,
+      industries:Number(document.getElementById('d-industries').value)||0,
+      bio:document.getElementById('d-bio').value.trim(),
+      badges:parseJSONField('d-badges','[]'),
+      stats:parseJSONField('d-stats','[]'),
+      statL:parseJSONField('d-statL','[]'),
+      boards_list:parseJSONField('d-boards_list','[]'),
+      ind:parseJSONField('d-ind','[]'),
+      related:parseJSONField('d-related','[]')
+    };
+    db.collection('directors').doc(id).set(data).then(()=>{
+      closeModal('director'); showToast('Director saved'); loadDirectors();
+    });
+  }catch(e){ document.getElementById('dirErr').textContent=e.message; }
+}
+function deleteDirector(id){
+  if(!confirm('Delete "'+id+'"? This cannot be undone.'))return;
+  db.collection('directors').doc(id).delete().then(()=>{ showToast('Director deleted'); loadDirectors(); });
+}
+
+/* ===================== SIGNUPS ===================== */
+function loadSignups(){
+  db.collection('signups').orderBy('createdAt','desc').get().then(snap=>{
+    const tbody=document.getElementById('signupsTbody');
+    if(snap.empty){ tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No signups yet.</td></tr>'; return; }
+    tbody.innerHTML='';
+    snap.forEach(doc=>{
+      const s=doc.data();
+      const dt=s.createdAt && s.createdAt.toDate ? s.createdAt.toDate().toLocaleDateString() : '';
+      tbody.innerHTML+=`<tr>
+        <td>${s.name||''}</td>
+        <td>${s.email||''}</td>
+        <td>${s.org||'—'}</td>
+        <td>${s.role||'—'}</td>
+        <td>${dt}</td>
+        <td><button class="delbtn" onclick="deleteSignup('${doc.id}')">Delete</button></td>
+      </tr>`;
+    });
+  }).catch(()=>{
+    document.getElementById('signupsTbody').innerHTML='<tr class="loadingrow"><td colspan="6">No signups collection yet — it will appear once your site\'s waitlist form is connected to Firestore.</td></tr>';
+  });
+}
+function deleteSignup(id){
+  if(!confirm('Delete this signup?'))return;
+  db.collection('signups').doc(id).delete().then(()=>{ showToast('Signup deleted'); loadSignups(); });
+}
+</script>
+</body>
+</html>
