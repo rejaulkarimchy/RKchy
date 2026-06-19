@@ -15,6 +15,10 @@
   --bd:#ddd8cf;--bd2:#ccc5ba;
   --red:#c0392b;--rbg:rgba(192,57,43,0.09);
   --green:#167b48;--grn:rgba(22,123,72,0.09);
+  --blue:#1a4a7a;--bbg:rgba(26,74,122,0.09);
+  --purple:#5a2d82;--pbg:rgba(90,45,130,0.09);
+  --orange:#c0641a;--obg:rgba(192,100,26,0.09);
+  --maroon:#8B1A1A;--mbg:rgba(139,26,26,0.09);
   --s1:0 1px 3px rgba(0,0,0,0.05),0 4px 12px rgba(0,0,0,0.04);
 }
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);}
@@ -61,17 +65,36 @@ tr:last-child td{border-bottom:none;}
 /* MODAL */
 .ov{display:none;position:fixed;inset:0;z-index:300;background:rgba(13,17,23,0.6);align-items:center;justify-content:center;padding:20px;}
 .ov.open{display:flex;}
-.modal{background:var(--bg2);border-radius:14px;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
-.mhd{padding:18px 22px;border-bottom:0.5px solid var(--bd);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg2);}
+.modal{background:var(--bg2);border-radius:14px;width:100%;max-width:680px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.mhd{padding:18px 22px;border-bottom:0.5px solid var(--bd);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg2);z-index:2;}
 .mhd h3{font-family:'Playfair Display',serif;font-size:18px;}
 .mclose{background:var(--bg3);border:none;border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:14px;color:var(--ink3);}
 .mbody{padding:18px 22px 24px;}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.sectionlbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin:16px 0 8px;}
-.hint{font-size:10.5px;color:var(--ink4);margin-top:3px;}
+.sectionlbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin:18px 0 8px;display:flex;align-items:center;gap:6px;}
+.sectionlbl .sub{font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink4);font-size:10.5px;}
 .savebar{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--ink);color:#fff;padding:11px 18px;border-radius:9px;font-size:13px;z-index:400;display:none;box-shadow:0 8px 24px rgba(0,0,0,.2);}
 .toast.show{display:block;}
+
+/* REPEATER (button-based list editor) */
+.repWrap{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+.repItem{background:var(--bg3);border:0.5px solid var(--bd);border-radius:10px;padding:12px;}
+.repGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;}
+.repField label{font-size:10px;color:var(--ink3);display:block;margin-bottom:3px;}
+.repField input,.repField select{width:100%;padding:7px 9px;border:0.5px solid var(--bd2);border-radius:6px;font-size:12px;background:var(--bg2);color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;}
+.repRemove{margin-top:9px;font-size:11px;padding:5px 10px;border-radius:6px;border:none;background:var(--rbg);color:var(--red);cursor:pointer;}
+.repAdd{font-size:12px;padding:9px 14px;border-radius:8px;border:1px dashed var(--bd2);background:transparent;color:var(--teal);cursor:pointer;width:100%;}
+.repAdd:hover{background:var(--tbg);border-color:var(--teal);}
+.repEmpty{font-size:11.5px;color:var(--ink4);padding:6px 2px;}
+.swatchSel{display:flex;align-items:center;gap:6px;}
+.swatch{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:1px solid rgba(0,0,0,0.15);}
+
+/* CHIP CHECKLIST (director links) */
+.chipWrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.chip{display:flex;align-items:center;gap:5px;font-size:12px;padding:6px 11px;border-radius:14px;border:0.5px solid var(--bd2);background:var(--bg3);cursor:pointer;user-select:none;color:var(--ink2);}
+.chip.on{background:var(--teal);color:#fff;border-color:var(--teal);}
+.chipEmpty{font-size:11.5px;color:var(--ink4);}
 </style>
 </head>
 <body>
@@ -164,13 +187,28 @@ tr:last-child td{border-bottom:none;}
       <div class="field"><label>Tags (comma separated, max 3 shown on card)</label><input id="g-tags"></div>
       <div class="field"><label>About (paragraph)</label><textarea id="g-about" style="font-family:'DM Sans',sans-serif;min-height:80px"></textarea></div>
 
-      <div class="sectionlbl">Advanced (JSON) — leave as [] if unsure</div>
-      <div class="field"><label>Badges — [{"t":"DSE Listed","c":"teal"},{"t":"Verified","c":"green"}]</label><textarea id="g-badges">[]</textarea></div>
-      <div class="field"><label>Subsidiaries — [{"n":"Name","m":"meta text","p":"75.0%"}]</label><textarea id="g-subs">[]</textarea></div>
-      <div class="field"><label>Ownership — [{"l":"Label","p":50,"c":"var(--teal)"}]</label><textarea id="g-own">[]</textarea></div>
-      <div class="field"><label>Timeline — [{"yr":"1970","dot":"var(--gold)","t":"Title","d":"Description"}]</label><textarea id="g-tl">[]</textarea></div>
-      <div class="field"><label>Director IDs linked (comma separated, e.g. salman,asf)</label><input id="g-dirs"></div>
-      <div class="field"><label>Related companies — [{"init":"SQ","bg":"var(--tbg)","col":"var(--teal)","n":"Name","r":"relation text","key":"square"}]</label><textarea id="g-rel">[]</textarea></div>
+      <div class="sectionlbl">Badges <span class="sub">small labels shown on the profile</span></div>
+      <div class="repWrap" id="g-badges-rep"></div>
+      <button type="button" class="repAdd" onclick="repGroupBadges.addRow()">+ Add badge</button>
+
+      <div class="sectionlbl">Subsidiaries <span class="sub">companies owned by this group</span></div>
+      <div class="repWrap" id="g-subs-rep"></div>
+      <button type="button" class="repAdd" onclick="repGroupSubs.addRow()">+ Add subsidiary</button>
+
+      <div class="sectionlbl">Ownership structure <span class="sub">who owns what %</span></div>
+      <div class="repWrap" id="g-own-rep"></div>
+      <button type="button" class="repAdd" onclick="repGroupOwn.addRow()">+ Add ownership slice</button>
+
+      <div class="sectionlbl">Timeline <span class="sub">key historical events</span></div>
+      <div class="repWrap" id="g-tl-rep"></div>
+      <button type="button" class="repAdd" onclick="repGroupTl.addRow()">+ Add timeline event</button>
+
+      <div class="sectionlbl">Linked directors <span class="sub">tap to select who sits on this board</span></div>
+      <div class="chipWrap" id="g-dirs-chips"></div>
+
+      <div class="sectionlbl">Related companies <span class="sub">link to another group already in the system</span></div>
+      <div class="repWrap" id="g-rel-rep"></div>
+      <button type="button" class="repAdd" onclick="repGroupRel.addRow()">+ Add related company</button>
 
       <div class="errmsg" id="groupErr"></div>
       <div class="savebar">
@@ -198,13 +236,25 @@ tr:last-child td{border-bottom:none;}
       </div>
       <div class="field"><label>Bio (paragraph)</label><textarea id="d-bio" style="font-family:'DM Sans',sans-serif;min-height:80px"></textarea></div>
 
-      <div class="sectionlbl">Advanced (JSON) — leave as [] if unsure</div>
-      <div class="field"><label>Badges — [{"t":"High Influence","c":"blue"}]</label><textarea id="d-badges">[]</textarea></div>
-      <div class="field"><label>Stats (4 numbers shown) — ["31","12","7","1970"]</label><textarea id="d-stats">[]</textarea></div>
-      <div class="field"><label>Stat labels — ["All-time boards","Active","Industries","Career start"]</label><textarea id="d-statL">[]</textarea></div>
-      <div class="field"><label>Board memberships — [{"init":"BX","bg":"var(--bbg)","col":"var(--blue)","co":"Company","role":"Chairman","yr":"1970–now","status":"active","key":"beximco"}]</label><textarea id="d-boards_list">[]</textarea></div>
-      <div class="field"><label>Industry distribution — [{"l":"Banking","p":28,"c":"var(--teal)"}]</label><textarea id="d-ind">[]</textarea></div>
-      <div class="field"><label>Related directors — [{"init":"AS","bg":"var(--rbg)","col":"var(--red)","n":"Name","r":"relation","key":"asf"}]</label><textarea id="d-related">[]</textarea></div>
+      <div class="sectionlbl">Badges <span class="sub">small labels shown on the profile</span></div>
+      <div class="repWrap" id="d-badges-rep"></div>
+      <button type="button" class="repAdd" onclick="repDirBadges.addRow()">+ Add badge</button>
+
+      <div class="sectionlbl">Stat tiles <span class="sub">the 4 numbers shown at the top of the profile</span></div>
+      <div class="repWrap" id="d-stats-rep"></div>
+      <button type="button" class="repAdd" onclick="repDirStats.addRow()">+ Add stat tile</button>
+
+      <div class="sectionlbl">Board memberships <span class="sub">link to a company already in the system, or type a custom one</span></div>
+      <div class="repWrap" id="d-boardslist-rep"></div>
+      <button type="button" class="repAdd" onclick="repDirBoardsList.addRow()">+ Add board membership</button>
+
+      <div class="sectionlbl">Industry distribution <span class="sub">% breakdown by sector</span></div>
+      <div class="repWrap" id="d-ind-rep"></div>
+      <button type="button" class="repAdd" onclick="repDirInd.addRow()">+ Add industry slice</button>
+
+      <div class="sectionlbl">Related directors <span class="sub">link to another director already in the system</span></div>
+      <div class="repWrap" id="d-related-rep"></div>
+      <button type="button" class="repAdd" onclick="repDirRelated.addRow()">+ Add related director</button>
 
       <div class="errmsg" id="dirErr"></div>
       <div class="savebar">
@@ -222,7 +272,6 @@ tr:last-child td{border-bottom:none;}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-/* ⬇️⬇️ PASTE YOUR FIREBASE CONFIG HERE (from Project Settings > Your apps) ⬇️⬇️ */
 const firebaseConfig = {
   apiKey: "AIzaSyDZj_MKurFUdoxC2xovq8JV5E5nfKcUMf4",
   authDomain: "corpmap-bd.firebaseapp.com",
@@ -231,8 +280,6 @@ const firebaseConfig = {
   messagingSenderId: "427579183346",
   appId: "1:427579183346:web:8297c2b9174159aeb4806b"
 };
-/* ⬆️⬆️ ----------------------------------------------------- ⬆️⬆️ */
-
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -267,18 +314,259 @@ function switchTab(name){
     document.getElementById('nav'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===name);
   });
 }
-
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2200);
 }
 function closeModal(name){ document.getElementById('ov-'+name).classList.remove('open'); }
-function parseJSONField(id,fallback){
-  const raw=document.getElementById(id).value.trim()||fallback;
-  try{ return JSON.parse(raw); }catch(e){ throw new Error('Invalid JSON in field: '+id); }
-}
 function splitCSV(v){ return v.split(',').map(s=>s.trim()).filter(Boolean); }
+
+/* ===================== COLOR PALETTE ===================== */
+const COLOR_OPTIONS = [
+  {key:'teal',   label:'Teal',   var:'var(--teal)',   bgVar:'var(--tbg)', swatch:'#0d7377'},
+  {key:'blue',   label:'Blue',   var:'var(--blue)',   bgVar:'var(--bbg)', swatch:'#1a4a7a'},
+  {key:'green',  label:'Green',  var:'var(--green)',  bgVar:'var(--grn)', swatch:'#167b48'},
+  {key:'gold',   label:'Gold',   var:'var(--gold)',   bgVar:'var(--gbg)', swatch:'#c9a84c'},
+  {key:'red',    label:'Red',    var:'var(--red)',    bgVar:'var(--rbg)', swatch:'#c0392b'},
+  {key:'orange', label:'Orange', var:'var(--orange)', bgVar:'var(--obg)', swatch:'#c0641a'},
+  {key:'purple', label:'Purple', var:'var(--purple)', bgVar:'var(--pbg)', swatch:'#5a2d82'},
+  {key:'maroon', label:'Maroon', var:'var(--maroon)', bgVar:'var(--mbg)', swatch:'#8B1A1A'},
+  {key:'gray',   label:'Gray',   var:'var(--ink3)',   bgVar:'var(--bg3)', swatch:'#6b7280'}
+];
+function colorByKey(k){ return COLOR_OPTIONS.find(o=>o.key===k) || COLOR_OPTIONS[0]; }
+function colorFull(k){ return colorByKey(k).var; }
+function colorBg(k){ return colorByKey(k).bgVar; }
+function reverseColorFull(v){
+  const found = COLOR_OPTIONS.find(o=>o.var===v);
+  return found ? found.key : 'teal';
+}
+
+/* ===================== REPEATER ENGINE (button-based list editor) ===================== */
+/*
+  schema: array of field defs:
+   { key, label, type: 'text'|'number'|'select'|'color-short'|'color-full'|'colorpair'|'select-group'|'select-director', ... }
+   colorpair fields need: bgKey, colKey
+   select fields need: options: [{value,label}]
+   select-group/select-director fields can have: autofill: { initials:'targetKey', name:'targetKey' }
+*/
+function createRepeater(containerEl, schema, emptyMsg){
+  function render(){
+    const rows = Array.from(containerEl.children);
+    containerEl.querySelectorAll('.repEmptyMsg').forEach(e=>e.remove());
+    if(rows.length===0){
+      const e=document.createElement('div'); e.className='repEmpty repEmptyMsg'; e.textContent=emptyMsg||'Nothing added yet.';
+      containerEl.appendChild(e);
+    }
+  }
+  function makeSwatchSelect(field, selectedKey){
+    const wrap=document.createElement('div'); wrap.className='swatchSel';
+    const dot=document.createElement('div'); dot.className='swatch'; dot.style.background=colorByKey(selectedKey).swatch;
+    const sel=document.createElement('select'); sel.dataset.key=field.key;
+    COLOR_OPTIONS.forEach(o=>{
+      const op=document.createElement('option'); op.value=o.key; op.textContent=o.label;
+      if(o.key===selectedKey) op.selected=true;
+      sel.appendChild(op);
+    });
+    sel.addEventListener('change',()=>{ dot.style.background=colorByKey(sel.value).swatch; });
+    wrap.appendChild(dot); wrap.appendChild(sel);
+    return wrap;
+  }
+  function addRow(item){
+    item = item || {};
+    containerEl.querySelectorAll('.repEmptyMsg').forEach(e=>e.remove());
+    const row=document.createElement('div'); row.className='repItem';
+    const grid=document.createElement('div'); grid.className='repGrid';
+    row.appendChild(grid);
+
+    schema.forEach(f=>{
+      const wrap=document.createElement('div'); wrap.className='repField';
+      const lbl=document.createElement('label'); lbl.textContent=f.label;
+      wrap.appendChild(lbl);
+
+      if(f.type==='text'){
+        const inp=document.createElement('input'); inp.type='text'; inp.value=item[f.key]||''; inp.dataset.key=f.key;
+        wrap.appendChild(inp);
+      } else if(f.type==='number'){
+        const inp=document.createElement('input'); inp.type='number'; inp.value=item[f.key]!=null?item[f.key]:''; inp.dataset.key=f.key;
+        wrap.appendChild(inp);
+      } else if(f.type==='select'){
+        const sel=document.createElement('select'); sel.dataset.key=f.key;
+        f.options.forEach(o=>{
+          const op=document.createElement('option'); op.value=o.value; op.textContent=o.label;
+          if(item[f.key]===o.value || (!item[f.key] && o.value===f.options[0].value)) op.selected=true;
+          sel.appendChild(op);
+        });
+        wrap.appendChild(sel);
+      } else if(f.type==='color-short'){
+        wrap.appendChild(makeSwatchSelect(f, item[f.key]||'teal'));
+      } else if(f.type==='color-full'){
+        wrap.appendChild(makeSwatchSelect(f, reverseColorFull(item[f.key])));
+      } else if(f.type==='colorpair'){
+        wrap.appendChild(makeSwatchSelect(f, reverseColorFull(item[f.colKey])));
+      } else if(f.type==='select-group'||f.type==='select-director'){
+        const sel=document.createElement('select'); sel.dataset.key=f.key; sel.dataset.linkType=f.type;
+        const noneOpt=document.createElement('option'); noneOpt.value=''; noneOpt.textContent='— none / custom —';
+        sel.appendChild(noneOpt);
+        const cache = f.type==='select-group' ? groupsCache : dirsCache;
+        Object.keys(cache).sort((a,b)=>(cache[a].name||a).localeCompare(cache[b].name||b)).forEach(id=>{
+          const op=document.createElement('option'); op.value=id; op.textContent=cache[id].name||id;
+          if(item[f.key]===id) op.selected=true;
+          sel.appendChild(op);
+        });
+        sel.addEventListener('change',()=>{
+          const src = sel.value ? cache[sel.value] : null;
+          if(src && f.autofill){
+            Object.entries(f.autofill).forEach(([srcProp,targetKey])=>{
+              const el=row.querySelector(`[data-key="${targetKey}"]`);
+              if(el) el.value = src[srcProp] || '';
+            });
+          }
+        });
+        wrap.appendChild(sel);
+      }
+      grid.appendChild(wrap);
+    });
+
+    const rmBtn=document.createElement('button');
+    rmBtn.type='button'; rmBtn.className='repRemove'; rmBtn.textContent='✕ Remove';
+    rmBtn.addEventListener('click',()=>{ row.remove(); render(); });
+    row.appendChild(rmBtn);
+
+    containerEl.appendChild(row);
+  }
+  function setValue(arr){
+    containerEl.innerHTML='';
+    (arr||[]).forEach(item=>addRow(item));
+    render();
+  }
+  function getValue(){
+    return Array.from(containerEl.children).filter(r=>r.classList.contains('repItem')).map(row=>{
+      const obj={};
+      schema.forEach(f=>{
+        if(f.type==='colorpair'){
+          const sel=row.querySelector(`select[data-key="${f.key}"]`);
+          const k=sel?sel.value:'teal';
+          obj[f.colKey]=colorFull(k); obj[f.bgKey]=colorBg(k);
+        } else if(f.type==='color-full'){
+          const sel=row.querySelector(`select[data-key="${f.key}"]`);
+          obj[f.key]=colorFull(sel?sel.value:'teal');
+        } else if(f.type==='color-short'){
+          const sel=row.querySelector(`select[data-key="${f.key}"]`);
+          obj[f.key]=sel?sel.value:'teal';
+        } else if(f.type==='number'){
+          const inp=row.querySelector(`input[data-key="${f.key}"]`);
+          obj[f.key]=Number(inp?inp.value:0)||0;
+        } else if(f.type==='select-group'||f.type==='select-director'){
+          const sel=row.querySelector(`select[data-key="${f.key}"]`);
+          obj[f.key]=sel?sel.value:'';
+        } else if(f.type==='select'){
+          const sel=row.querySelector(`select[data-key="${f.key}"]`);
+          obj[f.key]=sel?sel.value:f.options[0].value;
+        } else {
+          const inp=row.querySelector(`input[data-key="${f.key}"]`);
+          obj[f.key]=inp?inp.value.trim():'';
+        }
+      });
+      return obj;
+    });
+  }
+  render();
+  return { addRow, setValue, getValue };
+}
+
+/* ===================== SCHEMAS ===================== */
+const SCHEMA_BADGES = [
+  {key:'t', label:'Label', type:'text'},
+  {key:'c', label:'Color', type:'color-short'}
+];
+const SCHEMA_SUBS = [
+  {key:'n', label:'Company name', type:'text'},
+  {key:'m', label:'Description', type:'text'},
+  {key:'p', label:'Ownership / status', type:'text'}
+];
+const SCHEMA_OWN = [
+  {key:'l', label:'Label', type:'text'},
+  {key:'p', label:'Percent', type:'number'},
+  {key:'c', label:'Color', type:'color-full'}
+];
+const SCHEMA_TL = [
+  {key:'yr', label:'Year', type:'text'},
+  {key:'dot', label:'Color', type:'color-full'},
+  {key:'t', label:'Title', type:'text'},
+  {key:'d', label:'Description', type:'text'}
+];
+const SCHEMA_REL_COMPANY = [
+  {key:'key', label:'Linked company', type:'select-group', autofill:{initials:'init', name:'n'}},
+  {key:'init', label:'Initials (shown)', type:'text'},
+  {key:'n', label:'Name (shown)', type:'text'},
+  {key:'r', label:'Relationship', type:'text'},
+  {key:'col', label:'Color', type:'colorpair', colKey:'col', bgKey:'bg'}
+];
+const SCHEMA_BOARDS_LIST = [
+  {key:'key', label:'Link to company', type:'select-group', autofill:{initials:'init', name:'co'}},
+  {key:'co', label:'Company name (shown)', type:'text'},
+  {key:'init', label:'Initials (shown)', type:'text'},
+  {key:'role', label:'Role', type:'text'},
+  {key:'yr', label:'Years', type:'text'},
+  {key:'status', label:'Status', type:'select', options:[{value:'active',label:'Active'},{value:'former',label:'Former'}]},
+  {key:'col', label:'Color', type:'colorpair', colKey:'col', bgKey:'bg'}
+];
+const SCHEMA_IND = [
+  {key:'l', label:'Sector', type:'text'},
+  {key:'p', label:'Percent', type:'number'},
+  {key:'c', label:'Color', type:'color-full'}
+];
+const SCHEMA_REL_DIRECTOR = [
+  {key:'key', label:'Linked director', type:'select-director', autofill:{initials:'init', name:'n'}},
+  {key:'init', label:'Initials (shown)', type:'text'},
+  {key:'n', label:'Name (shown)', type:'text'},
+  {key:'r', label:'Relationship', type:'text'},
+  {key:'col', label:'Color', type:'colorpair', colKey:'col', bgKey:'bg'}
+];
+const SCHEMA_STATS = [
+  {key:'value', label:'Value (e.g. "31")', type:'text'},
+  {key:'label', label:'Label (e.g. "All-time boards")', type:'text'}
+];
+
+/* Repeater instances (mounted once, refilled on modal open) */
+let repGroupBadges, repGroupSubs, repGroupOwn, repGroupTl, repGroupRel;
+let repDirBadges, repDirStats, repDirBoardsList, repDirInd, repDirRelated;
+
+function mountRepeaters(){
+  repGroupBadges = createRepeater(document.getElementById('g-badges-rep'), SCHEMA_BADGES, 'No badges yet.');
+  repGroupSubs   = createRepeater(document.getElementById('g-subs-rep'), SCHEMA_SUBS, 'No subsidiaries yet.');
+  repGroupOwn    = createRepeater(document.getElementById('g-own-rep'), SCHEMA_OWN, 'No ownership data yet.');
+  repGroupTl     = createRepeater(document.getElementById('g-tl-rep'), SCHEMA_TL, 'No timeline events yet.');
+  repGroupRel    = createRepeater(document.getElementById('g-rel-rep'), SCHEMA_REL_COMPANY, 'No related companies yet.');
+
+  repDirBadges     = createRepeater(document.getElementById('d-badges-rep'), SCHEMA_BADGES, 'No badges yet.');
+  repDirStats      = createRepeater(document.getElementById('d-stats-rep'), SCHEMA_STATS, 'No stat tiles yet.');
+  repDirBoardsList = createRepeater(document.getElementById('d-boardslist-rep'), SCHEMA_BOARDS_LIST, 'No board memberships yet.');
+  repDirInd        = createRepeater(document.getElementById('d-ind-rep'), SCHEMA_IND, 'No industry data yet.');
+  repDirRelated    = createRepeater(document.getElementById('d-related-rep'), SCHEMA_REL_DIRECTOR, 'No related directors yet.');
+}
+mountRepeaters();
+
+/* ===================== DIRECTOR CHIP CHECKLIST (group.dirs) ===================== */
+let selectedDirIds = [];
+function renderDirChips(selected){
+  selectedDirIds = selected ? [...selected] : [];
+  const wrap=document.getElementById('g-dirs-chips');
+  wrap.innerHTML='';
+  const ids=Object.keys(dirsCache);
+  if(ids.length===0){ wrap.innerHTML='<div class="chipEmpty">No directors created yet — add directors first, then link them here.</div>'; return; }
+  ids.sort((a,b)=>(dirsCache[a].name||a).localeCompare(dirsCache[b].name||b)).forEach(id=>{
+    const chip=document.createElement('div');
+    chip.className='chip'+(selectedDirIds.includes(id)?' on':'');
+    chip.textContent=dirsCache[id].name||id;
+    chip.addEventListener('click',()=>{
+      if(selectedDirIds.includes(id)){ selectedDirIds=selectedDirIds.filter(x=>x!==id); chip.classList.remove('on'); }
+      else { selectedDirIds.push(id); chip.classList.add('on'); }
+    });
+    wrap.appendChild(chip);
+  });
+}
 
 /* ===================== GROUPS ===================== */
 let groupsCache={};
@@ -286,7 +574,7 @@ function loadGroups(){
   db.collection('groups').orderBy('conn','desc').get().then(snap=>{
     groupsCache={};
     const tbody=document.getElementById('groupsTbody');
-    if(snap.empty){ tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No groups yet. Click "+ Add Group" to create one, or run the seed script.</td></tr>'; return; }
+    if(snap.empty){ tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No groups yet. Click "+ Add Group" to create one.</td></tr>'; return; }
     tbody.innerHTML='';
     snap.forEach(doc=>{
       const g=doc.data(); groupsCache[doc.id]=g;
@@ -306,11 +594,14 @@ function loadGroups(){
 }
 function openGroupModal(id){
   document.getElementById('groupErr').textContent='';
-  const fields=['id','name','initials','founded','hq','founder','type','size','employees','dse','rjsc','conn','sectors','tags','about','badges','subs','own','tl','dirs','rel'];
   if(id===null){
     document.getElementById('groupModalTitle').textContent='Add Group';
-    fields.forEach(f=>{ const el=document.getElementById('g-'+f); if(el) el.value = (['badges','subs','own','tl','rel'].includes(f) ? '[]' : ''); });
+    ['id','name','initials','founded','hq','founder','type','size','employees','dse','rjsc','sectors','tags'].forEach(f=>{ document.getElementById('g-'+f).value=''; });
+    document.getElementById('g-conn').value=0;
+    document.getElementById('g-about').value='';
     document.getElementById('g-id').disabled=false;
+    repGroupBadges.setValue([]); repGroupSubs.setValue([]); repGroupOwn.setValue([]); repGroupTl.setValue([]); repGroupRel.setValue([]);
+    renderDirChips([]);
   } else {
     const g=groupsCache[id];
     document.getElementById('groupModalTitle').textContent='Edit: '+g.name;
@@ -329,12 +620,12 @@ function openGroupModal(id){
     document.getElementById('g-sectors').value=g.sectors||'';
     document.getElementById('g-tags').value=(g.tags||[]).join(', ');
     document.getElementById('g-about').value=g.about||'';
-    document.getElementById('g-badges').value=JSON.stringify(g.badges||[]);
-    document.getElementById('g-subs').value=JSON.stringify(g.subs||[]);
-    document.getElementById('g-own').value=JSON.stringify(g.own||[]);
-    document.getElementById('g-tl').value=JSON.stringify(g.tl||[]);
-    document.getElementById('g-dirs').value=(g.dirs||[]).join(', ');
-    document.getElementById('g-rel').value=JSON.stringify(g.rel||[]);
+    repGroupBadges.setValue(g.badges||[]);
+    repGroupSubs.setValue(g.subs||[]);
+    repGroupOwn.setValue(g.own||[]);
+    repGroupTl.setValue(g.tl||[]);
+    repGroupRel.setValue(g.rel||[]);
+    renderDirChips(g.dirs||[]);
   }
   document.getElementById('ov-group').classList.add('open');
 }
@@ -357,12 +648,12 @@ function saveGroup(){
       sectors:document.getElementById('g-sectors').value.trim(),
       tags:splitCSV(document.getElementById('g-tags').value),
       about:document.getElementById('g-about').value.trim(),
-      badges:parseJSONField('g-badges','[]'),
-      subs:parseJSONField('g-subs','[]'),
-      own:parseJSONField('g-own','[]'),
-      tl:parseJSONField('g-tl','[]'),
-      dirs:splitCSV(document.getElementById('g-dirs').value),
-      rel:parseJSONField('g-rel','[]')
+      badges:repGroupBadges.getValue(),
+      subs:repGroupSubs.getValue(),
+      own:repGroupOwn.getValue(),
+      tl:repGroupTl.getValue(),
+      dirs:[...selectedDirIds],
+      rel:repGroupRel.getValue()
     };
     db.collection('groups').doc(id).set(data).then(()=>{
       closeModal('group'); showToast('Group saved'); loadGroups();
@@ -380,7 +671,7 @@ function loadDirectors(){
   db.collection('directors').orderBy('inf','desc').get().then(snap=>{
     dirsCache={};
     const tbody=document.getElementById('dirsTbody');
-    if(snap.empty){ tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No directors yet. Click "+ Add Director" to create one, or run the seed script.</td></tr>'; return; }
+    if(snap.empty){ tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No directors yet. Click "+ Add Director" to create one.</td></tr>'; return; }
     tbody.innerHTML='';
     snap.forEach(doc=>{
       const d=doc.data(); dirsCache[doc.id]=d;
@@ -402,9 +693,10 @@ function openDirectorModal(id){
   document.getElementById('dirErr').textContent='';
   if(id===null){
     document.getElementById('dirModalTitle').textContent='Add Director';
-    ['id','name','initials','role','inf','boards','active','industries','bio'].forEach(f=>{ const el=document.getElementById('d-'+f); if(el) el.value=''; });
-    ['badges','stats','statL','boards_list','ind','related'].forEach(f=>document.getElementById('d-'+f).value='[]');
+    ['id','name','initials','role','bio'].forEach(f=>{ document.getElementById('d-'+f).value=''; });
+    ['inf','boards','active','industries'].forEach(f=>{ document.getElementById('d-'+f).value=0; });
     document.getElementById('d-id').disabled=false;
+    repDirBadges.setValue([]); repDirStats.setValue([]); repDirBoardsList.setValue([]); repDirInd.setValue([]); repDirRelated.setValue([]);
   } else {
     const d=dirsCache[id];
     document.getElementById('dirModalTitle').textContent='Edit: '+d.name;
@@ -417,12 +709,12 @@ function openDirectorModal(id){
     document.getElementById('d-active').value=d.active||0;
     document.getElementById('d-industries').value=d.industries||0;
     document.getElementById('d-bio').value=d.bio||'';
-    document.getElementById('d-badges').value=JSON.stringify(d.badges||[]);
-    document.getElementById('d-stats').value=JSON.stringify(d.stats||[]);
-    document.getElementById('d-statL').value=JSON.stringify(d.statL||[]);
-    document.getElementById('d-boards_list').value=JSON.stringify(d.boards_list||[]);
-    document.getElementById('d-ind').value=JSON.stringify(d.ind||[]);
-    document.getElementById('d-related').value=JSON.stringify(d.related||[]);
+    repDirBadges.setValue(d.badges||[]);
+    const statsArr=(d.stats||[]).map((v,i)=>({value:v, label:(d.statL||[])[i]||''}));
+    repDirStats.setValue(statsArr);
+    repDirBoardsList.setValue(d.boards_list||[]);
+    repDirInd.setValue(d.ind||[]);
+    repDirRelated.setValue(d.related||[]);
   }
   document.getElementById('ov-director').classList.add('open');
 }
@@ -430,6 +722,7 @@ function saveDirector(){
   try{
     const id=document.getElementById('d-id').value.trim();
     if(!id){ throw new Error('ID is required'); }
+    const statsRows=repDirStats.getValue();
     const data={
       name:document.getElementById('d-name').value.trim(),
       initials:document.getElementById('d-initials').value.trim(),
@@ -439,12 +732,12 @@ function saveDirector(){
       active:Number(document.getElementById('d-active').value)||0,
       industries:Number(document.getElementById('d-industries').value)||0,
       bio:document.getElementById('d-bio').value.trim(),
-      badges:parseJSONField('d-badges','[]'),
-      stats:parseJSONField('d-stats','[]'),
-      statL:parseJSONField('d-statL','[]'),
-      boards_list:parseJSONField('d-boards_list','[]'),
-      ind:parseJSONField('d-ind','[]'),
-      related:parseJSONField('d-related','[]')
+      badges:repDirBadges.getValue(),
+      stats:statsRows.map(r=>r.value),
+      statL:statsRows.map(r=>r.label),
+      boards_list:repDirBoardsList.getValue(),
+      ind:repDirInd.getValue(),
+      related:repDirRelated.getValue()
     };
     db.collection('directors').doc(id).set(data).then(()=>{
       closeModal('director'); showToast('Director saved'); loadDirectors();
