@@ -254,61 +254,121 @@ tr:hover td{background:var(--bg3);}
     </div>
 
     <!-- ============================================================
-         AI ASSISTANT TAB
+         AI ASSISTANT TAB — Paste-based Claude workflow
     ============================================================ -->
     <div id="tab-ai" class="hide">
       <div class="pagehd">
-        <div><h2>AI Assistant</h2><p>Command Claude to research and add companies or directors directly to Firestore</p></div>
+        <div><h2>AI Assistant</h2><p>Use Claude (free!) to generate data, paste it here, save to Firestore</p></div>
       </div>
 
       <div class="ai-layout">
-        <!-- Chat -->
-        <div class="ai-chat">
-          <div class="ai-chat-hd">
-            <div class="ai-avatar">C</div>
-            <div>
-              <div class="ai-chat-title">Claude — CorpMap Intelligence</div>
-              <div class="ai-chat-sub">Ask me to add any Bangladesh company or director</div>
+        <!-- Left: How to use + paste area -->
+        <div>
+          <!-- Step guide -->
+          <div style="background:var(--ink);border-radius:14px;padding:24px;margin-bottom:18px;color:#e8e4db">
+            <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--gold);margin-bottom:16px">How to use Claude for free</div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;gap:14px;align-items:flex-start">
+                <div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#1a1200;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">1</div>
+                <div>
+                  <div style="font-size:13px;font-weight:500;margin-bottom:4px">Pick what you want to add</div>
+                  <div style="font-size:12px;color:#8b949e">Choose a company or director below, or type a custom name</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="quickPickBtns">
+                    <button class="ai-sug" onclick="copyPrompt('Walton Group','group')">+ Walton Group</button>
+                    <button class="ai-sug" onclick="copyPrompt('Grameenphone','group')">+ Grameenphone</button>
+                    <button class="ai-sug" onclick="copyPrompt('Dutch-Bangla Bank','group')">+ Dutch-Bangla Bank</button>
+                    <button class="ai-sug" onclick="copyPrompt('Renata Limited','group')">+ Renata Pharma</button>
+                    <button class="ai-sug" onclick="copyPrompt('BRAC','group')">+ BRAC</button>
+                    <button class="ai-sug" onclick="copyPrompt('Dr Muhammad Yunus','director')">+ Dr Muhammad Yunus</button>
+                    <button class="ai-sug" onclick="copyPrompt('Fazle Hasan Abed','director')">+ Fazle Hasan Abed</button>
+                    <button class="ai-sug" onclick="copyPrompt('Rubana Huq','director')">+ Rubana Huq</button>
+                  </div>
+                  <div style="display:flex;gap:7px;margin-top:10px">
+                    <input id="customName" placeholder="Or type a name..." style="flex:1;padding:8px 11px;border:1px solid #30363d;border-radius:7px;font-size:12px;background:#0d1117;color:#e8e4db;outline:none;font-family:'DM Sans',sans-serif">
+                    <select id="customType" style="padding:8px 10px;border:1px solid #30363d;border-radius:7px;font-size:12px;background:#0d1117;color:#e8e4db;outline:none">
+                      <option value="group">Company/Group</option>
+                      <option value="director">Director</option>
+                    </select>
+                    <button class="btn bg bsm" onclick="copyPrompt(document.getElementById('customName').value, document.getElementById('customType').value)">Copy Prompt</button>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;gap:14px;align-items:flex-start">
+                <div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#1a1200;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">2</div>
+                <div>
+                  <div style="font-size:13px;font-weight:500;margin-bottom:4px">Go to Claude.ai and paste the prompt</div>
+                  <div style="font-size:12px;color:#8b949e">Open Claude in a new tab, paste the copied prompt, and send it</div>
+                  <a href="https://claude.ai" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:7px 13px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);border-radius:7px;font-size:12px;color:var(--gold);text-decoration:none">
+                    Open Claude.ai ↗
+                  </a>
+                </div>
+              </div>
+              <div style="display:flex;gap:14px;align-items:flex-start">
+                <div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#1a1200;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">3</div>
+                <div style="flex:1">
+                  <div style="font-size:13px;font-weight:500;margin-bottom:4px">Copy Claude's response and paste it below</div>
+                  <div style="font-size:12px;color:#8b949e">Claude will reply with JSON — copy the entire response and paste below</div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="ai-msgs" id="aiMsgs">
-            <div class="ai-msg-bot">
-              <div class="ai-avatar" style="width:26px;height:26px;font-size:10px;flex-shrink:0">C</div>
-              <div class="bubble">Hello! I'm Claude, integrated directly into your CorpMap admin panel.<br><br>I can <strong>research and generate full profiles</strong> for any Bangladesh company or director, then save them directly to your Firestore database.<br><br>Try commands like:<br>• <em>"Add Walton Group as a business group"</em><br>• <em>"Add Dr Muhammad Yunus as a director"</em><br>• <em>"Add Grameenphone as a telecom company"</em></div>
+
+          <!-- Paste area -->
+          <div style="background:var(--bg2);border:1px solid var(--bd);border-radius:14px;overflow:hidden;box-shadow:var(--s1)">
+            <div style="padding:14px 18px;border-bottom:1px solid var(--bd);background:var(--bg3);display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:14px;font-weight:500;color:var(--ink)">Step 3 — Paste Claude's Response</div>
+                <div style="font-size:11px;color:var(--ink3);margin-top:2px">Paste the JSON that Claude gave you</div>
+              </div>
+              <button class="btn bo bsm" onclick="document.getElementById('pasteArea').value='';clearPreview()">Clear</button>
             </div>
-          </div>
-          <div class="ai-input-area">
-            <div class="ai-suggestions">
-              <span class="ai-sug" onclick="askAI('Add Walton Group as a business group')">+ Walton Group</span>
-              <span class="ai-sug" onclick="askAI('Add Grameenphone as a company')">+ Grameenphone</span>
-              <span class="ai-sug" onclick="askAI('Add Dr Muhammad Yunus as a director')">+ Dr Muhammad Yunus</span>
-              <span class="ai-sug" onclick="askAI('Add Dutch-Bangla Bank as a company')">+ Dutch-Bangla Bank</span>
-              <span class="ai-sug" onclick="askAI('Add Renata Limited pharmaceuticals')">+ Renata Pharma</span>
-              <span class="ai-sug" onclick="askAI('Add BRAC as an organisation')">+ BRAC</span>
-            </div>
-            <div class="ai-input-row">
-              <input class="ai-inp" id="aiInp" placeholder="e.g. Add Walton Group as a business group..." onkeydown="if(event.key==='Enter'&&!event.shiftKey)askAI()">
-              <button class="ai-send" id="aiSendBtn" onclick="askAI()">➤</button>
+            <div style="padding:16px">
+              <textarea id="pasteArea" placeholder='Paste Claude\'s JSON response here...&#10;&#10;It should start with { "type": "group" ... } or { "type": "director" ... }' style="width:100%;height:160px;padding:12px;border:1.5px solid var(--bd2);border-radius:9px;font-size:12px;font-family:monospace;background:var(--bg3);color:var(--ink);outline:none;resize:vertical;line-height:1.6" oninput="autoParseJSON(this.value)"></textarea>
+              <div id="parseStatus" style="font-size:12px;margin-top:8px;min-height:18px"></div>
+              <button class="btn bt" style="width:100%;margin-top:10px;padding:12px" onclick="parseAndPreview()">Parse & Preview →</button>
             </div>
           </div>
         </div>
 
-        <!-- Preview -->
+        <!-- Right: Preview -->
         <div class="preview-panel">
           <div class="preview-hd">
-            <div class="preview-title">Generated Preview</div>
+            <div class="preview-title">Preview</div>
             <span style="font-size:11px;color:var(--ink3)" id="previewType"></span>
           </div>
           <div class="preview-body" id="previewBody">
             <div class="preview-empty">
-              <div class="icon">🔍</div>
-              <div>Claude's generated data will appear here for review before saving to Firestore.</div>
+              <div class="icon">📋</div>
+              <div style="margin-top:8px">Parsed data will appear here.<br>Review before saving to Firestore.</div>
             </div>
           </div>
           <div class="preview-actions" id="previewActions" style="display:none">
             <button class="btn bo bsm" onclick="discardPreview()">Discard</button>
             <button class="btn bt bsm" onclick="editPreview()">✏️ Edit first</button>
             <button class="btn bg bsm" id="savePreviewBtn" onclick="savePreview()">💾 Save to Firestore</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Copied prompt modal -->
+      <div class="ov" id="ov-prompt" onclick="if(event.target===this)closeModal('prompt')">
+        <div class="modal" style="max-width:580px">
+          <div class="mhd"><h3>Prompt Copied! ✅</h3><button class="mclose" onclick="closeModal('prompt')">✕</button></div>
+          <div class="mbody">
+            <div style="background:var(--ink);border-radius:10px;padding:16px;margin-bottom:16px">
+              <div style="font-size:11px;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Prompt copied to clipboard:</div>
+              <div id="promptPreviewText" style="font-size:12px;color:#c5bfb4;line-height:1.7;font-family:monospace;white-space:pre-wrap;max-height:200px;overflow-y:auto"></div>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a href="https://claude.ai" target="_blank" class="btn bg" style="flex:1;text-decoration:none;justify-content:center" onclick="closeModal('prompt')">Open Claude.ai and paste →</a>
+              <button class="btn bo bsm" onclick="closeModal('prompt')">Close</button>
+            </div>
+            <div style="font-size:12px;color:var(--ink3);margin-top:12px;line-height:1.7">
+              1. Click "Open Claude.ai" above<br>
+              2. Paste the prompt (Ctrl+V)<br>
+              3. Copy Claude's full JSON response<br>
+              4. Come back here and paste it in Step 3
+            </div>
           </div>
         </div>
       </div>
