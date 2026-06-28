@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>CorpMap Admin — Manage Data</title>
+<title>CorpMap Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -20,193 +20,421 @@
   --orange:#c0641a;--obg:rgba(192,100,26,0.09);
   --maroon:#8B1A1A;--mbg:rgba(139,26,26,0.09);
   --s1:0 1px 3px rgba(0,0,0,0.05),0 4px 12px rgba(0,0,0,0.04);
+  --s2:0 4px 16px rgba(0,0,0,0.08),0 12px 40px rgba(0,0,0,0.06);
 }
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
 .hide{display:none!important;}
+
 /* LOGIN */
-#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
-.loginbox{background:var(--bg2);border:0.5px solid var(--bd);border-radius:14px;padding:36px 32px;width:100%;max-width:380px;box-shadow:var(--s1);}
-.loginbox h1{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px;}
-.loginbox p{font-size:13px;color:var(--ink3);margin-bottom:22px;}
-.field{margin-bottom:13px;}
-.field label{display:block;font-size:12px;color:var(--ink3);margin-bottom:5px;}
-.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:0.5px solid var(--bd2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--bg3);color:var(--ink);outline:none;}
-.field input:focus,.field textarea:focus{border-color:var(--teal);}
-.field textarea{resize:vertical;font-family:monospace;font-size:11px;min-height:70px;}
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--ink);}
+.loginbox{background:#161b22;border:1px solid #30363d;border-radius:16px;padding:40px 36px;width:100%;max-width:400px;box-shadow:0 24px 60px rgba(0,0,0,.4);}
+.loginbox .logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;}
+.lmark{width:36px;height:36px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#1a1200;}
+.loginbox h1{font-family:'Playfair Display',serif;font-size:22px;color:#e8e4db;margin-bottom:4px;}
+.loginbox p{font-size:13px;color:#6b7280;margin-bottom:24px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;color:#8b949e;margin-bottom:5px;}
+.field input,.field select,.field textarea{width:100%;padding:10px 13px;border:1px solid #30363d;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:#0d1117;color:#e8e4db;outline:none;transition:.15s;}
+.field input:focus,.field textarea:focus{border-color:var(--gold);}
+.errmsg{font-size:12px;color:var(--red);margin-top:8px;min-height:14px;}
+
+/* BUTTONS */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:8px;font-size:13px;font-weight:500;padding:10px 18px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;}
 .bt{background:var(--teal);color:#fff;}.bt:hover{background:var(--teal2);}
-.bo{background:transparent;border:0.5px solid var(--bd2);color:var(--ink2);}.bo:hover{background:var(--bg3);}
+.bg{background:var(--gold);color:#1a1200;}.bg:hover{background:var(--gold2);}
+.bo{background:transparent;border:1px solid var(--bd2);color:var(--ink2);}.bo:hover{background:var(--bg3);}
 .br{background:var(--red);color:#fff;}.br:hover{opacity:.85;}
-.errmsg{font-size:12px;color:var(--red);margin-top:8px;min-height:14px;}
+.bpurple{background:var(--purple);color:#fff;}.bpurple:hover{opacity:.85;}
+.bsm{font-size:12px;padding:7px 13px;}
+
 /* APP SHELL */
 #appShell{display:flex;min-height:100vh;}
-.sidebar{width:210px;background:var(--ink);color:#e8e4db;padding:20px 14px;flex-shrink:0;}
-.sbrand{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:26px;display:flex;align-items:center;gap:8px;}
+.sidebar{width:220px;background:var(--ink);color:#e8e4db;padding:20px 14px;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+.sbrand{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:28px;display:flex;align-items:center;gap:9px;color:#e8e4db;}
 .sdot{width:9px;height:9px;border-radius:50%;background:var(--gold);}
-.snav button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:none;color:#c5bfb4;font-size:13px;padding:10px 12px;border-radius:8px;cursor:pointer;margin-bottom:3px;font-family:'DM Sans',sans-serif;}
-.snav button:hover{background:rgba(255,255,255,0.06);color:#fff;}
+.snav{display:flex;flex-direction:column;gap:2px;}
+.snav button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:none;color:#8b949e;font-size:13px;padding:10px 12px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;}
+.snav button:hover{background:rgba(255,255,255,0.06);color:#e8e4db;}
 .snav button.active{background:var(--gold);color:#1a1200;font-weight:500;}
-.sfoot{margin-top:auto;padding-top:18px;border-top:0.5px solid rgba(255,255,255,0.1);}
-.sfoot .uemail{font-size:11px;color:#9a948a;margin-bottom:8px;word-break:break-all;}
-.main{flex:1;padding:28px 32px;overflow-x:auto;}
-.pagehd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-.pagehd h2{font-family:'Playfair Display',serif;font-size:22px;}
+.snav .nav-icon{font-size:15px;width:18px;text-align:center;}
+.sdiv{height:1px;background:rgba(255,255,255,0.08);margin:12px 0;}
+.sfoot{margin-top:auto;}
+.sfoot .uemail{font-size:11px;color:#6b7280;margin-bottom:8px;word-break:break-all;}
+.aibadge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:20px;padding:5px 10px;margin-bottom:10px;}
+.aibadge .dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* MAIN */
+.main{flex:1;padding:28px 32px;overflow-x:auto;min-width:0;}
+.pagehd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:12px;flex-wrap:wrap;}
+.pagehd h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--ink);}
 .pagehd p{font-size:12px;color:var(--ink3);margin-top:3px;}
-table{width:100%;border-collapse:collapse;background:var(--bg2);border:0.5px solid var(--bd);border-radius:10px;overflow:hidden;}
-th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);padding:10px 14px;background:var(--bg3);border-bottom:0.5px solid var(--bd);}
-td{padding:10px 14px;font-size:13px;border-bottom:0.5px solid var(--bd);vertical-align:top;}
+
+/* TABLE */
+.tcard{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;overflow:hidden;box-shadow:var(--s1);}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);padding:11px 14px;background:var(--bg3);border-bottom:1px solid var(--bd);}
+td{padding:11px 14px;font-size:13px;border-bottom:1px solid var(--bd);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
-.rowbtns{display:flex;gap:6px;}
-.rowbtns button{font-size:11px;padding:5px 10px;border-radius:6px;border:none;cursor:pointer;}
-.editbtn{background:var(--tbg);color:var(--teal);}
-.delbtn{background:var(--rbg);color:var(--red);}
-.tag{font-size:10px;padding:2px 7px;border-radius:7px;background:var(--gbg);color:var(--gold);}
-.loadingrow td{text-align:center;color:var(--ink3);padding:24px;}
+tr:hover td{background:var(--bg3);}
+.rowbtns{display:flex;gap:5px;}
+.rowbtns button{font-size:11px;padding:5px 10px;border-radius:6px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.editbtn{background:var(--tbg);color:var(--teal);}.delbtn{background:var(--rbg);color:var(--red);}
+.tag{font-size:10px;padding:2px 8px;border-radius:8px;background:var(--gbg);color:var(--gold);font-weight:500;}
+.loadingrow td{text-align:center;color:var(--ink3);padding:28px;}
+
 /* MODAL */
-.ov{display:none;position:fixed;inset:0;z-index:300;background:rgba(13,17,23,0.6);align-items:center;justify-content:center;padding:20px;}
+.ov{display:none;position:fixed;inset:0;z-index:300;background:rgba(13,17,23,0.65);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px;}
 .ov.open{display:flex;}
-.modal{background:var(--bg2);border-radius:14px;width:100%;max-width:680px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
-.mhd{padding:18px 22px;border-bottom:0.5px solid var(--bd);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg2);z-index:2;}
-.mhd h3{font-family:'Playfair Display',serif;font-size:18px;}
-.mclose{background:var(--bg3);border:none;border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:14px;color:var(--ink3);}
-.mbody{padding:18px 22px 24px;}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.sectionlbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin:18px 0 8px;display:flex;align-items:center;gap:6px;}
-.sectionlbl .sub{font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink4);font-size:10.5px;}
-.savebar{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;}
-.toast{position:fixed;bottom:20px;right:20px;background:var(--ink);color:#fff;padding:11px 18px;border-radius:9px;font-size:13px;z-index:400;display:none;box-shadow:0 8px 24px rgba(0,0,0,.2);}
+.modal{background:var(--bg2);border-radius:15px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.2);}
+.mhd{padding:18px 24px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg2);z-index:2;border-radius:15px 15px 0 0;}
+.mhd h3{font-family:'Playfair Display',serif;font-size:19px;}
+.mclose{background:var(--bg3);border:none;border-radius:7px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--ink3);display:flex;align-items:center;justify-content:center;}
+.mclose:hover{background:var(--bg4);}
+.mbody{padding:20px 24px 28px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.seclbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin:18px 0 9px;display:flex;align-items:center;gap:6px;}
+.seclbl span{font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink4);}
+.savebar{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid var(--bd);}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#e8e4db;padding:12px 20px;border-radius:10px;font-size:13px;z-index:500;display:none;box-shadow:var(--s2);border-left:3px solid var(--gold);}
 .toast.show{display:block;}
 
-/* REPEATER (button-based list editor) */
-.repWrap{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
-.repItem{background:var(--bg3);border:0.5px solid var(--bd);border-radius:10px;padding:12px;}
+/* REPEATER */
+.repWrap{display:flex;flex-direction:column;gap:9px;margin-top:4px;}
+.repItem{background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:13px;}
 .repGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;}
 .repField label{font-size:10px;color:var(--ink3);display:block;margin-bottom:3px;}
-.repField input,.repField select{width:100%;padding:7px 9px;border:0.5px solid var(--bd2);border-radius:6px;font-size:12px;background:var(--bg2);color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;}
+.repField input,.repField select{width:100%;padding:7px 9px;border:1px solid var(--bd2);border-radius:6px;font-size:12px;background:var(--bg2);color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;}
 .repRemove{margin-top:9px;font-size:11px;padding:5px 10px;border-radius:6px;border:none;background:var(--rbg);color:var(--red);cursor:pointer;}
-.repAdd{font-size:12px;padding:9px 14px;border-radius:8px;border:1px dashed var(--bd2);background:transparent;color:var(--teal);cursor:pointer;width:100%;}
+.repAdd{font-size:12px;padding:9px 14px;border-radius:8px;border:1.5px dashed var(--bd2);background:transparent;color:var(--teal);cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;transition:.15s;}
 .repAdd:hover{background:var(--tbg);border-color:var(--teal);}
 .repEmpty{font-size:11.5px;color:var(--ink4);padding:6px 2px;}
 .swatchSel{display:flex;align-items:center;gap:6px;}
 .swatch{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:1px solid rgba(0,0,0,0.15);}
-
-/* CHIP CHECKLIST (director links) */
 .chipWrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
-.chip{display:flex;align-items:center;gap:5px;font-size:12px;padding:6px 11px;border-radius:14px;border:0.5px solid var(--bd2);background:var(--bg3);cursor:pointer;user-select:none;color:var(--ink2);}
+.chip{display:flex;align-items:center;gap:5px;font-size:12px;padding:6px 12px;border-radius:14px;border:1px solid var(--bd2);background:var(--bg3);cursor:pointer;user-select:none;color:var(--ink2);transition:.15s;}
 .chip.on{background:var(--teal);color:#fff;border-color:var(--teal);}
 .chipEmpty{font-size:11.5px;color:var(--ink4);}
+
+/* ============================================================
+   AI ASSISTANT TAB
+============================================================ */
+.ai-layout{display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start;}
+.ai-chat{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;overflow:hidden;box-shadow:var(--s1);}
+.ai-chat-hd{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;background:var(--bg3);}
+.ai-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--gold));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.ai-chat-title{font-size:14px;font-weight:500;color:var(--ink);}
+.ai-chat-sub{font-size:11px;color:var(--ink3);margin-top:1px;}
+.ai-msgs{height:420px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+.ai-msg-bot{display:flex;gap:10px;align-items:flex-start;}
+.ai-msg-bot .bubble{background:var(--bg3);border:1px solid var(--bd);border-radius:4px 12px 12px 12px;padding:11px 14px;font-size:13px;color:var(--ink2);line-height:1.7;max-width:90%;}
+.ai-msg-user{display:flex;justify-content:flex-end;}
+.ai-msg-user .bubble{background:var(--teal);color:#fff;border-radius:12px 12px 4px 12px;padding:10px 14px;font-size:13px;line-height:1.6;max-width:85%;}
+.ai-input-area{padding:12px 14px;border-top:1px solid var(--bd);background:var(--bg3);}
+.ai-suggestions{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px;}
+.ai-sug{font-size:11px;padding:5px 10px;border-radius:14px;background:var(--bg2);border:1px solid var(--bd);color:var(--ink3);cursor:pointer;transition:.15s;}
+.ai-sug:hover{border-color:var(--teal);color:var(--teal);background:var(--tbg);}
+.ai-input-row{display:flex;gap:8px;}
+.ai-inp{flex:1;padding:10px 13px;border:1px solid var(--bd2);border-radius:9px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--bg2);color:var(--ink);outline:none;}
+.ai-inp:focus{border-color:var(--teal);}
+.ai-send{padding:10px 16px;background:var(--teal);color:#fff;border:none;border-radius:9px;cursor:pointer;font-size:18px;transition:.15s;}
+.ai-send:hover{background:var(--teal2);}
+.ai-send:disabled{opacity:.4;cursor:not-allowed;}
+
+/* Preview panel */
+.preview-panel{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;box-shadow:var(--s1);overflow:hidden;}
+.preview-hd{padding:13px 16px;border-bottom:1px solid var(--bd);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;}
+.preview-title{font-size:13px;font-weight:500;color:var(--ink);}
+.preview-body{padding:16px;min-height:200px;}
+.preview-empty{text-align:center;padding:40px 20px;color:var(--ink3);font-size:13px;}
+.preview-empty .icon{font-size:32px;margin-bottom:10px;}
+.pfield{margin-bottom:10px;}
+.pfield label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink3);display:block;margin-bottom:3px;}
+.pfield .val{font-size:13px;color:var(--ink2);background:var(--bg3);border-radius:6px;padding:6px 10px;line-height:1.5;}
+.preview-actions{padding:12px 16px;border-top:1px solid var(--bd);display:flex;gap:8px;}
+
+/* typing indicator */
+.typing{display:flex;gap:4px;padding:8px 12px;}
+.td{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:ty 1.1s infinite;}
+.td:nth-child(2){animation-delay:.18s;}.td:nth-child(3){animation-delay:.36s;}
+@keyframes ty{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
+
+/* ============================================================
+   EXCEL TAB
+============================================================ */
+.xl-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.xl-type-tabs{display:flex;background:var(--bg2);border:1px solid var(--bd);border-radius:9px;overflow:hidden;}
+.xl-tab{padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;color:var(--ink3);border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:.15s;}
+.xl-tab.active{background:var(--teal);color:#fff;}
+.xl-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;overflow:hidden;box-shadow:var(--s1);}
+.xl-scroll{overflow-x:auto;}
+.xl-table{border-collapse:collapse;min-width:100%;}
+.xl-table th{background:var(--ink);color:#e8e4db;padding:10px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;border-right:1px solid rgba(255,255,255,0.08);text-align:left;}
+.xl-table th:first-child{width:36px;text-align:center;}
+.xl-table td{padding:0;border-bottom:1px solid var(--bd);border-right:1px solid var(--bd4,#ede9e0);vertical-align:middle;}
+.xl-table td:first-child{text-align:center;font-size:11px;color:var(--ink4);background:var(--bg3);width:36px;padding:8px;}
+.xl-cell{width:100%;padding:8px 10px;border:none;background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;min-width:100px;}
+.xl-cell:focus{background:rgba(13,115,119,0.06);box-shadow:inset 0 0 0 2px var(--teal);}
+.xl-table tr:hover td{background:var(--bg3);}
+.xl-table tr:hover td:first-child{background:var(--bg4);}
+.xl-add-row{width:100%;padding:10px;font-size:12px;color:var(--teal);background:var(--bg3);border:none;border-top:1px solid var(--bd);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:.15s;}
+.xl-add-row:hover{background:var(--tbg);}
+.xl-del{width:28px;height:28px;border-radius:6px;border:none;background:transparent;color:var(--ink4);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;margin:4px;}
+.xl-del:hover{background:var(--rbg);color:var(--red);}
+.xl-footer{padding:12px 16px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:var(--bg3);flex-wrap:wrap;gap:8px;}
+.xl-count{font-size:12px;color:var(--ink3);}
+
+@media(max-width:1100px){.ai-layout{grid-template-columns:1fr;}}
+@media(max-width:768px){.main{padding:16px;}.grid2{grid-template-columns:1fr;}.sidebar{display:none;}}
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="loginbox">
-    <h1>CorpMap Admin</h1>
-    <p>Sign in to manage companies, directors &amp; signups.</p>
-    <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="you@example.com"></div>
+    <div class="logo"><div class="lmark">C</div><div><div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#e8e4db">CorpMap Admin</div><div style="font-size:11px;color:#6b7280">Bangladesh Corporate Intelligence</div></div></div>
+    <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="admin@corpmap.bd"></div>
     <div class="field"><label>Password</label><input id="loginPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <button class="btn bt" style="width:100%" onclick="doLogin()">Sign In</button>
+    <button class="btn bg" style="width:100%;padding:12px" onclick="doLogin()">Sign In →</button>
     <div class="errmsg" id="loginErr"></div>
   </div>
 </div>
 
 <!-- APP SHELL -->
 <div id="appShell" class="hide">
-  <div class="sidebar" style="display:flex;flex-direction:column">
+  <div class="sidebar">
     <div class="sbrand"><div class="sdot"></div>CorpMap Admin</div>
     <div class="snav">
-      <button id="navGroups" class="active" onclick="switchTab('groups')">&#127970; Groups</button>
-      <button id="navDirectors" onclick="switchTab('directors')">&#128100; Directors</button>
-      <button id="navSignups" onclick="switchTab('signups')">&#128231; Signups</button>
+      <button id="navGroups" class="active" onclick="switchTab('groups')"><span class="nav-icon">🏢</span>Groups</button>
+      <button id="navDirectors" onclick="switchTab('directors')"><span class="nav-icon">👤</span>Directors</button>
+      <div class="sdiv"></div>
+      <button id="navAI" onclick="switchTab('ai')"><span class="nav-icon">✨</span>AI Assistant</button>
+      <button id="navExcel" onclick="switchTab('excel')"><span class="nav-icon">📊</span>Excel Editor</button>
+      <div class="sdiv"></div>
+      <button id="navSignups" onclick="switchTab('signups')"><span class="nav-icon">📬</span>Signups</button>
     </div>
     <div class="sfoot">
+      <div class="aibadge"><div class="dot"></div>Claude AI Connected</div>
       <div class="uemail" id="userEmail"></div>
-      <button class="btn bo" style="width:100%;font-size:12px" onclick="doLogout()">Sign Out</button>
+      <button class="btn bo bsm" style="width:100%;color:#8b949e;border-color:#30363d" onclick="doLogout()">Sign Out</button>
     </div>
   </div>
 
   <div class="main">
+
     <!-- GROUPS TAB -->
     <div id="tab-groups">
       <div class="pagehd">
-        <div><h2>Business Groups</h2><p>Companies shown on the homepage &amp; search</p></div>
+        <div><h2>Business Groups</h2><p>Manage all business groups shown on the platform</p></div>
         <button class="btn bt" onclick="openGroupModal(null)">+ Add Group</button>
       </div>
-      <table>
-        <thead><tr><th>ID</th><th>Name</th><th>Founded</th><th>HQ</th><th>Connections</th><th></th></tr></thead>
-        <tbody id="groupsTbody"><tr class="loadingrow"><td colspan="6">Loading…</td></tr></tbody>
-      </table>
+      <div class="tcard">
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th>Founded</th><th>HQ</th><th>Connections</th><th>Actions</th></tr></thead>
+          <tbody id="groupsTbody"><tr class="loadingrow"><td colspan="6">Loading…</td></tr></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- DIRECTORS TAB -->
     <div id="tab-directors" class="hide">
       <div class="pagehd">
-        <div><h2>Directors</h2><p>People shown in rankings &amp; profiles</p></div>
+        <div><h2>Directors</h2><p>Manage director profiles and board memberships</p></div>
         <button class="btn bt" onclick="openDirectorModal(null)">+ Add Director</button>
       </div>
-      <table>
-        <thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Boards</th><th>Influence</th><th></th></tr></thead>
-        <tbody id="dirsTbody"><tr class="loadingrow"><td colspan="6">Loading…</td></tr></tbody>
-      </table>
+      <div class="tcard">
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Boards</th><th>Influence</th><th>Actions</th></tr></thead>
+          <tbody id="dirsTbody"><tr class="loadingrow"><td colspan="6">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         AI ASSISTANT TAB
+    ============================================================ -->
+    <div id="tab-ai" class="hide">
+      <div class="pagehd">
+        <div><h2>AI Assistant</h2><p>Command Claude to research and add companies or directors directly to Firestore</p></div>
+      </div>
+
+      <div class="ai-layout">
+        <!-- Chat -->
+        <div class="ai-chat">
+          <div class="ai-chat-hd">
+            <div class="ai-avatar">C</div>
+            <div>
+              <div class="ai-chat-title">Claude — CorpMap Intelligence</div>
+              <div class="ai-chat-sub">Ask me to add any Bangladesh company or director</div>
+            </div>
+          </div>
+          <div class="ai-msgs" id="aiMsgs">
+            <div class="ai-msg-bot">
+              <div class="ai-avatar" style="width:26px;height:26px;font-size:10px;flex-shrink:0">C</div>
+              <div class="bubble">Hello! I'm Claude, integrated directly into your CorpMap admin panel.<br><br>I can <strong>research and generate full profiles</strong> for any Bangladesh company or director, then save them directly to your Firestore database.<br><br>Try commands like:<br>• <em>"Add Walton Group as a business group"</em><br>• <em>"Add Dr Muhammad Yunus as a director"</em><br>• <em>"Add Grameenphone as a telecom company"</em></div>
+            </div>
+          </div>
+          <div class="ai-input-area">
+            <div class="ai-suggestions">
+              <span class="ai-sug" onclick="askAI('Add Walton Group as a business group')">+ Walton Group</span>
+              <span class="ai-sug" onclick="askAI('Add Grameenphone as a company')">+ Grameenphone</span>
+              <span class="ai-sug" onclick="askAI('Add Dr Muhammad Yunus as a director')">+ Dr Muhammad Yunus</span>
+              <span class="ai-sug" onclick="askAI('Add Dutch-Bangla Bank as a company')">+ Dutch-Bangla Bank</span>
+              <span class="ai-sug" onclick="askAI('Add Renata Limited pharmaceuticals')">+ Renata Pharma</span>
+              <span class="ai-sug" onclick="askAI('Add BRAC as an organisation')">+ BRAC</span>
+            </div>
+            <div class="ai-input-row">
+              <input class="ai-inp" id="aiInp" placeholder="e.g. Add Walton Group as a business group..." onkeydown="if(event.key==='Enter'&&!event.shiftKey)askAI()">
+              <button class="ai-send" id="aiSendBtn" onclick="askAI()">➤</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="preview-panel">
+          <div class="preview-hd">
+            <div class="preview-title">Generated Preview</div>
+            <span style="font-size:11px;color:var(--ink3)" id="previewType"></span>
+          </div>
+          <div class="preview-body" id="previewBody">
+            <div class="preview-empty">
+              <div class="icon">🔍</div>
+              <div>Claude's generated data will appear here for review before saving to Firestore.</div>
+            </div>
+          </div>
+          <div class="preview-actions" id="previewActions" style="display:none">
+            <button class="btn bo bsm" onclick="discardPreview()">Discard</button>
+            <button class="btn bt bsm" onclick="editPreview()">✏️ Edit first</button>
+            <button class="btn bg bsm" id="savePreviewBtn" onclick="savePreview()">💾 Save to Firestore</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         EXCEL EDITOR TAB
+    ============================================================ -->
+    <div id="tab-excel" class="hide">
+      <div class="pagehd">
+        <div><h2>Excel Editor</h2><p>Edit companies and directors in a spreadsheet-style interface. Changes save to Firestore instantly.</p></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn bo bsm" onclick="downloadExcel()">⬇ Download Excel</button>
+          <button class="btn bt bsm" onclick="saveAllExcel()">💾 Save All to Firestore</button>
+        </div>
+      </div>
+
+      <div class="xl-toolbar">
+        <div class="xl-type-tabs">
+          <button class="xl-tab active" id="xlTabGroups" onclick="switchXlTab('groups')">🏢 Groups</button>
+          <button class="xl-tab" id="xlTabDirectors" onclick="switchXlTab('directors')">👤 Directors</button>
+        </div>
+        <input id="xlSearch" placeholder="🔍 Filter rows..." style="padding:8px 12px;border:1px solid var(--bd2);border-radius:8px;font-size:13px;background:var(--bg2);color:var(--ink);outline:none;width:200px" oninput="filterXl()">
+      </div>
+
+      <div class="xl-wrap">
+        <div class="xl-scroll">
+          <!-- Groups table -->
+          <table class="xl-table" id="xlGroupsTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>ID</th><th>Name</th><th>Initials</th><th>Founded</th>
+                <th>HQ</th><th>Founder</th><th>Sectors</th><th>Size</th>
+                <th>Employees</th><th>DSE</th><th>Connections</th><th>Tags</th><th>About (summary)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="xlGroupsBody">
+              <tr><td colspan="15" style="text-align:center;padding:28px;color:var(--ink3)">Loading...</td></tr>
+            </tbody>
+          </table>
+          <!-- Directors table -->
+          <table class="xl-table hide" id="xlDirectorsTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>ID</th><th>Name</th><th>Initials</th><th>Role</th>
+                <th>Influence</th><th>Boards (all-time)</th><th>Active Boards</th>
+                <th>Industries</th><th>Bio (summary)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="xlDirectorsBody">
+              <tr><td colspan="11" style="text-align:center;padding:28px;color:var(--ink3)">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <button class="xl-add-row" id="xlAddRow" onclick="xlAddRow()">+ Add new row</button>
+        <div class="xl-footer">
+          <div class="xl-count" id="xlCount">0 rows</div>
+          <div style="font-size:11px;color:var(--ink4)">Click any cell to edit • Changes highlight in yellow • Save All to push to Firestore</div>
+        </div>
+      </div>
     </div>
 
     <!-- SIGNUPS TAB -->
     <div id="tab-signups" class="hide">
       <div class="pagehd">
-        <div><h2>Waitlist Signups</h2><p>People who requested early access on the homepage</p></div>
+        <div><h2>Waitlist Signups</h2><p>People who requested early access</p></div>
+        <button class="btn bo bsm" onclick="downloadSignups()">⬇ Export CSV</button>
       </div>
-      <table>
-        <thead><tr><th>Name</th><th>Email</th><th>Organisation</th><th>Role</th><th>Date</th><th></th></tr></thead>
-        <tbody id="signupsTbody"><tr class="loadingrow"><td colspan="6">Loading…</td></tr></tbody>
-      </table>
+      <div class="tcard">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Organisation</th><th>Role</th><th>Date</th><th></th></tr></thead>
+          <tbody id="signupsTbody"><tr class="loadingrow"><td colspan="6">Loading…</td></tr></tbody>
+        </table>
+      </div>
     </div>
-  </div>
-</div>
+
+  </div><!-- /main -->
+</div><!-- /appShell -->
 
 <!-- GROUP MODAL -->
 <div class="ov" id="ov-group">
   <div class="modal">
-    <div class="mhd"><h3 id="groupModalTitle">Add Group</h3><button class="mclose" onclick="closeModal('group')">&#10005;</button></div>
+    <div class="mhd"><h3 id="groupModalTitle">Add Group</h3><button class="mclose" onclick="closeModal('group')">✕</button></div>
     <div class="mbody">
       <div class="grid2">
-        <div class="field"><label>ID (short, no spaces — e.g. "beximco")</label><input id="g-id"></div>
+        <div class="field"><label>ID (short, no spaces)</label><input id="g-id"></div>
         <div class="field"><label>Name</label><input id="g-name"></div>
         <div class="field"><label>Initials (2 letters)</label><input id="g-initials"></div>
         <div class="field"><label>Founded (year)</label><input id="g-founded"></div>
         <div class="field"><label>HQ</label><input id="g-hq"></div>
         <div class="field"><label>Founder</label><input id="g-founder"></div>
         <div class="field"><label>Type</label><input id="g-type"></div>
-        <div class="field"><label>Size (e.g. "31 companies")</label><input id="g-size"></div>
+        <div class="field"><label>Size</label><input id="g-size"></div>
         <div class="field"><label>Employees</label><input id="g-employees"></div>
         <div class="field"><label>DSE Symbol</label><input id="g-dse"></div>
         <div class="field"><label>RJSC</label><input id="g-rjsc"></div>
-        <div class="field"><label>Connections (number)</label><input id="g-conn" type="number"></div>
+        <div class="field"><label>Connections</label><input id="g-conn" type="number"></div>
       </div>
       <div class="field"><label>Sectors (comma separated)</label><input id="g-sectors"></div>
-      <div class="field"><label>Tags (comma separated, max 3 shown on card)</label><input id="g-tags"></div>
-      <div class="field"><label>About (paragraph)</label><textarea id="g-about" style="font-family:'DM Sans',sans-serif;min-height:80px"></textarea></div>
+      <div class="field"><label>Tags (comma separated)</label><input id="g-tags"></div>
+      <div class="field"><label>About</label><textarea id="g-about" style="font-family:'DM Sans',sans-serif;min-height:80px;width:100%;padding:10px 12px;border:1px solid var(--bd2);border-radius:8px;font-size:13px;background:var(--bg3);color:var(--ink);outline:none;resize:vertical"></textarea></div>
 
-      <div class="sectionlbl">Badges <span class="sub">small labels shown on the profile</span></div>
+      <div class="seclbl">Badges</div>
       <div class="repWrap" id="g-badges-rep"></div>
       <button type="button" class="repAdd" onclick="repGroupBadges.addRow()">+ Add badge</button>
 
-      <div class="sectionlbl">Subsidiaries <span class="sub">companies owned by this group</span></div>
+      <div class="seclbl">Subsidiaries</div>
       <div class="repWrap" id="g-subs-rep"></div>
       <button type="button" class="repAdd" onclick="repGroupSubs.addRow()">+ Add subsidiary</button>
 
-      <div class="sectionlbl">Ownership structure <span class="sub">who owns what %</span></div>
+      <div class="seclbl">Ownership</div>
       <div class="repWrap" id="g-own-rep"></div>
       <button type="button" class="repAdd" onclick="repGroupOwn.addRow()">+ Add ownership slice</button>
 
-      <div class="sectionlbl">Timeline <span class="sub">key historical events</span></div>
+      <div class="seclbl">Timeline</div>
       <div class="repWrap" id="g-tl-rep"></div>
-      <button type="button" class="repAdd" onclick="repGroupTl.addRow()">+ Add timeline event</button>
+      <button type="button" class="repAdd" onclick="repGroupTl.addRow()">+ Add event</button>
 
-      <div class="sectionlbl">Linked directors <span class="sub">tap to select who sits on this board</span></div>
+      <div class="seclbl">Linked Directors <span>tap to select</span></div>
       <div class="chipWrap" id="g-dirs-chips"></div>
 
-      <div class="sectionlbl">Related companies <span class="sub">link to another group already in the system</span></div>
+      <div class="seclbl">Related Companies</div>
       <div class="repWrap" id="g-rel-rep"></div>
       <button type="button" class="repAdd" onclick="repGroupRel.addRow()">+ Add related company</button>
 
@@ -222,37 +450,37 @@ tr:last-child td{border-bottom:none;}
 <!-- DIRECTOR MODAL -->
 <div class="ov" id="ov-director">
   <div class="modal">
-    <div class="mhd"><h3 id="dirModalTitle">Add Director</h3><button class="mclose" onclick="closeModal('director')">&#10005;</button></div>
+    <div class="mhd"><h3 id="dirModalTitle">Add Director</h3><button class="mclose" onclick="closeModal('director')">✕</button></div>
     <div class="mbody">
       <div class="grid2">
-        <div class="field"><label>ID (short, no spaces — e.g. "salman")</label><input id="d-id"></div>
+        <div class="field"><label>ID (short, no spaces)</label><input id="d-id"></div>
         <div class="field"><label>Name</label><input id="d-name"></div>
-        <div class="field"><label>Initials (1-2 letters)</label><input id="d-initials"></div>
+        <div class="field"><label>Initials</label><input id="d-initials"></div>
         <div class="field"><label>Role</label><input id="d-role"></div>
-        <div class="field"><label>Influence score (0-100)</label><input id="d-inf" type="number"></div>
+        <div class="field"><label>Influence (0–100)</label><input id="d-inf" type="number"></div>
         <div class="field"><label>All-time boards</label><input id="d-boards" type="number"></div>
         <div class="field"><label>Active boards</label><input id="d-active" type="number"></div>
-        <div class="field"><label>Industries (count)</label><input id="d-industries" type="number"></div>
+        <div class="field"><label>Industries</label><input id="d-industries" type="number"></div>
       </div>
-      <div class="field"><label>Bio (paragraph)</label><textarea id="d-bio" style="font-family:'DM Sans',sans-serif;min-height:80px"></textarea></div>
+      <div class="field"><label>Bio</label><textarea id="d-bio" style="font-family:'DM Sans',sans-serif;min-height:80px;width:100%;padding:10px 12px;border:1px solid var(--bd2);border-radius:8px;font-size:13px;background:var(--bg3);color:var(--ink);outline:none;resize:vertical"></textarea></div>
 
-      <div class="sectionlbl">Badges <span class="sub">small labels shown on the profile</span></div>
+      <div class="seclbl">Badges</div>
       <div class="repWrap" id="d-badges-rep"></div>
       <button type="button" class="repAdd" onclick="repDirBadges.addRow()">+ Add badge</button>
 
-      <div class="sectionlbl">Stat tiles <span class="sub">the 4 numbers shown at the top of the profile</span></div>
+      <div class="seclbl">Stat Tiles <span>4 numbers shown at top of profile</span></div>
       <div class="repWrap" id="d-stats-rep"></div>
-      <button type="button" class="repAdd" onclick="repDirStats.addRow()">+ Add stat tile</button>
+      <button type="button" class="repAdd" onclick="repDirStats.addRow()">+ Add stat</button>
 
-      <div class="sectionlbl">Board memberships <span class="sub">link to a company already in the system, or type a custom one</span></div>
+      <div class="seclbl">Board Memberships</div>
       <div class="repWrap" id="d-boardslist-rep"></div>
       <button type="button" class="repAdd" onclick="repDirBoardsList.addRow()">+ Add board membership</button>
 
-      <div class="sectionlbl">Industry distribution <span class="sub">% breakdown by sector</span></div>
+      <div class="seclbl">Industry Distribution</div>
       <div class="repWrap" id="d-ind-rep"></div>
-      <button type="button" class="repAdd" onclick="repDirInd.addRow()">+ Add industry slice</button>
+      <button type="button" class="repAdd" onclick="repDirInd.addRow()">+ Add industry</button>
 
-      <div class="sectionlbl">Related directors <span class="sub">link to another director already in the system</span></div>
+      <div class="seclbl">Related Directors</div>
       <div class="repWrap" id="d-related-rep"></div>
       <button type="button" class="repAdd" onclick="repDirRelated.addRow()">+ Add related director</button>
 
@@ -267,351 +495,500 @@ tr:last-child td{border-bottom:none;}
 
 <div class="toast" id="toast"></div>
 
-<!-- ===================== FIREBASE ===================== -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDZj_MKurFUdoxC2xovq8JV5E5nfKcUMf4",
-  authDomain: "corpmap-bd.firebaseapp.com",
-  projectId: "corpmap-bd",
-  storageBucket: "corpmap-bd.firebasestorage.app",
-  messagingSenderId: "427579183346",
-  appId: "1:427579183346:web:8297c2b9174159aeb4806b"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+<!-- SheetJS for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-/* ===================== AUTH ===================== */
+<script>
+/* ============================================================
+   FIREBASE
+============================================================ */
+firebase.initializeApp({
+  apiKey:"AIzaSyDZj_MKurFUdoxC2xovq8JV5E5nfKcUMf4",
+  authDomain:"corpmap-bd.firebaseapp.com",
+  projectId:"corpmap-bd",
+  storageBucket:"corpmap-bd.firebasestorage.app",
+  messagingSenderId:"427579183346",
+  appId:"1:427579183346:web:8297c2b9174159aeb4806b"
+});
+const auth=firebase.auth();
+const db=firebase.firestore();
+
+/* ============================================================
+   AUTH
+============================================================ */
 function doLogin(){
-  const email=document.getElementById('loginEmail').value.trim();
-  const pass=document.getElementById('loginPass').value;
+  const e=document.getElementById('loginEmail').value.trim();
+  const p=document.getElementById('loginPass').value;
   document.getElementById('loginErr').textContent='';
-  auth.signInWithEmailAndPassword(email,pass).catch(err=>{
+  auth.signInWithEmailAndPassword(e,p).catch(err=>{
     document.getElementById('loginErr').textContent=err.message;
   });
 }
-function doLogout(){ auth.signOut(); }
-
+function doLogout(){auth.signOut();}
 auth.onAuthStateChanged(user=>{
   if(user){
     document.getElementById('loginScreen').classList.add('hide');
     document.getElementById('appShell').classList.remove('hide');
     document.getElementById('userEmail').textContent=user.email;
-    loadGroups(); loadDirectors(); loadSignups();
+    loadGroups();loadDirectors();loadSignups();
   } else {
     document.getElementById('loginScreen').classList.remove('hide');
     document.getElementById('appShell').classList.add('hide');
   }
 });
 
-/* ===================== TABS ===================== */
+/* ============================================================
+   TABS
+============================================================ */
 function switchTab(name){
-  ['groups','directors','signups'].forEach(t=>{
-    document.getElementById('tab-'+t).classList.toggle('hide', t!==name);
-    document.getElementById('nav'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===name);
+  ['groups','directors','ai','excel','signups'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('hide',t!==name);
+    const nb=document.getElementById('nav'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(nb)nb.classList.toggle('active',t===name);
   });
+  if(name==='excel')renderXlTables();
 }
-function showToast(msg){
+function showToast(msg,ok=true){
   const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2200);
+  t.textContent=msg;t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);
 }
-function closeModal(name){ document.getElementById('ov-'+name).classList.remove('open'); }
-function splitCSV(v){ return v.split(',').map(s=>s.trim()).filter(Boolean); }
+function closeModal(name){document.getElementById('ov-'+name).classList.remove('open');document.body.style.overflow='';}
+function splitCSV(v){return v.split(',').map(s=>s.trim()).filter(Boolean);}
 
-/* ===================== COLOR PALETTE ===================== */
-const COLOR_OPTIONS = [
-  {key:'teal',   label:'Teal',   var:'var(--teal)',   bgVar:'var(--tbg)', swatch:'#0d7377'},
-  {key:'blue',   label:'Blue',   var:'var(--blue)',   bgVar:'var(--bbg)', swatch:'#1a4a7a'},
-  {key:'green',  label:'Green',  var:'var(--green)',  bgVar:'var(--grn)', swatch:'#167b48'},
-  {key:'gold',   label:'Gold',   var:'var(--gold)',   bgVar:'var(--gbg)', swatch:'#c9a84c'},
-  {key:'red',    label:'Red',    var:'var(--red)',    bgVar:'var(--rbg)', swatch:'#c0392b'},
-  {key:'orange', label:'Orange', var:'var(--orange)', bgVar:'var(--obg)', swatch:'#c0641a'},
-  {key:'purple', label:'Purple', var:'var(--purple)', bgVar:'var(--pbg)', swatch:'#5a2d82'},
-  {key:'maroon', label:'Maroon', var:'var(--maroon)', bgVar:'var(--mbg)', swatch:'#8B1A1A'},
-  {key:'gray',   label:'Gray',   var:'var(--ink3)',   bgVar:'var(--bg3)', swatch:'#6b7280'}
+/* ============================================================
+   COLOR PALETTE
+============================================================ */
+const COLOR_OPTIONS=[
+  {key:'teal',label:'Teal',var:'var(--teal)',bgVar:'var(--tbg)',swatch:'#0d7377'},
+  {key:'blue',label:'Blue',var:'var(--blue)',bgVar:'var(--bbg)',swatch:'#1a4a7a'},
+  {key:'green',label:'Green',var:'var(--green)',bgVar:'var(--grn)',swatch:'#167b48'},
+  {key:'gold',label:'Gold',var:'var(--gold)',bgVar:'var(--gbg)',swatch:'#c9a84c'},
+  {key:'red',label:'Red',var:'var(--red)',bgVar:'var(--rbg)',swatch:'#c0392b'},
+  {key:'orange',label:'Orange',var:'var(--orange)',bgVar:'var(--obg)',swatch:'#c0641a'},
+  {key:'purple',label:'Purple',var:'var(--purple)',bgVar:'var(--pbg)',swatch:'#5a2d82'},
+  {key:'maroon',label:'Maroon',var:'var(--maroon)',bgVar:'var(--mbg)',swatch:'#8B1A1A'},
+  {key:'gray',label:'Gray',var:'var(--ink3)',bgVar:'var(--bg3)',swatch:'#6b7280'}
 ];
-function colorByKey(k){ return COLOR_OPTIONS.find(o=>o.key===k) || COLOR_OPTIONS[0]; }
-function colorFull(k){ return colorByKey(k).var; }
-function colorBg(k){ return colorByKey(k).bgVar; }
-function reverseColorFull(v){
-  const found = COLOR_OPTIONS.find(o=>o.var===v);
-  return found ? found.key : 'teal';
-}
+function colorByKey(k){return COLOR_OPTIONS.find(o=>o.key===k)||COLOR_OPTIONS[0];}
+function colorFull(k){return colorByKey(k).var;}
+function colorBg(k){return colorByKey(k).bgVar;}
+function reverseColorFull(v){const f=COLOR_OPTIONS.find(o=>o.var===v);return f?f.key:'teal';}
 
-/* ===================== REPEATER ENGINE (button-based list editor) ===================== */
-/*
-  schema: array of field defs:
-   { key, label, type: 'text'|'number'|'select'|'color-short'|'color-full'|'colorpair'|'select-group'|'select-director', ... }
-   colorpair fields need: bgKey, colKey
-   select fields need: options: [{value,label}]
-   select-group/select-director fields can have: autofill: { initials:'targetKey', name:'targetKey' }
-*/
-function createRepeater(containerEl, schema, emptyMsg){
+/* ============================================================
+   REPEATER ENGINE
+============================================================ */
+function createRepeater(containerEl,schema,emptyMsg){
   function render(){
-    const rows = Array.from(containerEl.children);
     containerEl.querySelectorAll('.repEmptyMsg').forEach(e=>e.remove());
-    if(rows.length===0){
-      const e=document.createElement('div'); e.className='repEmpty repEmptyMsg'; e.textContent=emptyMsg||'Nothing added yet.';
+    if(!containerEl.querySelector('.repItem')){
+      const e=document.createElement('div');e.className='repEmpty repEmptyMsg';e.textContent=emptyMsg||'Nothing yet.';
       containerEl.appendChild(e);
     }
   }
-  function makeSwatchSelect(field, selectedKey){
-    const wrap=document.createElement('div'); wrap.className='swatchSel';
-    const dot=document.createElement('div'); dot.className='swatch'; dot.style.background=colorByKey(selectedKey).swatch;
-    const sel=document.createElement('select'); sel.dataset.key=field.key;
-    COLOR_OPTIONS.forEach(o=>{
-      const op=document.createElement('option'); op.value=o.key; op.textContent=o.label;
-      if(o.key===selectedKey) op.selected=true;
-      sel.appendChild(op);
-    });
-    sel.addEventListener('change',()=>{ dot.style.background=colorByKey(sel.value).swatch; });
-    wrap.appendChild(dot); wrap.appendChild(sel);
-    return wrap;
+  function makeSwatchSelect(field,selectedKey){
+    const wrap=document.createElement('div');wrap.className='swatchSel';
+    const dot=document.createElement('div');dot.className='swatch';dot.style.background=colorByKey(selectedKey).swatch;
+    const sel=document.createElement('select');sel.dataset.key=field.key;
+    COLOR_OPTIONS.forEach(o=>{const op=document.createElement('option');op.value=o.key;op.textContent=o.label;if(o.key===selectedKey)op.selected=true;sel.appendChild(op);});
+    sel.addEventListener('change',()=>{dot.style.background=colorByKey(sel.value).swatch;});
+    wrap.appendChild(dot);wrap.appendChild(sel);return wrap;
   }
   function addRow(item){
-    item = item || {};
+    item=item||{};
     containerEl.querySelectorAll('.repEmptyMsg').forEach(e=>e.remove());
-    const row=document.createElement('div'); row.className='repItem';
-    const grid=document.createElement('div'); grid.className='repGrid';
+    const row=document.createElement('div');row.className='repItem';
+    const grid=document.createElement('div');grid.className='repGrid';
     row.appendChild(grid);
-
     schema.forEach(f=>{
-      const wrap=document.createElement('div'); wrap.className='repField';
-      const lbl=document.createElement('label'); lbl.textContent=f.label;
-      wrap.appendChild(lbl);
-
-      if(f.type==='text'){
-        const inp=document.createElement('input'); inp.type='text'; inp.value=item[f.key]||''; inp.dataset.key=f.key;
-        wrap.appendChild(inp);
-      } else if(f.type==='number'){
-        const inp=document.createElement('input'); inp.type='number'; inp.value=item[f.key]!=null?item[f.key]:''; inp.dataset.key=f.key;
-        wrap.appendChild(inp);
-      } else if(f.type==='select'){
-        const sel=document.createElement('select'); sel.dataset.key=f.key;
-        f.options.forEach(o=>{
-          const op=document.createElement('option'); op.value=o.value; op.textContent=o.label;
-          if(item[f.key]===o.value || (!item[f.key] && o.value===f.options[0].value)) op.selected=true;
-          sel.appendChild(op);
-        });
-        wrap.appendChild(sel);
-      } else if(f.type==='color-short'){
-        wrap.appendChild(makeSwatchSelect(f, item[f.key]||'teal'));
-      } else if(f.type==='color-full'){
-        wrap.appendChild(makeSwatchSelect(f, reverseColorFull(item[f.key])));
-      } else if(f.type==='colorpair'){
-        wrap.appendChild(makeSwatchSelect(f, reverseColorFull(item[f.colKey])));
-      } else if(f.type==='select-group'||f.type==='select-director'){
-        const sel=document.createElement('select'); sel.dataset.key=f.key; sel.dataset.linkType=f.type;
-        const noneOpt=document.createElement('option'); noneOpt.value=''; noneOpt.textContent='— none / custom —';
-        sel.appendChild(noneOpt);
-        const cache = f.type==='select-group' ? groupsCache : dirsCache;
+      const wrap=document.createElement('div');wrap.className='repField';
+      const lbl=document.createElement('label');lbl.textContent=f.label;wrap.appendChild(lbl);
+      if(f.type==='text'){const inp=document.createElement('input');inp.type='text';inp.value=item[f.key]||'';inp.dataset.key=f.key;wrap.appendChild(inp);}
+      else if(f.type==='number'){const inp=document.createElement('input');inp.type='number';inp.value=item[f.key]!=null?item[f.key]:'';inp.dataset.key=f.key;wrap.appendChild(inp);}
+      else if(f.type==='select'){const sel=document.createElement('select');sel.dataset.key=f.key;f.options.forEach(o=>{const op=document.createElement('option');op.value=o.value;op.textContent=o.label;if(item[f.key]===o.value)op.selected=true;sel.appendChild(op);});wrap.appendChild(sel);}
+      else if(f.type==='color-short'){wrap.appendChild(makeSwatchSelect(f,item[f.key]||'teal'));}
+      else if(f.type==='color-full'){wrap.appendChild(makeSwatchSelect(f,reverseColorFull(item[f.key])));}
+      else if(f.type==='colorpair'){wrap.appendChild(makeSwatchSelect(f,reverseColorFull(item[f.colKey])));}
+      else if(f.type==='select-group'||f.type==='select-director'){
+        const sel=document.createElement('select');sel.dataset.key=f.key;
+        const none=document.createElement('option');none.value='';none.textContent='— none —';sel.appendChild(none);
+        const cache=f.type==='select-group'?groupsCache:dirsCache;
         Object.keys(cache).sort((a,b)=>(cache[a].name||a).localeCompare(cache[b].name||b)).forEach(id=>{
-          const op=document.createElement('option'); op.value=id; op.textContent=cache[id].name||id;
-          if(item[f.key]===id) op.selected=true;
-          sel.appendChild(op);
+          const op=document.createElement('option');op.value=id;op.textContent=cache[id].name||id;if(item[f.key]===id)op.selected=true;sel.appendChild(op);
         });
         sel.addEventListener('change',()=>{
-          const src = sel.value ? cache[sel.value] : null;
-          if(src && f.autofill){
-            Object.entries(f.autofill).forEach(([srcProp,targetKey])=>{
-              const el=row.querySelector(`[data-key="${targetKey}"]`);
-              if(el) el.value = src[srcProp] || '';
-            });
-          }
+          if(sel.value&&f.autofill){const src=cache[sel.value];Object.entries(f.autofill).forEach(([sp,tk])=>{const el=row.querySelector(`[data-key="${tk}"]`);if(el)el.value=src[sp]||'';});}
         });
         wrap.appendChild(sel);
       }
       grid.appendChild(wrap);
     });
-
-    const rmBtn=document.createElement('button');
-    rmBtn.type='button'; rmBtn.className='repRemove'; rmBtn.textContent='✕ Remove';
-    rmBtn.addEventListener('click',()=>{ row.remove(); render(); });
-    row.appendChild(rmBtn);
-
+    const rm=document.createElement('button');rm.type='button';rm.className='repRemove';rm.textContent='✕ Remove';
+    rm.addEventListener('click',()=>{row.remove();render();});
+    row.appendChild(rm);
     containerEl.appendChild(row);
   }
-  function setValue(arr){
-    containerEl.innerHTML='';
-    (arr||[]).forEach(item=>addRow(item));
-    render();
-  }
+  function setValue(arr){containerEl.innerHTML='';(arr||[]).forEach(item=>addRow(item));render();}
   function getValue(){
     return Array.from(containerEl.children).filter(r=>r.classList.contains('repItem')).map(row=>{
       const obj={};
       schema.forEach(f=>{
-        if(f.type==='colorpair'){
-          const sel=row.querySelector(`select[data-key="${f.key}"]`);
-          const k=sel?sel.value:'teal';
-          obj[f.colKey]=colorFull(k); obj[f.bgKey]=colorBg(k);
-        } else if(f.type==='color-full'){
-          const sel=row.querySelector(`select[data-key="${f.key}"]`);
-          obj[f.key]=colorFull(sel?sel.value:'teal');
-        } else if(f.type==='color-short'){
-          const sel=row.querySelector(`select[data-key="${f.key}"]`);
-          obj[f.key]=sel?sel.value:'teal';
-        } else if(f.type==='number'){
-          const inp=row.querySelector(`input[data-key="${f.key}"]`);
-          obj[f.key]=Number(inp?inp.value:0)||0;
-        } else if(f.type==='select-group'||f.type==='select-director'){
-          const sel=row.querySelector(`select[data-key="${f.key}"]`);
-          obj[f.key]=sel?sel.value:'';
-        } else if(f.type==='select'){
-          const sel=row.querySelector(`select[data-key="${f.key}"]`);
-          obj[f.key]=sel?sel.value:f.options[0].value;
-        } else {
-          const inp=row.querySelector(`input[data-key="${f.key}"]`);
-          obj[f.key]=inp?inp.value.trim():'';
-        }
+        if(f.type==='colorpair'){const sel=row.querySelector(`select[data-key="${f.key}"]`);const k=sel?sel.value:'teal';obj[f.colKey]=colorFull(k);obj[f.bgKey]=colorBg(k);}
+        else if(f.type==='color-full'){const sel=row.querySelector(`select[data-key="${f.key}"]`);obj[f.key]=colorFull(sel?sel.value:'teal');}
+        else if(f.type==='color-short'){const sel=row.querySelector(`select[data-key="${f.key}"]`);obj[f.key]=sel?sel.value:'teal';}
+        else if(f.type==='number'){const inp=row.querySelector(`input[data-key="${f.key}"]`);obj[f.key]=Number(inp?inp.value:0)||0;}
+        else if(f.type==='select'||f.type==='select-group'||f.type==='select-director'){const sel=row.querySelector(`select[data-key="${f.key}"]`);obj[f.key]=sel?sel.value:'';}
+        else{const inp=row.querySelector(`input[data-key="${f.key}"]`);obj[f.key]=inp?inp.value.trim():'';}
       });
       return obj;
     });
   }
   render();
-  return { addRow, setValue, getValue };
+  return{addRow,setValue,getValue};
 }
 
-/* ===================== SCHEMAS ===================== */
-const SCHEMA_BADGES = [
-  {key:'t', label:'Label', type:'text'},
-  {key:'c', label:'Color', type:'color-short'}
-];
-const SCHEMA_SUBS = [
-  {key:'n', label:'Company name', type:'text'},
-  {key:'m', label:'Description', type:'text'},
-  {key:'p', label:'Ownership / status', type:'text'}
-];
-const SCHEMA_OWN = [
-  {key:'l', label:'Label', type:'text'},
-  {key:'p', label:'Percent', type:'number'},
-  {key:'c', label:'Color', type:'color-full'}
-];
-const SCHEMA_TL = [
-  {key:'yr', label:'Year', type:'text'},
-  {key:'dot', label:'Color', type:'color-full'},
-  {key:'t', label:'Title', type:'text'},
-  {key:'d', label:'Description', type:'text'}
-];
-const SCHEMA_REL_COMPANY = [
-  {key:'key', label:'Linked company', type:'select-group', autofill:{initials:'init', name:'n'}},
-  {key:'init', label:'Initials (shown)', type:'text'},
-  {key:'n', label:'Name (shown)', type:'text'},
-  {key:'r', label:'Relationship', type:'text'},
-  {key:'col', label:'Color', type:'colorpair', colKey:'col', bgKey:'bg'}
-];
-const SCHEMA_BOARDS_LIST = [
-  {key:'key', label:'Link to company', type:'select-group', autofill:{initials:'init', name:'co'}},
-  {key:'co', label:'Company name (shown)', type:'text'},
-  {key:'init', label:'Initials (shown)', type:'text'},
-  {key:'role', label:'Role', type:'text'},
-  {key:'yr', label:'Years', type:'text'},
-  {key:'status', label:'Status', type:'select', options:[{value:'active',label:'Active'},{value:'former',label:'Former'}]},
-  {key:'col', label:'Color', type:'colorpair', colKey:'col', bgKey:'bg'}
-];
-const SCHEMA_IND = [
-  {key:'l', label:'Sector', type:'text'},
-  {key:'p', label:'Percent', type:'number'},
-  {key:'c', label:'Color', type:'color-full'}
-];
-const SCHEMA_REL_DIRECTOR = [
-  {key:'key', label:'Linked director', type:'select-director', autofill:{initials:'init', name:'n'}},
-  {key:'init', label:'Initials (shown)', type:'text'},
-  {key:'n', label:'Name (shown)', type:'text'},
-  {key:'r', label:'Relationship', type:'text'},
-  {key:'col', label:'Color', type:'colorpair', colKey:'col', bgKey:'bg'}
-];
-const SCHEMA_STATS = [
-  {key:'value', label:'Value (e.g. "31")', type:'text'},
-  {key:'label', label:'Label (e.g. "All-time boards")', type:'text'}
-];
+/* SCHEMAS */
+const SCHEMA_BADGES=[{key:'t',label:'Label',type:'text'},{key:'c',label:'Color',type:'color-short'}];
+const SCHEMA_SUBS=[{key:'n',label:'Company name',type:'text'},{key:'m',label:'Description',type:'text'},{key:'p',label:'Status',type:'text'}];
+const SCHEMA_OWN=[{key:'l',label:'Label',type:'text'},{key:'p',label:'Percent',type:'number'},{key:'c',label:'Color',type:'color-full'}];
+const SCHEMA_TL=[{key:'yr',label:'Year',type:'text'},{key:'dot',label:'Color',type:'color-full'},{key:'t',label:'Title',type:'text'},{key:'d',label:'Description',type:'text'}];
+const SCHEMA_REL_CO=[{key:'key',label:'Linked company',type:'select-group',autofill:{initials:'init',name:'n'}},{key:'init',label:'Initials',type:'text'},{key:'n',label:'Name',type:'text'},{key:'r',label:'Relationship',type:'text'},{key:'col',label:'Color',type:'colorpair',colKey:'col',bgKey:'bg'}];
+const SCHEMA_BOARDS=[{key:'key',label:'Link to company',type:'select-group',autofill:{initials:'init',name:'co'}},{key:'co',label:'Company name',type:'text'},{key:'init',label:'Initials',type:'text'},{key:'role',label:'Role',type:'text'},{key:'yr',label:'Years',type:'text'},{key:'status',label:'Status',type:'select',options:[{value:'active',label:'Active'},{value:'former',label:'Former'}]},{key:'col',label:'Color',type:'colorpair',colKey:'col',bgKey:'bg'}];
+const SCHEMA_IND=[{key:'l',label:'Sector',type:'text'},{key:'p',label:'Percent',type:'number'},{key:'c',label:'Color',type:'color-full'}];
+const SCHEMA_REL_DIR=[{key:'key',label:'Linked director',type:'select-director',autofill:{initials:'init',name:'n'}},{key:'init',label:'Initials',type:'text'},{key:'n',label:'Name',type:'text'},{key:'r',label:'Relationship',type:'text'},{key:'col',label:'Color',type:'colorpair',colKey:'col',bgKey:'bg'}];
+const SCHEMA_STATS=[{key:'value',label:'Value',type:'text'},{key:'label',label:'Label',type:'text'}];
 
-/* Repeater instances (mounted once, refilled on modal open) */
-let repGroupBadges, repGroupSubs, repGroupOwn, repGroupTl, repGroupRel;
-let repDirBadges, repDirStats, repDirBoardsList, repDirInd, repDirRelated;
-
+let repGroupBadges,repGroupSubs,repGroupOwn,repGroupTl,repGroupRel;
+let repDirBadges,repDirStats,repDirBoardsList,repDirInd,repDirRelated;
 function mountRepeaters(){
-  repGroupBadges = createRepeater(document.getElementById('g-badges-rep'), SCHEMA_BADGES, 'No badges yet.');
-  repGroupSubs   = createRepeater(document.getElementById('g-subs-rep'), SCHEMA_SUBS, 'No subsidiaries yet.');
-  repGroupOwn    = createRepeater(document.getElementById('g-own-rep'), SCHEMA_OWN, 'No ownership data yet.');
-  repGroupTl     = createRepeater(document.getElementById('g-tl-rep'), SCHEMA_TL, 'No timeline events yet.');
-  repGroupRel    = createRepeater(document.getElementById('g-rel-rep'), SCHEMA_REL_COMPANY, 'No related companies yet.');
-
-  repDirBadges     = createRepeater(document.getElementById('d-badges-rep'), SCHEMA_BADGES, 'No badges yet.');
-  repDirStats      = createRepeater(document.getElementById('d-stats-rep'), SCHEMA_STATS, 'No stat tiles yet.');
-  repDirBoardsList = createRepeater(document.getElementById('d-boardslist-rep'), SCHEMA_BOARDS_LIST, 'No board memberships yet.');
-  repDirInd        = createRepeater(document.getElementById('d-ind-rep'), SCHEMA_IND, 'No industry data yet.');
-  repDirRelated    = createRepeater(document.getElementById('d-related-rep'), SCHEMA_REL_DIRECTOR, 'No related directors yet.');
+  repGroupBadges=createRepeater(document.getElementById('g-badges-rep'),SCHEMA_BADGES,'No badges.');
+  repGroupSubs=createRepeater(document.getElementById('g-subs-rep'),SCHEMA_SUBS,'No subsidiaries.');
+  repGroupOwn=createRepeater(document.getElementById('g-own-rep'),SCHEMA_OWN,'No ownership data.');
+  repGroupTl=createRepeater(document.getElementById('g-tl-rep'),SCHEMA_TL,'No timeline events.');
+  repGroupRel=createRepeater(document.getElementById('g-rel-rep'),SCHEMA_REL_CO,'No related companies.');
+  repDirBadges=createRepeater(document.getElementById('d-badges-rep'),SCHEMA_BADGES,'No badges.');
+  repDirStats=createRepeater(document.getElementById('d-stats-rep'),SCHEMA_STATS,'No stats.');
+  repDirBoardsList=createRepeater(document.getElementById('d-boardslist-rep'),SCHEMA_BOARDS,'No board memberships.');
+  repDirInd=createRepeater(document.getElementById('d-ind-rep'),SCHEMA_IND,'No industry data.');
+  repDirRelated=createRepeater(document.getElementById('d-related-rep'),SCHEMA_REL_DIR,'No related directors.');
 }
 mountRepeaters();
 
-/* ===================== DIRECTOR CHIP CHECKLIST (group.dirs) ===================== */
-let selectedDirIds = [];
+/* Director chips */
+let selectedDirIds=[];
 function renderDirChips(selected){
-  selectedDirIds = selected ? [...selected] : [];
-  const wrap=document.getElementById('g-dirs-chips');
-  wrap.innerHTML='';
+  selectedDirIds=selected?[...selected]:[];
+  const wrap=document.getElementById('g-dirs-chips');wrap.innerHTML='';
   const ids=Object.keys(dirsCache);
-  if(ids.length===0){ wrap.innerHTML='<div class="chipEmpty">No directors created yet — add directors first, then link them here.</div>'; return; }
+  if(!ids.length){wrap.innerHTML='<div class="chipEmpty">Add directors first, then link them here.</div>';return;}
   ids.sort((a,b)=>(dirsCache[a].name||a).localeCompare(dirsCache[b].name||b)).forEach(id=>{
-    const chip=document.createElement('div');
-    chip.className='chip'+(selectedDirIds.includes(id)?' on':'');
-    chip.textContent=dirsCache[id].name||id;
-    chip.addEventListener('click',()=>{
-      if(selectedDirIds.includes(id)){ selectedDirIds=selectedDirIds.filter(x=>x!==id); chip.classList.remove('on'); }
-      else { selectedDirIds.push(id); chip.classList.add('on'); }
-    });
+    const chip=document.createElement('div');chip.className='chip'+(selectedDirIds.includes(id)?' on':'');chip.textContent=dirsCache[id].name||id;
+    chip.addEventListener('click',()=>{if(selectedDirIds.includes(id)){selectedDirIds=selectedDirIds.filter(x=>x!==id);chip.classList.remove('on');}else{selectedDirIds.push(id);chip.classList.add('on');}});
     wrap.appendChild(chip);
   });
 }
 
-/* ===================== GROUPS ===================== */
+/* ============================================================
+   GROUPS
+============================================================ */
 let groupsCache={};
 function loadGroups(){
   db.collection('groups').orderBy('conn','desc').get().then(snap=>{
     groupsCache={};
     const tbody=document.getElementById('groupsTbody');
-    if(snap.empty){ tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No groups yet. Click "+ Add Group" to create one.</td></tr>'; return; }
+    if(snap.empty){tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No groups yet.</td></tr>';return;}
     tbody.innerHTML='';
-    snap.forEach(doc=>{
-      const g=doc.data(); groupsCache[doc.id]=g;
-      tbody.innerHTML+=`<tr>
-        <td><span class="tag">${doc.id}</span></td>
-        <td>${g.name||''}</td>
-        <td>${g.founded||''}</td>
-        <td>${g.hq||''}</td>
-        <td>${g.conn||0}</td>
-        <td><div class="rowbtns">
-          <button class="editbtn" onclick="openGroupModal('${doc.id}')">Edit</button>
-          <button class="delbtn" onclick="deleteGroup('${doc.id}')">Delete</button>
-        </div></td>
-      </tr>`;
+    snap.forEach(doc=>{const g=doc.data();groupsCache[doc.id]=g;
+      tbody.innerHTML+=`<tr><td><span class="tag">${doc.id}</span></td><td><strong>${g.name||''}</strong></td><td>${g.founded||''}</td><td>${g.hq||''}</td><td>${g.conn||0}</td><td><div class="rowbtns"><button class="editbtn" onclick="openGroupModal('${doc.id}')">Edit</button><button class="delbtn" onclick="deleteGroup('${doc.id}')">Delete</button></div></td></tr>`;
     });
   });
 }
 function openGroupModal(id){
   document.getElementById('groupErr').textContent='';
-  if(id===null){
+  if(!id){
     document.getElementById('groupModalTitle').textContent='Add Group';
-    ['id','name','initials','founded','hq','founder','type','size','employees','dse','rjsc','sectors','tags'].forEach(f=>{ document.getElementById('g-'+f).value=''; });
-    document.getElementById('g-conn').value=0;
-    document.getElementById('g-about').value='';
+    ['id','name','initials','founded','hq','founder','type','size','employees','dse','rjsc','sectors','tags'].forEach(f=>document.getElementById('g-'+f).value='');
+    document.getElementById('g-conn').value=0;document.getElementById('g-about').value='';
     document.getElementById('g-id').disabled=false;
-    repGroupBadges.setValue([]); repGroupSubs.setValue([]); repGroupOwn.setValue([]); repGroupTl.setValue([]); repGroupRel.setValue([]);
+    repGroupBadges.setValue([]);repGroupSubs.setValue([]);repGroupOwn.setValue([]);repGroupTl.setValue([]);repGroupRel.setValue([]);
     renderDirChips([]);
   } else {
     const g=groupsCache[id];
     document.getElementById('groupModalTitle').textContent='Edit: '+g.name;
-    document.getElementById('g-id').value=id; document.getElementById('g-id').disabled=true;
+    document.getElementById('g-id').value=id;document.getElementById('g-id').disabled=true;
+    ['name','initials','founded','hq','founder','type','size','employees','dse','rjsc'].forEach(f=>document.getElementById('g-'+f).value=g[f]||'');
+    document.getElementById('g-conn').value=g.conn||0;
+    document.getElementById('g-sectors').value=g.sectors||'';
+    document.getElementById('g-tags').value=(g.tags||[]).join(', ');
+    document.getElementById('g-about').value=g.about||'';
+    repGroupBadges.setValue(g.badges||[]);repGroupSubs.setValue(g.subs||[]);repGroupOwn.setValue(g.own||[]);repGroupTl.setValue(g.tl||[]);repGroupRel.setValue(g.rel||[]);
+    renderDirChips(g.dirs||[]);
+  }
+  document.getElementById('ov-group').classList.add('open');document.body.style.overflow='hidden';
+}
+function saveGroup(){
+  try{
+    const id=document.getElementById('g-id').value.trim();if(!id)throw new Error('ID required');
+    const data={name:document.getElementById('g-name').value.trim(),initials:document.getElementById('g-initials').value.trim(),founded:document.getElementById('g-founded').value.trim(),hq:document.getElementById('g-hq').value.trim(),founder:document.getElementById('g-founder').value.trim(),type:document.getElementById('g-type').value.trim(),size:document.getElementById('g-size').value.trim(),employees:document.getElementById('g-employees').value.trim(),dse:document.getElementById('g-dse').value.trim(),rjsc:document.getElementById('g-rjsc').value.trim(),conn:Number(document.getElementById('g-conn').value)||0,sectors:document.getElementById('g-sectors').value.trim(),tags:splitCSV(document.getElementById('g-tags').value),about:document.getElementById('g-about').value.trim(),badges:repGroupBadges.getValue(),subs:repGroupSubs.getValue(),own:repGroupOwn.getValue(),tl:repGroupTl.getValue(),dirs:[...selectedDirIds],rel:repGroupRel.getValue()};
+    db.collection('groups').doc(id).set(data).then(()=>{closeModal('group');showToast('✅ Group saved');loadGroups();});
+  }catch(e){document.getElementById('groupErr').textContent=e.message;}
+}
+function deleteGroup(id){if(!confirm('Delete "'+id+'"?'))return;db.collection('groups').doc(id).delete().then(()=>{showToast('Group deleted');loadGroups();});}
+
+/* ============================================================
+   DIRECTORS
+============================================================ */
+let dirsCache={};
+function loadDirectors(){
+  db.collection('directors').orderBy('inf','desc').get().then(snap=>{
+    dirsCache={};
+    const tbody=document.getElementById('dirsTbody');
+    if(snap.empty){tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No directors yet.</td></tr>';return;}
+    tbody.innerHTML='';
+    snap.forEach(doc=>{const d=doc.data();dirsCache[doc.id]=d;
+      tbody.innerHTML+=`<tr><td><span class="tag">${doc.id}</span></td><td><strong>${d.name||''}</strong></td><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.role||''}</td><td>${d.boards||0}</td><td>${d.inf||0}</td><td><div class="rowbtns"><button class="editbtn" onclick="openDirectorModal('${doc.id}')">Edit</button><button class="delbtn" onclick="deleteDirector('${doc.id}')">Delete</button></div></td></tr>`;
+    });
+  });
+}
+function openDirectorModal(id){
+  document.getElementById('dirErr').textContent='';
+  if(!id){
+    document.getElementById('dirModalTitle').textContent='Add Director';
+    ['id','name','initials','role','bio'].forEach(f=>document.getElementById('d-'+f).value='');
+    ['inf','boards','active','industries'].forEach(f=>document.getElementById('d-'+f).value=0);
+    document.getElementById('d-id').disabled=false;
+    repDirBadges.setValue([]);repDirStats.setValue([]);repDirBoardsList.setValue([]);repDirInd.setValue([]);repDirRelated.setValue([]);
+  } else {
+    const d=dirsCache[id];
+    document.getElementById('dirModalTitle').textContent='Edit: '+d.name;
+    document.getElementById('d-id').value=id;document.getElementById('d-id').disabled=true;
+    ['name','initials','role','bio'].forEach(f=>document.getElementById('d-'+f).value=d[f]||'');
+    ['inf','boards','active','industries'].forEach(f=>document.getElementById('d-'+f).value=d[f]||0);
+    repDirBadges.setValue(d.badges||[]);
+    repDirStats.setValue((d.stats||[]).map((v,i)=>({value:v,label:(d.statL||[])[i]||''})));
+    repDirBoardsList.setValue(d.boards_list||[]);repDirInd.setValue(d.ind||[]);repDirRelated.setValue(d.related||[]);
+  }
+  document.getElementById('ov-director').classList.add('open');document.body.style.overflow='hidden';
+}
+function saveDirector(){
+  try{
+    const id=document.getElementById('d-id').value.trim();if(!id)throw new Error('ID required');
+    const statsRows=repDirStats.getValue();
+    const data={name:document.getElementById('d-name').value.trim(),initials:document.getElementById('d-initials').value.trim(),role:document.getElementById('d-role').value.trim(),inf:Number(document.getElementById('d-inf').value)||0,boards:Number(document.getElementById('d-boards').value)||0,active:Number(document.getElementById('d-active').value)||0,industries:Number(document.getElementById('d-industries').value)||0,bio:document.getElementById('d-bio').value.trim(),badges:repDirBadges.getValue(),stats:statsRows.map(r=>r.value),statL:statsRows.map(r=>r.label),boards_list:repDirBoardsList.getValue(),ind:repDirInd.getValue(),related:repDirRelated.getValue()};
+    db.collection('directors').doc(id).set(data).then(()=>{closeModal('director');showToast('✅ Director saved');loadDirectors();});
+  }catch(e){document.getElementById('dirErr').textContent=e.message;}
+}
+function deleteDirector(id){if(!confirm('Delete "'+id+'"?'))return;db.collection('directors').doc(id).delete().then(()=>{showToast('Director deleted');loadDirectors();});}
+
+/* ============================================================
+   SIGNUPS
+============================================================ */
+function loadSignups(){
+  db.collection('signups').orderBy('createdAt','desc').get().then(snap=>{
+    const tbody=document.getElementById('signupsTbody');
+    if(snap.empty){tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No signups yet.</td></tr>';return;}
+    tbody.innerHTML='';
+    snap.forEach(doc=>{const s=doc.data();const dt=s.createdAt&&s.createdAt.toDate?s.createdAt.toDate().toLocaleDateString():'';
+      tbody.innerHTML+=`<tr><td>${s.name||''}</td><td>${s.email||''}</td><td>${s.org||'—'}</td><td>${s.role||'—'}</td><td>${dt}</td><td><button class="delbtn" onclick="deleteSignup('${doc.id}')">Delete</button></td></tr>`;
+    });
+  }).catch(()=>{document.getElementById('signupsTbody').innerHTML='<tr class="loadingrow"><td colspan="6">No signups collection yet.</td></tr>';});
+}
+function deleteSignup(id){if(!confirm('Delete?'))return;db.collection('signups').doc(id).delete().then(()=>{showToast('Signup deleted');loadSignups();});}
+function downloadSignups(){
+  db.collection('signups').orderBy('createdAt','desc').get().then(snap=>{
+    let csv='Name,Email,Organisation,Role,Date\n';
+    snap.forEach(doc=>{const s=doc.data();const dt=s.createdAt&&s.createdAt.toDate?s.createdAt.toDate().toLocaleDateString():'';csv+=`"${s.name||''}","${s.email||''}","${s.org||''}","${s.role||''}","${dt}"\n`;});
+    const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='corpmap-signups.csv';a.click();
+  });
+}
+
+/* ============================================================
+   AI ASSISTANT — calls Claude API (built-in, free)
+============================================================ */
+let pendingPreview=null;
+
+function addAIMsg(text,isUser){
+  const msgs=document.getElementById('aiMsgs');
+  const div=document.createElement('div');
+  if(isUser){
+    div.className='ai-msg-user';div.innerHTML=`<div class="bubble">${text}</div>`;
+  } else {
+    div.className='ai-msg-bot';
+    div.innerHTML=`<div class="ai-avatar" style="width:26px;height:26px;font-size:10px;flex-shrink:0">C</div><div class="bubble">${text}</div>`;
+  }
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function addTyping(){
+  const msgs=document.getElementById('aiMsgs');
+  const div=document.createElement('div');div.id='aiTyping';div.className='ai-msg-bot';
+  div.innerHTML=`<div class="ai-avatar" style="width:26px;height:26px;font-size:10px;flex-shrink:0">C</div><div class="bubble"><div class="typing"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function removeTyping(){const t=document.getElementById('aiTyping');if(t)t.remove();}
+
+async function askAI(prefill){
+  const inp=document.getElementById('aiInp');
+  const q=prefill||inp.value.trim();
+  if(!q)return;
+  inp.value='';
+  document.getElementById('aiSendBtn').disabled=true;
+  addAIMsg(q,true);
+  addTyping();
+
+  const systemPrompt=`You are CorpMap Bangladesh's AI data assistant. You help admins add real Bangladesh corporate entities to a Firestore database.
+
+When the admin asks you to add a company/business group, respond with ONLY a valid JSON object in this exact format:
+{
+  "type": "group",
+  "id": "shortid_no_spaces",
+  "name": "Full Company Name",
+  "initials": "XX",
+  "color": "var(--teal)",
+  "bg": "var(--tbg)",
+  "founded": "1990",
+  "hq": "Dhaka",
+  "founder": "Founder Name",
+  "type_field": "Private Conglomerate",
+  "size": "10+ companies",
+  "employees": "5,000+",
+  "dse": "SYMBOL or —",
+  "rjsc": "Public or Private",
+  "conn": 200,
+  "sectors": "Sector1, Sector2",
+  "tags": ["Tag1","Tag2","Tag3"],
+  "about": "Full detailed paragraph about the company...",
+  "badges": [{"t":"Badge Text","c":"teal"}],
+  "stats": ["value1","value2","value3","value4"],
+  "statL": ["Label1","Label2","Label3","Label4"],
+  "subs": [{"n":"Company Name","m":"Description","p":"DSE Listed or Private"}],
+  "own": [{"l":"Owner","p":60,"c":"var(--teal)"}],
+  "tl": [{"yr":"2000","dot":"var(--gold)","t":"Event Title","d":"Description"}],
+  "dirs": [],
+  "rel": []
+}
+
+When asked to add a director, respond with ONLY:
+{
+  "type": "director",
+  "id": "shortid",
+  "name": "Full Name",
+  "initials": "XX",
+  "color": "var(--teal)",
+  "bg": "var(--tbg)",
+  "role": "Full role description",
+  "inf": 75,
+  "boards": 12,
+  "active": 10,
+  "industries": 4,
+  "bio": "Full detailed biography...",
+  "badges": [{"t":"Badge","c":"teal"}],
+  "stats": ["value1","value2","value3","value4"],
+  "statL": ["Label1","Label2","Label3","Label4"],
+  "boards_list": [{"key":"","co":"Company","init":"XX","role":"Chairman","yr":"2010–present","status":"active","col":"var(--teal)","bg":"var(--tbg)"}],
+  "ind": [{"l":"Sector","p":50,"c":"var(--teal)"}],
+  "related": []
+}
+
+For color, choose from: var(--teal)/var(--tbg), var(--blue)/var(--bbg), var(--green)/var(--grn), var(--gold)/var(--gbg), var(--red)/var(--rbg), var(--orange)/var(--obg), var(--purple)/var(--pbg), var(--maroon)/var(--mbg).
+
+Use REAL factual data about Bangladesh companies and directors. If you don't know something, use reasonable estimates. Always respond with ONLY the JSON, no explanation text.
+
+If the request is unclear or not about adding an entity, respond with: {"type":"message","text":"Your helpful message here"}`;
+
+  try{
+    const response=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system:systemPrompt,
+        messages:[{role:'user',content:q}]
+      })
+    });
+    const data=await response.json();
+    removeTyping();
+    const raw=data.content.map(i=>i.text||'').join('');
+    let parsed;
+    try{
+      const clean=raw.replace(/```json|```/g,'').trim();
+      parsed=JSON.parse(clean);
+    }catch(e){
+      addAIMsg('I had trouble formatting that response. Please try rephrasing your request.',false);
+      document.getElementById('aiSendBtn').disabled=false;return;
+    }
+
+    if(parsed.type==='message'){
+      addAIMsg(parsed.text,false);
+    } else if(parsed.type==='group'||parsed.type==='director'){
+      pendingPreview=parsed;
+      addAIMsg(`I've generated a full profile for <strong>${parsed.name}</strong>. Check the preview panel on the right, then save it to Firestore!`,false);
+      showPreview(parsed);
+    }
+  }catch(err){
+    removeTyping();
+    addAIMsg('Connection error. Please check your internet and try again.',false);
+    console.error(err);
+  }
+  document.getElementById('aiSendBtn').disabled=false;
+}
+
+function showPreview(data){
+  document.getElementById('previewType').textContent=data.type==='group'?'Business Group':'Director';
+  const body=document.getElementById('previewBody');
+  if(data.type==='group'){
+    body.innerHTML=`
+      <div class="pfield"><label>Name</label><div class="val">${data.name||''}</div></div>
+      <div class="pfield"><label>ID</label><div class="val">${data.id||''}</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="pfield"><label>Founded</label><div class="val">${data.founded||''}</div></div>
+        <div class="pfield"><label>HQ</label><div class="val">${data.hq||''}</div></div>
+        <div class="pfield"><label>Founder</label><div class="val">${data.founder||''}</div></div>
+        <div class="pfield"><label>Sectors</label><div class="val">${data.sectors||''}</div></div>
+        <div class="pfield"><label>Connections</label><div class="val">${data.conn||0}</div></div>
+        <div class="pfield"><label>Subsidiaries</label><div class="val">${(data.subs||[]).length} listed</div></div>
+      </div>
+      <div class="pfield"><label>About</label><div class="val" style="font-size:12px;line-height:1.6;max-height:120px;overflow-y:auto">${data.about||''}</div></div>
+    `;
+  } else {
+    body.innerHTML=`
+      <div class="pfield"><label>Name</label><div class="val">${data.name||''}</div></div>
+      <div class="pfield"><label>ID</label><div class="val">${data.id||''}</div></div>
+      <div class="pfield"><label>Role</label><div class="val">${data.role||''}</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="pfield"><label>Influence</label><div class="val">${data.inf||0}/100</div></div>
+        <div class="pfield"><label>Board Seats</label><div class="val">${data.boards||0}</div></div>
+      </div>
+      <div class="pfield"><label>Bio</label><div class="val" style="font-size:12px;line-height:1.6;max-height:120px;overflow-y:auto">${data.bio||''}</div></div>
+    `;
+  }
+  document.getElementById('previewActions').style.display='flex';
+}
+
+function discardPreview(){
+  pendingPreview=null;
+  document.getElementById('previewBody').innerHTML='<div class="preview-empty"><div class="icon">🔍</div><div>Claude\'s generated data will appear here for review before saving to Firestore.</div></div>';
+  document.getElementById('previewActions').style.display='none';
+  document.getElementById('previewType').textContent='';
+}
+
+function editPreview(){
+  if(!pendingPreview)return;
+  if(pendingPreview.type==='group'){
+    // Pre-fill group modal with AI data
+    openGroupModal(null);
+    const g=pendingPreview;
+    document.getElementById('g-id').value=g.id||'';
     document.getElementById('g-name').value=g.name||'';
     document.getElementById('g-initials').value=g.initials||'';
     document.getElementById('g-founded').value=g.founded||'';
     document.getElementById('g-hq').value=g.hq||'';
     document.getElementById('g-founder').value=g.founder||'';
-    document.getElementById('g-type').value=g.type||'';
+    document.getElementById('g-type').value=g.type_field||'';
     document.getElementById('g-size').value=g.size||'';
     document.getElementById('g-employees').value=g.employees||'';
     document.getElementById('g-dse').value=g.dse||'';
@@ -624,83 +1001,10 @@ function openGroupModal(id){
     repGroupSubs.setValue(g.subs||[]);
     repGroupOwn.setValue(g.own||[]);
     repGroupTl.setValue(g.tl||[]);
-    repGroupRel.setValue(g.rel||[]);
-    renderDirChips(g.dirs||[]);
-  }
-  document.getElementById('ov-group').classList.add('open');
-}
-function saveGroup(){
-  try{
-    const id=document.getElementById('g-id').value.trim();
-    if(!id){ throw new Error('ID is required'); }
-    const data={
-      name:document.getElementById('g-name').value.trim(),
-      initials:document.getElementById('g-initials').value.trim(),
-      founded:document.getElementById('g-founded').value.trim(),
-      hq:document.getElementById('g-hq').value.trim(),
-      founder:document.getElementById('g-founder').value.trim(),
-      type:document.getElementById('g-type').value.trim(),
-      size:document.getElementById('g-size').value.trim(),
-      employees:document.getElementById('g-employees').value.trim(),
-      dse:document.getElementById('g-dse').value.trim(),
-      rjsc:document.getElementById('g-rjsc').value.trim(),
-      conn:Number(document.getElementById('g-conn').value)||0,
-      sectors:document.getElementById('g-sectors').value.trim(),
-      tags:splitCSV(document.getElementById('g-tags').value),
-      about:document.getElementById('g-about').value.trim(),
-      badges:repGroupBadges.getValue(),
-      subs:repGroupSubs.getValue(),
-      own:repGroupOwn.getValue(),
-      tl:repGroupTl.getValue(),
-      dirs:[...selectedDirIds],
-      rel:repGroupRel.getValue()
-    };
-    db.collection('groups').doc(id).set(data).then(()=>{
-      closeModal('group'); showToast('Group saved'); loadGroups();
-    });
-  }catch(e){ document.getElementById('groupErr').textContent=e.message; }
-}
-function deleteGroup(id){
-  if(!confirm('Delete "'+id+'"? This cannot be undone.'))return;
-  db.collection('groups').doc(id).delete().then(()=>{ showToast('Group deleted'); loadGroups(); });
-}
-
-/* ===================== DIRECTORS ===================== */
-let dirsCache={};
-function loadDirectors(){
-  db.collection('directors').orderBy('inf','desc').get().then(snap=>{
-    dirsCache={};
-    const tbody=document.getElementById('dirsTbody');
-    if(snap.empty){ tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No directors yet. Click "+ Add Director" to create one.</td></tr>'; return; }
-    tbody.innerHTML='';
-    snap.forEach(doc=>{
-      const d=doc.data(); dirsCache[doc.id]=d;
-      tbody.innerHTML+=`<tr>
-        <td><span class="tag">${doc.id}</span></td>
-        <td>${d.name||''}</td>
-        <td>${d.role||''}</td>
-        <td>${d.boards||0}</td>
-        <td>${d.inf||0}</td>
-        <td><div class="rowbtns">
-          <button class="editbtn" onclick="openDirectorModal('${doc.id}')">Edit</button>
-          <button class="delbtn" onclick="deleteDirector('${doc.id}')">Delete</button>
-        </div></td>
-      </tr>`;
-    });
-  });
-}
-function openDirectorModal(id){
-  document.getElementById('dirErr').textContent='';
-  if(id===null){
-    document.getElementById('dirModalTitle').textContent='Add Director';
-    ['id','name','initials','role','bio'].forEach(f=>{ document.getElementById('d-'+f).value=''; });
-    ['inf','boards','active','industries'].forEach(f=>{ document.getElementById('d-'+f).value=0; });
-    document.getElementById('d-id').disabled=false;
-    repDirBadges.setValue([]); repDirStats.setValue([]); repDirBoardsList.setValue([]); repDirInd.setValue([]); repDirRelated.setValue([]);
   } else {
-    const d=dirsCache[id];
-    document.getElementById('dirModalTitle').textContent='Edit: '+d.name;
-    document.getElementById('d-id').value=id; document.getElementById('d-id').disabled=true;
+    openDirectorModal(null);
+    const d=pendingPreview;
+    document.getElementById('d-id').value=d.id||'';
     document.getElementById('d-name').value=d.name||'';
     document.getElementById('d-initials').value=d.initials||'';
     document.getElementById('d-role').value=d.role||'';
@@ -710,71 +1014,202 @@ function openDirectorModal(id){
     document.getElementById('d-industries').value=d.industries||0;
     document.getElementById('d-bio').value=d.bio||'';
     repDirBadges.setValue(d.badges||[]);
-    const statsArr=(d.stats||[]).map((v,i)=>({value:v, label:(d.statL||[])[i]||''}));
+    const statsArr=(d.stats||[]).map((v,i)=>({value:v,label:(d.statL||[])[i]||''}));
     repDirStats.setValue(statsArr);
     repDirBoardsList.setValue(d.boards_list||[]);
     repDirInd.setValue(d.ind||[]);
-    repDirRelated.setValue(d.related||[]);
   }
-  document.getElementById('ov-director').classList.add('open');
-}
-function saveDirector(){
-  try{
-    const id=document.getElementById('d-id').value.trim();
-    if(!id){ throw new Error('ID is required'); }
-    const statsRows=repDirStats.getValue();
-    const data={
-      name:document.getElementById('d-name').value.trim(),
-      initials:document.getElementById('d-initials').value.trim(),
-      role:document.getElementById('d-role').value.trim(),
-      inf:Number(document.getElementById('d-inf').value)||0,
-      boards:Number(document.getElementById('d-boards').value)||0,
-      active:Number(document.getElementById('d-active').value)||0,
-      industries:Number(document.getElementById('d-industries').value)||0,
-      bio:document.getElementById('d-bio').value.trim(),
-      badges:repDirBadges.getValue(),
-      stats:statsRows.map(r=>r.value),
-      statL:statsRows.map(r=>r.label),
-      boards_list:repDirBoardsList.getValue(),
-      ind:repDirInd.getValue(),
-      related:repDirRelated.getValue()
-    };
-    db.collection('directors').doc(id).set(data).then(()=>{
-      closeModal('director'); showToast('Director saved'); loadDirectors();
-    });
-  }catch(e){ document.getElementById('dirErr').textContent=e.message; }
-}
-function deleteDirector(id){
-  if(!confirm('Delete "'+id+'"? This cannot be undone.'))return;
-  db.collection('directors').doc(id).delete().then(()=>{ showToast('Director deleted'); loadDirectors(); });
 }
 
-/* ===================== SIGNUPS ===================== */
-function loadSignups(){
-  db.collection('signups').orderBy('createdAt','desc').get().then(snap=>{
-    const tbody=document.getElementById('signupsTbody');
-    if(snap.empty){ tbody.innerHTML='<tr class="loadingrow"><td colspan="6">No signups yet.</td></tr>'; return; }
-    tbody.innerHTML='';
-    snap.forEach(doc=>{
-      const s=doc.data();
-      const dt=s.createdAt && s.createdAt.toDate ? s.createdAt.toDate().toLocaleDateString() : '';
-      tbody.innerHTML+=`<tr>
-        <td>${s.name||''}</td>
-        <td>${s.email||''}</td>
-        <td>${s.org||'—'}</td>
-        <td>${s.role||'—'}</td>
-        <td>${dt}</td>
-        <td><button class="delbtn" onclick="deleteSignup('${doc.id}')">Delete</button></td>
-      </tr>`;
-    });
-  }).catch(()=>{
-    document.getElementById('signupsTbody').innerHTML='<tr class="loadingrow"><td colspan="6">No signups collection yet — it will appear once your site\'s waitlist form is connected to Firestore.</td></tr>';
+async function savePreview(){
+  if(!pendingPreview)return;
+  const btn=document.getElementById('savePreviewBtn');
+  btn.disabled=true;btn.textContent='Saving...';
+  const data={...pendingPreview};
+  const id=data.id;
+  const type=data.type;
+  delete data.id;delete data.type;
+  if(type==='group'){
+    data.type=data.type_field||'Private';delete data.type_field;
+  }
+  try{
+    const col=type==='group'?'groups':'directors';
+    await db.collection(col).doc(id).set(data);
+    showToast('✅ '+data.name+' saved to Firestore!');
+    addAIMsg(`<strong>${data.name}</strong> has been saved to your Firestore database! It will appear on your site immediately.`,false);
+    discardPreview();
+    if(type==='group')loadGroups();else loadDirectors();
+  }catch(e){
+    showToast('❌ Save failed: '+e.message,false);
+    addAIMsg('Failed to save: '+e.message+'. Make sure you are logged in.',false);
+  }
+  btn.disabled=false;btn.textContent='💾 Save to Firestore';
+}
+
+/* ============================================================
+   EXCEL EDITOR
+============================================================ */
+let xlCurrentType='groups';
+let xlGroupRows=[];
+let xlDirRows=[];
+let xlDirty=new Set();
+
+function switchXlTab(type){
+  xlCurrentType=type;
+  document.getElementById('xlTabGroups').classList.toggle('active',type==='groups');
+  document.getElementById('xlTabDirectors').classList.toggle('active',type==='directors');
+  document.getElementById('xlGroupsTable').classList.toggle('hide',type!=='groups');
+  document.getElementById('xlDirectorsTable').classList.toggle('hide',type!=='directors');
+  renderXlTables();
+}
+
+function renderXlTables(){
+  renderXlGroups();
+  renderXlDirectors();
+  updateXlCount();
+}
+
+function renderXlGroups(){
+  const tbody=document.getElementById('xlGroupsBody');
+  xlGroupRows=Object.entries(groupsCache).map(([id,g])=>({id,...g}));
+  if(!xlGroupRows.length){tbody.innerHTML='<tr><td colspan="15" style="text-align:center;padding:28px;color:var(--ink3)">No groups yet. Add some first.</td></tr>';return;}
+  tbody.innerHTML=xlGroupRows.map((g,i)=>`
+    <tr data-id="${g.id}" data-type="group">
+      <td>${i+1}</td>
+      <td><input class="xl-cell" value="${esc(g.id)}" data-field="id" readonly style="color:var(--ink4);font-size:11px"></td>
+      <td><input class="xl-cell" value="${esc(g.name)}" data-field="name" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc(g.initials)}" data-field="initials" style="width:70px" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc(g.founded)}" data-field="founded" style="width:80px" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc(g.hq)}" data-field="hq" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc(g.founder)}" data-field="founder" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc(g.sectors)}" data-field="sectors" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc(g.size)}" data-field="size" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc(g.employees)}" data-field="employees" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc(g.dse)}" data-field="dse" style="width:90px" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${g.conn||0}" data-field="conn" type="number" style="width:90px" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc((g.tags||[]).join(', '))}" data-field="tags" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc((g.about||'').substring(0,80))}" data-field="about" style="min-width:200px" oninput="markDirty(this)"></td>
+      <td><button class="xl-del" onclick="xlDeleteRow(this,'group','${g.id}')" title="Delete">🗑</button></td>
+    </tr>`).join('');
+}
+
+function renderXlDirectors(){
+  const tbody=document.getElementById('xlDirectorsBody');
+  xlDirRows=Object.entries(dirsCache).map(([id,d])=>({id,...d}));
+  if(!xlDirRows.length){tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--ink3)">No directors yet.</td></tr>';return;}
+  tbody.innerHTML=xlDirRows.map((d,i)=>`
+    <tr data-id="${d.id}" data-type="director">
+      <td>${i+1}</td>
+      <td><input class="xl-cell" value="${esc(d.id)}" data-field="id" readonly style="color:var(--ink4);font-size:11px"></td>
+      <td><input class="xl-cell" value="${esc(d.name)}" data-field="name" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc(d.initials)}" data-field="initials" style="width:70px" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc(d.role)}" data-field="role" style="min-width:180px" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${d.inf||0}" data-field="inf" type="number" style="width:80px" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${d.boards||0}" data-field="boards" type="number" style="width:90px" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${d.active||0}" data-field="active" type="number" style="width:90px" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${d.industries||0}" data-field="industries" type="number" style="width:80px" oninput="markDirty(this)"></td>
+      <td><input class="xl-cell" value="${esc((d.bio||'').substring(0,100))}" data-field="bio" style="min-width:220px" oninput="markDirty(this)"></td>
+      <td><button class="xl-del" onclick="xlDeleteRow(this,'director','${d.id}')" title="Delete">🗑</button></td>
+    </tr>`).join('');
+}
+
+function esc(v){return(v||'').toString().replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+
+function markDirty(inp){
+  const row=inp.closest('tr');
+  row.style.background='rgba(201,168,76,0.08)';
+  xlDirty.add(row.dataset.id+'|'+row.dataset.type);
+}
+
+function updateXlCount(){
+  const type=xlCurrentType;
+  const count=type==='groups'?Object.keys(groupsCache).length:Object.keys(dirsCache).length;
+  document.getElementById('xlCount').textContent=count+' rows';
+}
+
+function filterXl(){
+  const q=document.getElementById('xlSearch').value.toLowerCase();
+  const table=xlCurrentType==='groups'?document.getElementById('xlGroupsTable'):document.getElementById('xlDirectorsTable');
+  table.querySelectorAll('tbody tr').forEach(row=>{
+    const text=row.textContent.toLowerCase();
+    row.style.display=text.includes(q)?'':'none';
   });
 }
-function deleteSignup(id){
-  if(!confirm('Delete this signup?'))return;
-  db.collection('signups').doc(id).delete().then(()=>{ showToast('Signup deleted'); loadSignups(); });
+
+function xlAddRow(){
+  if(xlCurrentType==='groups'){openGroupModal(null);switchTab('groups');}
+  else{openDirectorModal(null);switchTab('directors');}
 }
+
+function xlDeleteRow(btn,type,id){
+  if(!confirm('Delete "'+id+'" permanently?'))return;
+  const col=type==='group'?'groups':'directors';
+  db.collection(col).doc(id).delete().then(()=>{
+    btn.closest('tr').remove();
+    if(type==='group'){delete groupsCache[id];loadGroups();}
+    else{delete dirsCache[id];loadDirectors();}
+    showToast('Deleted '+id);
+    updateXlCount();
+  });
+}
+
+async function saveAllExcel(){
+  const table=xlCurrentType==='groups'?document.getElementById('xlGroupsTable'):document.getElementById('xlDirectorsTable');
+  const rows=table.querySelectorAll('tbody tr[data-id]');
+  let saved=0,errs=0;
+  for(const row of rows){
+    const id=row.dataset.id;
+    const type=row.dataset.type;
+    if(!xlDirty.has(id+'|'+type))continue;
+    const inputs=row.querySelectorAll('input[data-field]');
+    const updates={};
+    inputs.forEach(inp=>{
+      const field=inp.dataset.field;
+      if(field==='id')return;
+      if(inp.type==='number')updates[field]=Number(inp.value)||0;
+      else if(field==='tags')updates[field]=inp.value.split(',').map(s=>s.trim()).filter(Boolean);
+      else updates[field]=inp.value;
+    });
+    try{
+      const col=type==='group'?'groups':'directors';
+      await db.collection(col).doc(id).update(updates);
+      row.style.background='';
+      saved++;
+    }catch(e){errs++;console.error(id,e);}
+  }
+  xlDirty.clear();
+  if(saved>0)showToast('✅ Saved '+saved+' row(s) to Firestore');
+  else if(errs>0)showToast('❌ '+errs+' errors',false);
+  else showToast('No changes to save');
+  loadGroups();loadDirectors();
+}
+
+function downloadExcel(){
+  const wb=XLSX.utils.book_new();
+
+  // Groups sheet
+  const gData=[['ID','Name','Initials','Founded','HQ','Founder','Sectors','Size','Employees','DSE','Connections','Tags','About']];
+  Object.entries(groupsCache).forEach(([id,g])=>{
+    gData.push([id,g.name||'',g.initials||'',g.founded||'',g.hq||'',g.founder||'',g.sectors||'',g.size||'',g.employees||'',g.dse||'',g.conn||0,(g.tags||[]).join(', '),(g.about||'').substring(0,300)]);
+  });
+  const ws1=XLSX.utils.aoa_to_sheet(gData);
+  ws1['!cols']=[{wch:15},{wch:25},{wch:10},{wch:10},{wch:15},{wch:20},{wch:30},{wch:15},{wch:12},{wch:12},{wch:12},{wch:20},{wch:60}];
+  XLSX.utils.book_append_sheet(wb,ws1,'Groups');
+
+  // Directors sheet
+  const dData=[['ID','Name','Initials','Role','Influence','Boards (all-time)','Active Boards','Industries','Bio']];
+  Object.entries(dirsCache).forEach(([id,d])=>{
+    dData.push([id,d.name||'',d.initials||'',d.role||'',d.inf||0,d.boards||0,d.active||0,d.industries||0,(d.bio||'').substring(0,300)]);
+  });
+  const ws2=XLSX.utils.aoa_to_sheet(dData);
+  ws2['!cols']=[{wch:15},{wch:25},{wch:10},{wch:40},{wch:10},{wch:14},{wch:13},{wch:11},{wch:80}];
+  XLSX.utils.book_append_sheet(wb,ws2,'Directors');
+
+  XLSX.writeFile(wb,'CorpMap-Bangladesh-Data.xlsx');
+  showToast('✅ Excel downloaded!');
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.ov.open').forEach(o=>{o.classList.remove('open');document.body.style.overflow='';});});
 </script>
 </body>
 </html>
