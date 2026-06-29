@@ -1270,6 +1270,235 @@ function downloadExcel(){
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.ov.open').forEach(o=>{o.classList.remove('open');document.body.style.overflow='';});});
+
+/* ============================================================
+   AI ASSISTANT — PASTE WORKFLOW
+============================================================ */
+let pendingPreview=null;
+
+function copyPrompt(name, type){
+  if(!name||!name.trim()){showToast('Please enter a name first',false);return;}
+  const isGroup=type==='group';
+  const prompt=isGroup
+    ? `You are a Bangladesh corporate data assistant. Generate a complete JSON profile for "${name}" as a Bangladesh business group/company for a corporate intelligence platform.
+
+Respond with ONLY this JSON (no explanation, no markdown, just raw JSON):
+{
+  "type": "group",
+  "id": "${name.toLowerCase().replace(/[^a-z0-9]/g,'').substring(0,15)}",
+  "name": "${name}",
+  "initials": "XX",
+  "color": "var(--teal)",
+  "bg": "var(--tbg)",
+  "founded": "YEAR",
+  "hq": "City",
+  "founder": "Founder Name",
+  "type_field": "Private or Public Conglomerate",
+  "size": "X companies",
+  "employees": "X,000+",
+  "dse": "SYMBOL or —",
+  "rjsc": "Public or Private",
+  "conn": 250,
+  "sectors": "Sector1, Sector2, Sector3",
+  "tags": ["Tag1","Tag2","Tag3"],
+  "about": "Write 3-4 detailed sentences about this company's history, key products, market position and leadership.",
+  "badges": [{"t":"Key Badge 1","c":"teal"},{"t":"Key Badge 2","c":"gold"}],
+  "stats": ["value1","value2","value3","value4"],
+  "statL": ["Label1","Label2","Label3","Label4"],
+  "subs": [
+    {"n":"Subsidiary Name","m":"What it does","p":"DSE Listed or Private"}
+  ],
+  "own": [
+    {"l":"Founder Family","p":60,"c":"var(--teal)"},
+    {"l":"Public","p":40,"c":"var(--blue)"}
+  ],
+  "tl": [
+    {"yr":"YEAR","dot":"var(--gold)","t":"Event Title","d":"What happened"}
+  ],
+  "dirs": [],
+  "rel": []
+}`
+    : `You are a Bangladesh corporate data assistant. Generate a complete JSON profile for director "${name}" for a Bangladesh corporate intelligence platform.
+
+Respond with ONLY this JSON (no explanation, no markdown, just raw JSON):
+{
+  "type": "director",
+  "id": "${name.toLowerCase().replace(/[^a-z0-9]/g,'').substring(0,15)}",
+  "name": "${name}",
+  "initials": "XX",
+  "color": "var(--teal)",
+  "bg": "var(--tbg)",
+  "role": "Full title and organisation",
+  "inf": 75,
+  "boards": 10,
+  "active": 8,
+  "industries": 4,
+  "bio": "Write 3-4 detailed sentences about this person's background, career, achievements and influence in Bangladesh business.",
+  "badges": [{"t":"Key Achievement","c":"teal"},{"t":"Recognition","c":"gold"}],
+  "stats": ["value1","value2","value3","value4"],
+  "statL": ["Label1","Label2","Label3","Label4"],
+  "boards_list": [
+    {"key":"","co":"Company Name","init":"XX","role":"Chairman or Director","yr":"2010–present","status":"active","col":"var(--teal)","bg":"var(--tbg)"}
+  ],
+  "ind": [
+    {"l":"Industry Name","p":50,"c":"var(--teal)"},
+    {"l":"Industry 2","p":30,"c":"var(--blue)"},
+    {"l":"Industry 3","p":20,"c":"var(--gold)"}
+  ],
+  "related": []
+}`;
+
+  // Copy to clipboard
+  navigator.clipboard.writeText(prompt).then(()=>{
+    document.getElementById('promptPreviewText').textContent=prompt;
+    document.getElementById('ov-prompt').classList.add('open');
+    document.body.style.overflow='hidden';
+  }).catch(()=>{
+    // Fallback for browsers that block clipboard
+    document.getElementById('promptPreviewText').textContent=prompt;
+    document.getElementById('ov-prompt').classList.add('open');
+    document.body.style.overflow='hidden';
+    showToast('Auto-copy failed — please manually copy the prompt shown',false);
+  });
+}
+
+function autoParseJSON(val){
+  const status=document.getElementById('parseStatus');
+  if(!val.trim()){status.textContent='';return;}
+  try{
+    const clean=val.replace(/```json|```/g,'').trim();
+    JSON.parse(clean);
+    status.innerHTML='<span style="color:var(--green)">✅ Valid JSON detected — click Parse & Preview</span>';
+  }catch(e){
+    status.innerHTML='<span style="color:var(--ink4)">Paste Claude\'s full JSON response here...</span>';
+  }
+}
+
+function parseAndPreview(){
+  const raw=document.getElementById('pasteArea').value.trim();
+  if(!raw){showToast('Please paste Claude\'s response first',false);return;}
+  let parsed;
+  try{
+    const clean=raw.replace(/```json|```/g,'').trim();
+    parsed=JSON.parse(clean);
+  }catch(e){
+    document.getElementById('parseStatus').innerHTML='<span style="color:var(--red)">❌ Invalid JSON — make sure you copied Claude\'s full response</span>';
+    return;
+  }
+  if(!parsed.type||(!['group','director'].includes(parsed.type))){
+    document.getElementById('parseStatus').innerHTML='<span style="color:var(--red)">❌ JSON must have "type": "group" or "type": "director"</span>';
+    return;
+  }
+  pendingPreview=parsed;
+  showPreview(parsed);
+  document.getElementById('parseStatus').innerHTML='<span style="color:var(--green)">✅ Parsed successfully! Review the preview and save.</span>';
+}
+
+function showPreview(data){
+  document.getElementById('previewType').textContent=data.type==='group'?'Business Group':'Director';
+  const body=document.getElementById('previewBody');
+  if(data.type==='group'){
+    body.innerHTML=`
+      <div class="pfield"><label>Name</label><div class="val">${data.name||''}</div></div>
+      <div class="pfield"><label>ID</label><div class="val">${data.id||''}</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="pfield"><label>Founded</label><div class="val">${data.founded||''}</div></div>
+        <div class="pfield"><label>HQ</label><div class="val">${data.hq||''}</div></div>
+        <div class="pfield"><label>Founder</label><div class="val">${data.founder||''}</div></div>
+        <div class="pfield"><label>Sectors</label><div class="val">${data.sectors||''}</div></div>
+        <div class="pfield"><label>Connections</label><div class="val">${data.conn||0}</div></div>
+        <div class="pfield"><label>Subsidiaries</label><div class="val">${(data.subs||[]).length} listed</div></div>
+      </div>
+      <div class="pfield"><label>About</label><div class="val" style="font-size:12px;line-height:1.6;max-height:100px;overflow-y:auto">${data.about||''}</div></div>`;
+  } else {
+    body.innerHTML=`
+      <div class="pfield"><label>Name</label><div class="val">${data.name||''}</div></div>
+      <div class="pfield"><label>ID</label><div class="val">${data.id||''}</div></div>
+      <div class="pfield"><label>Role</label><div class="val">${data.role||''}</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="pfield"><label>Influence</label><div class="val">${data.inf||0}/100</div></div>
+        <div class="pfield"><label>Board Seats</label><div class="val">${data.boards||0}</div></div>
+      </div>
+      <div class="pfield"><label>Bio</label><div class="val" style="font-size:12px;line-height:1.6;max-height:100px;overflow-y:auto">${data.bio||''}</div></div>`;
+  }
+  document.getElementById('previewActions').style.display='flex';
+}
+
+function clearPreview(){
+  pendingPreview=null;
+  document.getElementById('previewBody').innerHTML='<div class="preview-empty"><div class="icon">📋</div><div style="margin-top:8px">Parsed data will appear here.<br>Review before saving to Firestore.</div></div>';
+  document.getElementById('previewActions').style.display='none';
+  document.getElementById('previewType').textContent='';
+  document.getElementById('parseStatus').textContent='';
+}
+
+function discardPreview(){ clearPreview(); }
+
+function editPreview(){
+  if(!pendingPreview)return;
+  if(pendingPreview.type==='group'){
+    openGroupModal(null);
+    const g=pendingPreview;
+    document.getElementById('g-id').value=g.id||'';
+    document.getElementById('g-name').value=g.name||'';
+    document.getElementById('g-initials').value=g.initials||'';
+    document.getElementById('g-founded').value=g.founded||'';
+    document.getElementById('g-hq').value=g.hq||'';
+    document.getElementById('g-founder').value=g.founder||'';
+    document.getElementById('g-type').value=g.type_field||'';
+    document.getElementById('g-size').value=g.size||'';
+    document.getElementById('g-employees').value=g.employees||'';
+    document.getElementById('g-dse').value=g.dse||'';
+    document.getElementById('g-rjsc').value=g.rjsc||'';
+    document.getElementById('g-conn').value=g.conn||0;
+    document.getElementById('g-sectors').value=g.sectors||'';
+    document.getElementById('g-tags').value=(g.tags||[]).join(', ');
+    document.getElementById('g-about').value=g.about||'';
+    repGroupBadges.setValue(g.badges||[]);
+    repGroupSubs.setValue(g.subs||[]);
+    repGroupOwn.setValue(g.own||[]);
+    repGroupTl.setValue(g.tl||[]);
+  } else {
+    openDirectorModal(null);
+    const d=pendingPreview;
+    document.getElementById('d-id').value=d.id||'';
+    document.getElementById('d-name').value=d.name||'';
+    document.getElementById('d-initials').value=d.initials||'';
+    document.getElementById('d-role').value=d.role||'';
+    document.getElementById('d-inf').value=d.inf||0;
+    document.getElementById('d-boards').value=d.boards||0;
+    document.getElementById('d-active').value=d.active||0;
+    document.getElementById('d-industries').value=d.industries||0;
+    document.getElementById('d-bio').value=d.bio||'';
+    repDirBadges.setValue(d.badges||[]);
+    const statsArr=(d.stats||[]).map((v,i)=>({value:v,label:(d.statL||[])[i]||''}));
+    repDirStats.setValue(statsArr);
+    repDirBoardsList.setValue(d.boards_list||[]);
+    repDirInd.setValue(d.ind||[]);
+  }
+}
+
+async function savePreview(){
+  if(!pendingPreview){showToast('Nothing to save',false);return;}
+  const btn=document.getElementById('savePreviewBtn');
+  btn.disabled=true;btn.textContent='Saving...';
+  const data={...pendingPreview};
+  const id=data.id;
+  const type=data.type;
+  delete data.id;delete data.type;
+  if(type==='group'){data.type=data.type_field||'Private';delete data.type_field;}
+  try{
+    const col=type==='group'?'groups':'directors';
+    await db.collection(col).doc(id).set(data);
+    showToast('✅ '+data.name+' saved to Firestore!');
+    clearPreview();
+    document.getElementById('pasteArea').value='';
+    if(type==='group')loadGroups();else loadDirectors();
+  }catch(e){
+    showToast('❌ Save failed: '+e.message,false);
+  }
+  btn.disabled=false;btn.textContent='💾 Save to Firestore';
+}
 </script>
 </body>
 </html>
