@@ -1270,6 +1270,149 @@ function downloadExcel(){
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.ov.open').forEach(o=>{o.classList.remove('open');document.body.style.overflow='';});});
+/* ============================================================
+   PASTE-BASED CLAUDE WORKFLOW (missing functions)
+============================================================ */
+function buildPromptText(name, type){
+  if(type==='group'){
+    return `Generate a complete CorpMap Bangladesh business group profile for "${name}". Respond with ONLY a valid JSON object, no explanation, no markdown fences, in exactly this format:
+
+{
+  "type": "group",
+  "id": "shortid_no_spaces",
+  "name": "Full Company Name",
+  "initials": "XX",
+  "color": "var(--teal)",
+  "bg": "var(--tbg)",
+  "founded": "1990",
+  "hq": "Dhaka",
+  "founder": "Founder Name",
+  "type_field": "Private Conglomerate",
+  "size": "10+ companies",
+  "employees": "5,000+",
+  "dse": "SYMBOL or —",
+  "rjsc": "Public or Private",
+  "conn": 200,
+  "sectors": "Sector1, Sector2",
+  "tags": ["Tag1","Tag2","Tag3"],
+  "about": "Full detailed paragraph about the company...",
+  "badges": [{"t":"Badge Text","c":"teal"}],
+  "stats": ["value1","value2","value3","value4"],
+  "statL": ["Label1","Label2","Label3","Label4"],
+  "subs": [{"n":"Company Name","m":"Description","p":"DSE Listed or Private"}],
+  "own": [{"l":"Owner","p":60,"c":"var(--teal)"}],
+  "tl": [{"yr":"2000","dot":"var(--gold)","t":"Event Title","d":"Description"}],
+  "dirs": [],
+  "rel": []
+}
+
+Use real factual data about ${name} in Bangladesh. Fill every field.`;
+  } else {
+    return `Generate a complete CorpMap Bangladesh director profile for "${name}". Respond with ONLY a valid JSON object, no explanation, no markdown fences, in exactly this format:
+
+{
+  "type": "director",
+  "id": "shortid",
+  "name": "Full Name",
+  "initials": "XX",
+  "color": "var(--teal)",
+  "bg": "var(--tbg)",
+  "role": "Full role description",
+  "inf": 75,
+  "boards": 12,
+  "active": 10,
+  "industries": 4,
+  "bio": "Full detailed biography...",
+  "badges": [{"t":"Badge","c":"teal"}],
+  "stats": ["value1","value2","value3","value4"],
+  "statL": ["Label1","Label2","Label3","Label4"],
+  "boards_list": [{"key":"","co":"Company","init":"XX","role":"Chairman","yr":"2010–present","status":"active","col":"var(--teal)","bg":"var(--tbg)"}],
+  "ind": [{"l":"Sector","p":50,"c":"var(--teal)"}],
+  "related": []
+}
+
+Use real factual data about ${name} in Bangladesh. Fill every field.`;
+  }
+}
+
+function copyPrompt(name, type){
+  name=(name||'').trim();
+  if(!name){showToast('Type a name first',false);return;}
+  const prompt=buildPromptText(name,type);
+
+  const doCopySuccess=()=>{
+    document.getElementById('promptPreviewText').textContent=prompt;
+    document.getElementById('ov-prompt').classList.add('open');
+    document.body.style.overflow='hidden';
+    showToast('✅ Prompt copied to clipboard');
+  };
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(prompt).then(doCopySuccess).catch(()=>{
+      fallbackCopy(prompt);
+      doCopySuccess();
+    });
+  } else {
+    fallbackCopy(prompt);
+    doCopySuccess();
+  }
+}
+
+function fallbackCopy(text){
+  const ta=document.createElement('textarea');
+  ta.value=text;
+  ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+}
+
+function autoParseJSON(text){
+  const status=document.getElementById('parseStatus');
+  if(!text || !text.trim()){status.textContent='';return;}
+  try{
+    const clean=text.replace(/```json|```/g,'').trim();
+    const obj=JSON.parse(clean);
+    if(obj.type==='group'||obj.type==='director'){
+      status.textContent='✅ Valid JSON detected — click "Parse & Preview" to review';
+      status.style.color='var(--green)';
+    } else {
+      status.textContent='⚠️ JSON parsed but missing "type":"group" or "director"';
+      status.style.color='var(--orange)';
+    }
+  }catch(e){
+    status.textContent='⏳ Not valid JSON yet...';
+    status.style.color='var(--ink3)';
+  }
+}
+
+function parseAndPreview(){
+  const raw=document.getElementById('pasteArea').value;
+  const status=document.getElementById('parseStatus');
+  if(!raw.trim()){status.textContent='Paste something first';status.style.color='var(--red)';return;}
+  try{
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const obj=JSON.parse(clean);
+    if(obj.type!=='group' && obj.type!=='director'){
+      status.textContent='❌ JSON must have "type":"group" or "type":"director"';
+      status.style.color='var(--red)';
+      return;
+    }
+    pendingPreview=obj;
+    showPreview(obj);
+    status.textContent='✅ Parsed successfully — review on the right, then save';
+    status.style.color='var(--green)';
+  }catch(e){
+    status.textContent='❌ Invalid JSON: '+e.message;
+    status.style.color='var(--red)';
+  }
+}
+
+function clearPreview(){
+  discardPreview();
+  document.getElementById('parseStatus').textContent='';
+}
 </script>
 </body>
 </html>
