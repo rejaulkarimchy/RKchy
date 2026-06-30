@@ -1095,13 +1095,11 @@ async function savePreview(){
   try{
     const col=type==='group'?'groups':'directors';
     await db.collection(col).doc(id).set(data);
-    showToast('✅ '+data.name+' saved to Firestore!');
-    addAIMsg(`<strong>${data.name}</strong> has been saved to your Firestore database! It will appear on your site immediately.`,false);
+showToast('✅ '+data.name+' saved to Firestore!');
     discardPreview();
     if(type==='group')loadGroups();else loadDirectors();
   }catch(e){
-    showToast('❌ Save failed: '+e.message,false);
-    addAIMsg('Failed to save: '+e.message+'. Make sure you are logged in.',false);
+  showToast('❌ Save failed: '+e.message,false);
   }
   btn.disabled=false;btn.textContent='💾 Save to Firestore';
 }
